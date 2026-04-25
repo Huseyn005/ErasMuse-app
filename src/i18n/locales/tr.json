@@ -1,4 +1,17 @@
 {
+  "sidebar": {
+    "collapse": "Kenar çubuğunu daralt",
+    "expand": "Kenar çubuğunu genişlet"
+  },
+  "chat": {
+    "assistant": "ERASMuse Asistan",
+    "live": "Canlı",
+    "demo": "Demo",
+    "emptyTitle": "Bugün size nasıl yardımcı olabilirim?",
+    "emptySubtitle": "Ulaşım, belgeler, etkinlikler veya Ruse'deki yaşam hakkında sorun.",
+    "quickQuestions": "Hızlı sorular",
+    "thinking": "ERASMuse düşünüyor..."
+  },
   "nav": {
     "home": "Ana Sayfa",
     "explore": "Keşfet",
