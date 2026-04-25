@@ -63,9 +63,7 @@ const Index = () => {
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground dark:text-slate-50">
             {t("home.heroTitle")} <span className="text-accent">{t("home.heroCity")}</span>
           </h1>
-          <p className="text-muted-foreground dark:text-slate-300 mt-2 text-sm sm:text-base max-w-xl">
-            {t("home.subtitle")}
-          </p>
+
         </div>
         <WeatherWidget />
       </section>
