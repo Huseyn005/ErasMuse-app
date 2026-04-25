@@ -14,7 +14,6 @@ const SUGGESTIONS = [
   "How do I buy a train ticket from Ruse to Sofia?",
   "Explain this rental contract in simple English.",
   "What can I do tonight in Ruse?",
-  "How do I get from the University of Ruse to the railway station?",
   "Where is the Erasmus office?",
   "What should I do if I need a doctor?",
   "Find me a travel buddy to Sofia.",
@@ -33,7 +32,7 @@ const Ask = () => {
   const [apiReady, setApiReady] = useState(false);
   const lastSendRef = useRef(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
-  
+
   // Determine if we're actually live (global toggle + API configured)
   const isLive = globalLive && apiReady && sirmaConfigured;
 
