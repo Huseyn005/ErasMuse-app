@@ -102,7 +102,7 @@ export function SidebarEmergencyButton() {
   );
 }
 
-// Floating emergency button - visible on both mobile and desktop
+// Mobile floating button - bottom left, above bottom nav
 export function EmergencyButton() {
   const { t } = useTranslation();
 
@@ -115,10 +115,10 @@ export function EmergencyButton() {
             "bg-red-600 hover:bg-red-700 text-white",
             "transition-all duration-200 hover:scale-105",
             "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
-            // Bottom left positioning
-            "left-4",
-            // Mobile: above bottom nav, Desktop: lower position
-            "bottom-20 lg:bottom-6",
+            // Bottom left, above bottom nav on mobile
+            "left-4 bottom-20",
+            // Hide on desktop (sidebar has the button)
+            "lg:hidden",
             // Size
             "px-4 py-3"
           )}

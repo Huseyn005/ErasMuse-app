@@ -3,18 +3,6 @@
     "collapse": "Seitenleiste einklappen",
     "expand": "Seitenleiste ausklappen"
   },
-  "weather": {
-    "sunny": "Sonnig",
-    "partlyCloudy": "Teilweise bewölkt",
-    "rainy": "Regnerisch",
-    "snowy": "Schneereich",
-    "tips": {
-      "danubeWalk": "Guter Abend für einen Spaziergang an der Donau",
-      "exploreDay": "Perfekter Tag, um Ruse zu erkunden",
-      "cafeWeather": "Gemütliches Café-Wetter",
-      "bringJacket": "Bringen Sie eine Jacke am Fluss mit"
-    }
-  },
   "chat": {
     "assistant": "ERASMuse Assistent",
     "live": "Live",
