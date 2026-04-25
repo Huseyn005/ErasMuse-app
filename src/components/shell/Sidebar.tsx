@@ -4,7 +4,6 @@ import { Home, Compass, Bus, FileText, GraduationCap, Users, PanelLeftClose, Pan
 import { cn } from '@/lib/utils';
 import { useSidebarContext } from '@/contexts/SidebarContext';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
 
 export function Sidebar() {
     const { t } = useTranslation();
@@ -22,19 +21,6 @@ export function Sidebar() {
     return (
         <TooltipProvider delayDuration={0}>
             <aside className={cn('hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 transition-all duration-300 ease-in-out', isCollapsed ? 'w-16' : 'w-64')}>
-                {/* Header with Collapse Button and Label */}
-                <div className={cn('border-b border-border flex items-center h-14', isCollapsed ? 'px-2 justify-center' : 'px-4 gap-3')}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <button onClick={toggleSidebar} className={cn('flex items-center gap-3 transition-colors hover:text-primary', isCollapsed ? 'justify-center' : '')} aria-label={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}>
-                                {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-                                {!isCollapsed && <span className="text-base font-semibold text-muted-foreground hover:text-primary">{t('sidebar.collapse')}</span>}
-                            </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</TooltipContent>
-                    </Tooltip>
-                </div>
-
                 {/* Navigation */}
                 <nav className={cn('flex-1 overflow-y-auto py-4', isCollapsed ? 'px-2 space-y-1' : 'px-3 space-y-2')}>
                     {items.map(({ to, label, icon: Icon }) => (
@@ -64,6 +50,23 @@ export function Sidebar() {
                         </Tooltip>
                     ))}
                 </nav>
+
+                {/* Collapse Button — bottom */}
+                <div className={cn('border-t border-border flex items-center h-14', isCollapsed ? 'px-2 justify-center' : 'px-4')}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <button
+                                onClick={toggleSidebar}
+                                className={cn('flex items-center gap-3 transition-colors hover:text-primary', isCollapsed ? 'justify-center' : '')}
+                                aria-label={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
+                            >
+                                {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+                                {!isCollapsed && <span className="text-base font-semibold text-muted-foreground hover:text-primary">{t('sidebar.collapse')}</span>}
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</TooltipContent>
+                    </Tooltip>
+                </div>
             </aside>
         </TooltipProvider>
     );
