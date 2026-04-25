@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { 
-  ArrowRight, 
-  Sparkles, 
-  Compass, 
-  Bus, 
-  GraduationCap, 
+import {
+  ArrowRight,
+  Sparkles,
+  Compass,
+  Bus,
+  GraduationCap,
   Users,
   Map,
   Send
@@ -36,43 +36,43 @@ const Index = () => {
   ];
 
   const quickActions = [
-    { 
-      icon: Compass, 
-      title: t("home.quickActions.explore"), 
-      desc: t("home.quickActions.exploreDesc"), 
-      href: "/explore", 
-      accent: "teal" as const 
+    {
+      icon: Compass,
+      title: t("home.quickActions.explore"),
+      desc: t("home.quickActions.exploreDesc"),
+      href: "/explore",
+      accent: "teal" as const
     },
-    { 
-      icon: Bus, 
-      title: t("home.quickActions.transport"), 
-      desc: t("home.quickActions.transportDesc"), 
-      href: "/move", 
-      accent: "amber" as const 
+    {
+      icon: Bus,
+      title: t("home.quickActions.transport"),
+      desc: t("home.quickActions.transportDesc"),
+      href: "/move",
+      accent: "amber" as const
     },
-    { 
-      icon: GraduationCap, 
-      title: t("home.quickActions.campusInfo"), 
-      desc: t("home.quickActions.campusInfoDesc"), 
-      href: "/campus", 
-      accent: "navy" as const 
+    {
+      icon: GraduationCap,
+      title: t("home.quickActions.campusInfo"),
+      desc: t("home.quickActions.campusInfoDesc"),
+      href: "/campus",
+      accent: "navy" as const
     },
-    { 
-      icon: Users, 
-      title: t("home.quickActions.findBuddy"), 
-      desc: t("home.quickActions.findBuddyDesc"), 
-      href: "/buddies", 
-      accent: "coral" as const 
+    {
+      icon: Users,
+      title: t("home.quickActions.findBuddy"),
+      desc: t("home.quickActions.findBuddyDesc"),
+      href: "/buddies",
+      accent: "coral" as const
     },
   ];
 
   const handleAsk = async (text?: string) => {
     const value = (text ?? query).trim();
     if (!value || loading) return;
-    
+
     setQuery("");
     setLoading(true);
-    
+
     try {
       const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${profile.language}. Section: Homepage.`;
       const result = await sendMessage("default", `${ctx}\n\nUser: ${value}`, undefined, !isLive || !sirmaConfigured);
@@ -117,7 +117,7 @@ const Index = () => {
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               {t("home.badge")}
             </Badge>
-            
+
             <div className="mb-4">
               <span className="font-display text-2xl lg:text-3xl font-extrabold tracking-tight">
                 <span className="text-white">ERAS</span>
@@ -131,14 +131,14 @@ const Index = () => {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Button 
+              <Button
                 onClick={() => navigate("/ask")}
                 className="bg-white text-primary hover:bg-white/90 gap-2"
               >
                 <Sparkles className="w-4 h-4" />
                 {t("home.askAssistant")}
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => navigate("/explore")}
                 className="border-white/30 text-white hover:bg-white/10 gap-2"
@@ -150,7 +150,7 @@ const Index = () => {
           </div>
 
           {/* Right Side - Compact AI Chat Interface */}
-          <div className="lg:w-[380px] p-4 lg:p-6 lg:pl-0 flex items-center">
+          <div className="lg:w-[480px] p-4 lg:p-6 lg:pl-0 flex items-center">
             <div className="w-full bg-card rounded-xl border border-border/50 shadow-lg overflow-hidden">
               {/* Chat Header */}
               <div className="px-4 py-3 border-b border-border flex items-center justify-between">
@@ -172,16 +172,28 @@ const Index = () => {
                 </div>
 
                 {/* Sample AI Response */}
+                {/*
                 <div className="bg-primary text-primary-foreground text-sm px-4 py-3 rounded-xl">
                   {t("home.sampleResponse")}
                 </div>
+                */}
 
                 {/* Quick Action Pills */}
                 <div className="flex flex-wrap gap-2 pt-1">
                   {["Steps", "Phrase", "Discounts"].map((pill) => (
                     <button
                       key={pill}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                      // Add the onClick handler here
+                      onClick={() => {
+                        const promptMap = {
+                          Steps: "Give me the step-by-step instructions for this.",
+                          Phrase: "What is the Bulgarian phrase for this?",
+                          Discounts: "Are there any Erasmus discounts available for this?"
+                        };
+                        handleAsk(promptMap[pill as keyof typeof promptMap]);
+                      }}
+                      disabled={loading} // Prevent multiple clicks while loading
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border  text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors disabled:opacity-50"
                     >
                       {pill === "Steps" && <span>📋</span>}
                       {pill === "Phrase" && <span className="text-[10px]">бг</span>}
@@ -193,6 +205,7 @@ const Index = () => {
               </div>
 
               {/* Quick Prompts */}
+              {/*
               <div className="px-4 pb-3 flex flex-wrap gap-2">
                 {quickPrompts.map(({ key, label }) => (
                   <button
@@ -204,11 +217,11 @@ const Index = () => {
                     {label}
                   </button>
                 ))}
-              </div>
+              </div> */}
 
               {/* Input */}
               <div className="px-3 pb-3">
-                <form 
+                <form
                   onSubmit={(e) => { e.preventDefault(); handleAsk(); }}
                   className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
                 >
@@ -320,7 +333,7 @@ function QuickActionCard({
     navy: "bg-primary/10 text-primary dark:bg-primary/20",
     coral: "bg-coral/15 text-coral",
   } as const;
-  
+
   return (
     <button
       onClick={onClick}
