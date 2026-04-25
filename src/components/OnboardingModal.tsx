@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useProfile, type UserType, type Language } from "@/hooks/useProfile";
 import { Logo } from "@/components/shell/Logo";
 import { Sparkles, GraduationCap, Plane, MapPin, Building2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const types: { v: UserType; icon: typeof Sparkles; sub: string }[] = [
   { v: "Erasmus / International student", icon: GraduationCap, sub: "University, dorms, events, friends" },
@@ -12,14 +13,27 @@ const types: { v: UserType; icon: typeof Sparkles; sub: string }[] = [
   { v: "Local citizen", icon: Building2, sub: "Events, hidden gems, documents" },
 ];
 
-const langs: Language[] = ["English", "Bulgarian", "Spanish", "Turkish", "French", "German"];
+const LANGS: { code: string; flag: string; name: Language }[] = [
+  { code: "en", flag: "🇬🇧", name: "English" },
+  { code: "bg", flag: "🇧🇬", name: "Bulgarian" },
+  { code: "es", flag: "🇪🇸", name: "Spanish" },
+  { code: "tr", flag: "🇹🇷", name: "Turkish" },
+  { code: "fr", flag: "🇫🇷", name: "French" },
+  { code: "de", flag: "🇩🇪", name: "German" },
+];
 
 export function OnboardingModal() {
+  const { i18n } = useTranslation();
   const [profile, setProfile] = useProfile();
   const open = !profile.onboarded;
   const [step, setStep] = useState(0);
   const [draftType, setDraftType] = useState<UserType | null>(profile.userType);
   const [draftLang, setDraftLang] = useState<Language>(profile.language);
+
+  const handleLanguageSelect = (lang: { code: string; name: Language }) => {
+    setDraftLang(lang.name);
+    i18n.changeLanguage(lang.code);
+  };
 
   const finish = () => {
     setProfile(p => ({
@@ -42,7 +56,6 @@ export function OnboardingModal() {
             <>
               <div>
                 <h3 className="text-xl font-display font-bold">Welcome to ERASMuse</h3>
-
               </div>
               <div className="flex justify-end">
                 <Button onClick={() => setStep(1)} className="bg-primary text-primary-foreground">
@@ -51,6 +64,7 @@ export function OnboardingModal() {
               </div>
             </>
           )}
+
           {step === 1 && (
             <>
               <div>
@@ -62,10 +76,11 @@ export function OnboardingModal() {
                   <button
                     key={v}
                     onClick={() => setDraftType(v)}
-                    className={`text-left p-3 rounded-xl border transition-all ${draftType === v
-                      ? "border-primary bg-secondary shadow-soft"
-                      : "border-border hover:border-primary/40"
-                      }`}
+                    className={`text-left p-3 rounded-xl border transition-all ${
+                      draftType === v
+                        ? "border-primary bg-secondary shadow-soft"
+                        : "border-border hover:border-primary/40"
+                    }`}
                   >
                     <Icon className="w-5 h-5 text-primary mb-1.5" />
                     <div className="text-sm font-semibold leading-tight">{v}</div>
@@ -79,6 +94,7 @@ export function OnboardingModal() {
               </div>
             </>
           )}
+
           {step === 2 && (
             <>
               <div>
@@ -86,16 +102,18 @@ export function OnboardingModal() {
                 <p className="text-sm text-muted-foreground mt-1">You can change it any time in the header.</p>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {langs.map(l => (
+                {LANGS.map(l => (
                   <button
-                    key={l}
-                    onClick={() => setDraftLang(l)}
-                    className={`p-3 rounded-xl border text-sm font-medium transition-all ${draftLang === l
-                      ? "border-accent bg-secondary"
-                      : "border-border hover:border-accent/40"
-                      }`}
+                    key={l.code}
+                    onClick={() => handleLanguageSelect(l)}
+                    className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 ${
+                      draftLang === l.name
+                        ? "border-accent bg-secondary"
+                        : "border-border hover:border-accent/40"
+                    }`}
                   >
-                    {l}
+                    <span className="text-lg">{l.flag}</span>
+                    <span>{l.name}</span>
                   </button>
                 ))}
               </div>
