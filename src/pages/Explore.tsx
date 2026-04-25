@@ -152,7 +152,7 @@ const Explore = () => {
       {/* Map + Events List */}
       <div className="grid lg:grid-cols-[1fr_1.2fr] gap-5">
         {/* Events List */}
-        <div className="space-y-3 order-2 lg:order-1 max-h-[60vh] overflow-y-auto pr-1">
+        <div className="space-y-3 order-2 lg:order-1 h-[420px] lg:h-[500px] overflow-y-auto pr-1">
           {filteredEvents.map(e => (
             <button
               key={e.id}

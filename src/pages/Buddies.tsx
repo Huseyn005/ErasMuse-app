@@ -76,11 +76,6 @@ const Buddies = () => {
         subtitle={t("buddies.subtitle")}
       />
 
-      {/* Safety Notice */}
-      <div className="rounded-2xl border border-accent/30 bg-secondary p-3 text-xs text-secondary-foreground">
-        {t("buddies.safetyNotice")}
-      </div>
-
       {/* Tabs */}
       <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="w-full justify-start flex-wrap h-auto gap-1 bg-transparent p-0">
@@ -101,13 +96,7 @@ const Buddies = () => {
               <Badge variant="secondary" className="ml-2 text-[10px]">{items.length}</Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger 
-            value="travel-buddy" 
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4"
-          >
-            <Bus className="w-4 h-4 mr-2" />
-            {t("buddies.tabs.travelBuddy")}
-          </TabsTrigger>
+
         </TabsList>
 
         {/* Find Buddies Tab */}
@@ -185,7 +174,7 @@ const Buddies = () => {
           )}
         </TabsContent>
 
-        {/* Travel Buddy Tab */}
+        {/* Travel Buddy Tab - removed, now just shows Find Buddies content */}
         <TabsContent value="travel-buddy" className="mt-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {travelBuddies.map(b => (
@@ -200,6 +189,11 @@ const Buddies = () => {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Safety Notice - moved to bottom */}
+      <div className="rounded-2xl border border-accent/30 bg-secondary p-4 text-sm text-secondary-foreground mt-8">
+        {t("buddies.safetyNotice")}
+      </div>
     </div>
   );
 };
