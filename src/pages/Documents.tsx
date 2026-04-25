@@ -8,26 +8,12 @@ import {
   Upload, FileText, AlertTriangle, Copy, Languages, MessageSquare, Loader2, Sparkles, X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { analyzeDocument, sirmaConfigured } from "@/lib/sirmaAI";
 
 type Analysis = SampleDoc["analysis"] & { type?: string; title?: string };
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED = ".pdf,.jpg,.jpeg,.png,.webp,.txt,.md,.docx";
-
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      // strip data:...;base64, prefix
-      const idx = result.indexOf(",");
-      resolve(idx >= 0 ? result.slice(idx + 1) : result);
-    };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
-}
 
 const Documents = () => {
   const [selected, setSelected] = useState<string>(sampleDocuments[0].id);
@@ -62,39 +48,43 @@ const Documents = () => {
       toast.error("Choose a file or paste document text first.");
       return;
     }
+    
+    if (!sirmaConfigured) {
+      toast.error("AI service is not configured. Using sample analysis.");
+      analyzeSample();
+      return;
+    }
+    
     setAnalyzing(true);
     reset();
     try {
-      let payload: Record<string, unknown>;
+      let content: string | File;
+      let fileName: string | undefined;
+      
       if (file) {
         const isText = file.type.startsWith("text/") || /\.(txt|md)$/i.test(file.name);
         if (isText) {
-          const text = await file.text();
-          payload = { text, fileName: file.name };
+          // Read text files as string
+          content = await file.text();
+          fileName = file.name;
         } else {
-          const fileBase64 = await fileToBase64(file);
-          payload = { fileBase64, mimeType: file.type || "application/pdf", fileName: file.name };
+          // Send file directly for PDFs, images, etc.
+          content = file;
+          fileName = file.name;
         }
       } else {
-        payload = { text: pasted };
+        content = pasted;
       }
 
-      const { data, error } = await supabase.functions.invoke("analyze-document", {
-        body: payload,
-      });
+      const result = await analyzeDocument(content, fileName);
 
-      if (error) throw error;
-      const a = (data as { analysis?: Analysis })?.analysis;
-      if (!a) throw new Error("No analysis returned.");
-
-      setAnalysis(a);
-      setDocTitle(a.title || file?.name || "Your document");
-      setDocType(a.type || "Document");
+      setAnalysis(result);
+      setDocTitle(result.title || file?.name || "Your document");
+      setDocType(result.type || "Document");
       toast.success("Document analyzed ✓");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to analyze document.";
       if (msg.includes("429")) toast.error("AI is rate-limited. Try again in a moment.");
-      else if (msg.includes("402")) toast.error("AI credits exhausted. Add credits in Lovable Cloud settings.");
       else toast.error(msg);
     } finally {
       setAnalyzing(false);
@@ -127,7 +117,10 @@ const Documents = () => {
         title="Document Decoder"
         subtitle="Upload a contract, university letter, official paper, or Bulgarian text. We explain it in simple language."
       >
-        <Badge variant="secondary" className="gap-1.5"><Sparkles className="w-3 h-3" /> Live AI</Badge>
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
+          <span className={`w-2 h-2 rounded-full ${sirmaConfigured ? "bg-success animate-pulse-dot" : "bg-muted-foreground"}`} />
+          {sirmaConfigured ? "Live AI" : "Demo mode"}
+        </span>
       </PageHeader>
 
       <div className="rounded-2xl border border-border p-3 text-xs text-muted-foreground bg-secondary">
