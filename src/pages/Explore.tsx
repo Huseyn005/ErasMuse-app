@@ -90,7 +90,7 @@ const Explore = () => {
                 )}
                 <div className="flex gap-2 mt-3">
                   <Button size="sm" variant="outline" onClick={(ev) => { ev.stopPropagation(); navigate("/buddies"); }}>Find buddy</Button>
-                  <Button size="sm" variant="outline" onClick={(ev) => { ev.stopPropagation(); navigate("/map"); }}>Route</Button>
+                  <Button size="sm" variant="outline" onClick={(ev) => { ev.stopPropagation(); navigate("/move"); }}>Route</Button>
                   <Button size="sm" variant="ghost" onClick={(ev) => {
                     ev.stopPropagation();
                     add({ refId: e.id, type: "event", title: e.title, meta: `${e.date} · ${e.time}`, href: "/explore" });
@@ -155,7 +155,7 @@ const Explore = () => {
           <div className="mt-5">
             <AnswerCard answer={plan} onAction={(a) => {
               if (a.toLowerCase().includes("buddy")) navigate("/buddies");
-              else if (a.toLowerCase().includes("map")) navigate("/map");
+              else if (a.toLowerCase().includes("map")) navigate("/explore");
               else if (a.toLowerCase().includes("plan")) navigate("/plan");
             }} />
           </div>
