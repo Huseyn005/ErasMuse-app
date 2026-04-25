@@ -101,7 +101,7 @@
     --secondary-foreground: 210 40% 96%;
 
     --muted: 217 33% 22%;
-    --muted-foreground: 215 20% 65%;    /* #94A3B8 */
+    --muted-foreground: 215 25% 75%;    /* Lighter for better dark mode readability */
 
     --warning: 38 92% 55%;
     --warning-foreground: 222 47% 11%;
