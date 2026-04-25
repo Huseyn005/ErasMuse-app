@@ -1,4 +1,17 @@
 {
+  "sidebar": {
+    "collapse": "Yan paneli yığ",
+    "expand": "Yan paneli genişlət"
+  },
+  "chat": {
+    "assistant": "ERASMuse Köməkçi",
+    "live": "Canlı",
+    "demo": "Demo",
+    "emptyTitle": "Bu gün sizə necə kömək edə bilərəm?",
+    "emptySubtitle": "Nəqliyyat, sənədlər, tədbirlər və ya Rusede həyat haqqında soruşun.",
+    "quickQuestions": "Sürətli suallar",
+    "thinking": "ERASMuse düşünür..."
+  },
   "nav": {
     "home": "Ana səhifə",
     "explore": "Kəşf et",

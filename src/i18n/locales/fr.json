@@ -1,4 +1,17 @@
 {
+  "sidebar": {
+    "collapse": "Réduire la barre latérale",
+    "expand": "Développer la barre latérale"
+  },
+  "chat": {
+    "assistant": "Assistant ERASMuse",
+    "live": "En direct",
+    "demo": "Démo",
+    "emptyTitle": "Comment puis-je vous aider aujourd'hui?",
+    "emptySubtitle": "Posez des questions sur le transport, les documents, les événements ou la vie à Ruse.",
+    "quickQuestions": "Questions rapides",
+    "thinking": "ERASMuse réfléchit..."
+  },
   "nav": {
     "home": "Accueil",
     "explore": "Explorer",
