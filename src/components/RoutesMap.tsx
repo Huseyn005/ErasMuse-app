@@ -40,10 +40,15 @@ export function RoutesMap({ from = "University of Ruse", to = "Railway Station" 
   const fromCoords = getLocationCoordinates(from);
   const toCoords = getLocationCoordinates(to);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+  console.log("[v0] Google Maps API Key present:", !!apiKey, "Key starts with:", apiKey?.substring(0, 10));
+  
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: apiKey,
     libraries: ["places"],
   });
+  
+  console.log("[v0] Google Maps isLoaded:", isLoaded, "loadError:", loadError);
 
   const onLoad = useCallback((map: GoogleMap) => {
     mapRef.current = map;
@@ -52,6 +57,17 @@ export function RoutesMap({ from = "University of Ruse", to = "Railway Station" 
   const onUnmount = useCallback(() => {
     mapRef.current = null;
   }, []);
+
+  if (loadError) {
+    return (
+      <div className="w-full h-96 rounded-2xl bg-muted flex items-center justify-center">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-destructive">Failed to load Google Maps</p>
+          <p className="text-xs text-muted-foreground">{loadError.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isLoaded) {
     return (
