@@ -1,11 +1,23 @@
 // Sirma AI client for ERASMuse
-import { getMockAnswer, type AssistantAnswer } from "./mockAssistant";
+import { getMockAnswer, getMockDocumentAnalysis, type AssistantAnswer } from "./mockAssistant";
 
 const DOMAIN = (import.meta.env.VITE_SIRMA_AI_DOMAIN as string | undefined) || "https://stage.sirma.ai";
 const KEY = (import.meta.env.VITE_SIRMA_AI_KEY as string | undefined) || "MDUfxZ9oHRV88xfPVjJd2Nw1NCOPcbMnv8jSmcFFaVhgHyY7fdhzFbaKYtpkMl69rrZwUIwEAudbvvnO1KQkzknDG9WgIkrK83VVBNOGYZBCxg8rQzdOflSTiKCe5oZG";
 const AGENT_ID = (import.meta.env.VITE_SIRMA_AGENT_ID as string | undefined) || "0bc1c8fb-90da-4ed1-9070-5af5fb7259f7";
 
 export const sirmaConfigured = Boolean(DOMAIN && KEY && AGENT_ID);
+
+export type DocumentAnalysis = {
+  simpleExplanation: string;
+  keyDetails: { label: string; value: string }[];
+  riskFlags: { title: string; detail: string }[];
+  questionsToAsk: string[];
+  bgSummary: string;
+  enMessage?: string;
+  bgMessage?: string;
+  type?: string;
+  title?: string;
+};
 
 export async function getAgents(): Promise<{ id: string }[]> {
   // Return the configured agent directly since we know the ID
@@ -16,13 +28,15 @@ export async function getAgents(): Promise<{ id: string }[]> {
 /**
  * Send a message to the Sirma AI agent
  * Uses multipart/form-data as required by the API
+ * @param forceDemo - If true, uses demo mode regardless of API availability
  */
 export async function sendMessage(
   agentId: string,
   message: string,
-  _conversationId?: string
+  _conversationId?: string,
+  forceDemo = false
 ): Promise<AssistantAnswer> {
-  if (!sirmaConfigured || !agentId) return getMockAnswer(message);
+  if (forceDemo || !sirmaConfigured || !agentId) return getMockAnswer(message);
   
   try {
     const formData = new FormData();
@@ -74,21 +88,19 @@ export async function sendMessage(
 /**
  * Analyze a document using Sirma AI
  * Supports text content or file uploads
+ * @param forceDemo - If true, uses demo mode regardless of API availability
  */
 export async function analyzeDocument(
   content: string | File,
-  fileName?: string
-): Promise<{
-  simpleExplanation: string;
-  keyDetails: { label: string; value: string }[];
-  riskFlags: { title: string; detail: string }[];
-  questionsToAsk: string[];
-  bgSummary: string;
-  enMessage?: string;
-  bgMessage?: string;
-  type?: string;
-  title?: string;
-}> {
+  fileName?: string,
+  forceDemo = false
+): Promise<DocumentAnalysis> {
+  if (forceDemo) {
+    // Simulate a delay for demo mode
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return getMockDocumentAnalysis(fileName);
+  }
+  
   if (!sirmaConfigured) {
     throw new Error("Sirma AI is not configured");
   }
