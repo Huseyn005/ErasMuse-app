@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Sparkles, Compass, Bus, GraduationCap, Users, Map, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { RuseMap, type MapMarker } from '@/components/RuseMap';
 import { Badge } from '@/components/ui/badge';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { sirmaConfigured } from '@/lib/sirmaAI';
@@ -163,11 +164,8 @@ const Index = () => {
                         {t('common.viewAll')} <ArrowRight className="w-3 h-3 ml-1" />
                     </Button>
                 </div>
-                <div className="aspect-[2/1] lg:aspect-[3/1] rounded-xl bg-muted flex items-center justify-center">
-                    <div className="text-center text-muted-foreground dark:text-slate-300">
-                        <Map className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                        <p className="text-sm">{t('explore.mapPlaceholder')}</p>
-                    </div>
+                <div className="rounded-xl overflow-hidden border border-border shadow-soft">
+                    <RuseMap markers={[]} height="h-[240px] lg:h-[280px]" />
                 </div>
             </section>
 
