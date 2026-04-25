@@ -9,7 +9,6 @@ import Ask from "./pages/Ask";
 import Move from "./pages/Move";
 import Documents from "./pages/Documents";
 import Explore from "./pages/Explore";
-import MapPage from "./pages/MapPage";
 import Campus from "./pages/Campus";
 import LifeAdmin from "./pages/LifeAdmin";
 import Buddies from "./pages/Buddies";
@@ -32,7 +31,6 @@ const App = () => (
             <Route path="/move" element={<Move />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/explore" element={<Explore />} />
-            <Route path="/map" element={<MapPage />} />
             <Route path="/campus" element={<Campus />} />
             <Route path="/life-admin" element={<LifeAdmin />} />
             <Route path="/buddies" element={<Buddies />} />

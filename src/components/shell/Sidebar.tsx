@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import {
-  Home, Sparkles, Compass, Map, Bus, FileText, GraduationCap,
+  Home, Sparkles, Compass, Bus, FileText, GraduationCap,
   HeartPulse, Users, BookmarkCheck, UserCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,6 @@ const items = [
   { to: "/", label: "Home", icon: Home },
   { to: "/ask", label: "Ask AI", icon: Sparkles },
   { to: "/explore", label: "Explore", icon: Compass },
-  { to: "/map", label: "Ruse Map", icon: Map },
   { to: "/move", label: "Move", icon: Bus },
   { to: "/documents", label: "Documents", icon: FileText },
   { to: "/campus", label: "Campus", icon: GraduationCap },

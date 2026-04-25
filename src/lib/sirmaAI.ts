@@ -1,8 +1,8 @@
 // Minimal Sirma AI client with safe mock fallback.
 import { getMockAnswer, type AssistantAnswer } from "./mockAssistant";
 
-const DOMAIN = (import.meta.env.VITE_SIRMA_AI_DOMAIN as string | undefined) || "";
-const KEY = (import.meta.env.VITE_SIRMA_AI_KEY as string | undefined) || "";
+const DOMAIN = (import.meta.env.VITE_SIRMA_AI_DOMAIN as string | undefined) || "https://sirma.ai";
+const KEY = (import.meta.env.VITE_SIRMA_AI_KEY as string | undefined) || "MDUfxZ9oHRV88xfPVjJd2Nw1NCOPcbMnv8jSmcFFaVhgHyY7fdhzFbaKYtpkMl69rrZwUIwEAudbvvnO1KQkzknDG9WgIkrK83VVBNOGYZBCxg8rQzdOflSTiKCe5oZG";
 
 export const sirmaConfigured = Boolean(DOMAIN && KEY);
 
