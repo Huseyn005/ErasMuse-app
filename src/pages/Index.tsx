@@ -104,7 +104,7 @@ const Index = () => {
           </div>
 
           {/* Right Side - Compact AI Chat Preview */}
-          <div className="lg:w-[420px] p-4 lg:p-6 lg:pl-0 flex items-center">
+          <div className="lg:w-[520px] p-4 lg:p-6 lg:pl-2 flex items-center">
             <div className="w-full bg-card rounded-xl border border-border/50 shadow-lg overflow-hidden">
               {/* Chat Header */}
               <div className="px-4 py-3 border-b border-border flex items-center justify-between">

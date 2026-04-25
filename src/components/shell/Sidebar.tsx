@@ -33,35 +33,36 @@ export function Sidebar() {
         {/* Header with Collapse Button and Label */}
         <div className={cn(
           "border-b border-border flex items-center h-14",
-          isCollapsed ? "px-2 justify-center" : "px-4 gap-2"
+          isCollapsed ? "px-2 justify-center" : "px-4 gap-3"
         )}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 onClick={toggleSidebar}
-                className="h-8 w-8 shrink-0"
+                className={cn(
+                  "flex items-center gap-3 transition-colors hover:text-primary",
+                  isCollapsed ? "justify-center" : ""
+                )}
                 aria-label={isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
               >
-                {isCollapsed ? <PanelLeft className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-              </Button>
+                {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+                {!isCollapsed && (
+                  <span className="text-base font-semibold text-muted-foreground hover:text-primary">
+                    {t("sidebar.collapse")}
+                  </span>
+                )}
+              </button>
             </TooltipTrigger>
             <TooltipContent side="right">
               {isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
             </TooltipContent>
           </Tooltip>
-          {!isCollapsed && (
-            <span className="text-sm font-medium text-muted-foreground">
-              {t("sidebar.collapse")}
-            </span>
-          )}
         </div>
 
         {/* Navigation */}
         <nav className={cn(
-          "flex-1 overflow-y-auto py-4 space-y-0.5",
-          isCollapsed ? "px-2" : "px-3"
+          "flex-1 overflow-y-auto py-4",
+          isCollapsed ? "px-2 space-y-1" : "px-3 space-y-2"
         )}>
           {items.map(({ to, label, icon: Icon }) => (
             <Tooltip key={to}>
@@ -72,16 +73,23 @@ export function Sidebar() {
                 >
                   {({ isActive }) => (
                     <span className={cn(
-                      "flex items-center rounded-xl transition-colors",
+                      "flex items-center rounded-xl transition-all duration-200",
                       isCollapsed
-                        ? "justify-center w-12 h-12 mx-auto"
-                        : "gap-3 px-4 py-3",
-                      isActive
-                        ? "bg-primary text-primary-foreground shadow-soft font-semibold"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium"
+                        ? cn(
+                            "justify-center w-12 h-12 mx-auto",
+                            isActive 
+                              ? "bg-primary/10 text-primary border-l-2 border-primary" 
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          )
+                        : cn(
+                            "gap-3 px-4 py-3.5",
+                            isActive
+                              ? "bg-primary/10 text-primary font-bold"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium"
+                          )
                     )}>
                       <Icon className={cn("shrink-0", isCollapsed ? "w-6 h-6" : "w-5 h-5")} strokeWidth={isActive ? 2.5 : 2} />
-                      {!isCollapsed && <span className="text-base font-medium">{label}</span>}
+                      {!isCollapsed && <span className="text-[15px] font-semibold">{label}</span>}
                     </span>
                   )}
                 </NavLink>

@@ -101,9 +101,8 @@ export function Header() {
         {/* Language Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-1.5 hidden sm:inline-flex">
-              <Languages className="w-4 h-4" />
-              <span className="text-xs font-medium">{currentLang.flag}</span>
+            <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
+              <Languages className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
@@ -128,16 +127,16 @@ export function Header() {
           aria-label="Toggle theme"
           onClick={() => setMode(isDark ? "light" : "dark")}
         >
-          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </Button>
 
         {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full" aria-label="Profile menu">
-              <Avatar className="w-8 h-8">
+              <Avatar className="w-9 h-9">
                 <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                  <UserCircle2 className="w-5 h-5" />
+                  <UserCircle2 className="w-6 h-6" />
                 </AvatarFallback>
               </Avatar>
             </Button>
