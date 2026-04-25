@@ -166,3 +166,46 @@ export const evening15LevaPlan: AssistantAnswer = {
   warnings: [],
   nextActions: ["Find a buddy", "Show on map", "Add to plan"],
 };
+
+export type DocumentAnalysis = {
+  simpleExplanation: string;
+  keyDetails: { label: string; value: string }[];
+  riskFlags: { title: string; detail: string }[];
+  questionsToAsk: string[];
+  bgSummary: string;
+  enMessage?: string;
+  bgMessage?: string;
+  type?: string;
+  title?: string;
+};
+
+export function getMockDocumentAnalysis(fileName?: string): DocumentAnalysis {
+  return {
+    type: "Rental Contract",
+    title: fileName || "Demo Rental Agreement",
+    simpleExplanation: "This is a standard rental agreement for an apartment in Ruse. It specifies the monthly rent, deposit requirements, duration of the lease, and responsibilities of both the landlord and tenant. The contract is in Bulgarian but follows typical European rental conventions.",
+    keyDetails: [
+      { label: "Monthly Rent", value: "350 лв (approximately 180 EUR)" },
+      { label: "Deposit", value: "One month's rent (350 лв)" },
+      { label: "Duration", value: "12 months, renewable" },
+      { label: "Notice Period", value: "30 days written notice required" },
+      { label: "Utilities", value: "Paid separately by tenant" },
+      { label: "Start Date", value: "September 1, 2024" },
+    ],
+    riskFlags: [
+      { title: "Late Payment Penalty", detail: "5% per week after 5 days late - this is quite high. Consider negotiating to 2-3%." },
+      { title: "No Subletting Clause", detail: "You cannot sublet or have long-term guests without written permission." },
+      { title: "Repair Responsibility", detail: "Tenant responsible for all repairs under 100 лв - clarify what this covers." },
+    ],
+    questionsToAsk: [
+      "Is the deposit held in a separate account?",
+      "What happens if I need to leave early for academic reasons?",
+      "Are there any additional fees not mentioned in the contract?",
+      "Can I get receipts for rent payments?",
+      "Who do I contact for emergency repairs?",
+    ],
+    bgSummary: "Това е стандартен договор за наем на апартамент в Русе. Наемът е 350 лв месечно с депозит от един месечен наем. Договорът е за 12 месеца. Обърнете внимание на клаузата за закъснели плащания (5% седмично) и изискването за 30 дни предизвестие.",
+    enMessage: "Dear [Landlord], Thank you for sending the rental agreement. I have reviewed it and have a few questions before signing: Could you clarify the late payment penalty clause? The 5% weekly rate seems high - would you consider 2% instead? Also, could you confirm how the deposit will be held? I look forward to your response. Best regards, [Your name]",
+    bgMessage: "Уважаеми [Наемодател], Благодаря Ви за изпратения договор за наем. Прегледах го и имам няколко въпроса преди подписването: Бихте ли уточнили клаузата за закъснели плащания? Ставката от 5% седмично изглежда висока - бихте ли обмислили 2%? Също така, бихте ли потвърдили как ще се съхранява депозитът? Очаквам Вашия отговор. С уважение, [Вашето име]",
+  };
+}

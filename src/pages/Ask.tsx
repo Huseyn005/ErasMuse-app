@@ -7,6 +7,7 @@ import { AnswerCard } from "@/components/AnswerCard";
 import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
 import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
 import { useProfile } from "@/hooks/useProfile";
+import { useAIMode } from "@/contexts/AIModeContext";
 import { toast } from "sonner";
 
 const SUGGESTIONS = [
@@ -24,19 +25,23 @@ type Msg = { role: "user" | "ai"; content: string; answer?: AssistantAnswer };
 const Ask = () => {
   const navigate = useNavigate();
   const [profile] = useProfile();
+  const { isLive: globalLive } = useAIMode();
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
   const [agentId, setAgentId] = useState<string>("");
-  const [live, setLive] = useState(false);
+  const [apiReady, setApiReady] = useState(false);
   const lastSendRef = useRef(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  
+  // Determine if we're actually live (global toggle + API configured)
+  const isLive = globalLive && apiReady && sirmaConfigured;
 
   useEffect(() => {
-    if (!sirmaConfigured) { setLive(false); return; }
+    if (!sirmaConfigured) { setApiReady(false); return; }
     getAgents().then(list => {
       const first = (list as { id?: string }[])[0];
-      if (first?.id) { setAgentId(first.id); setLive(true); }
+      if (first?.id) { setAgentId(first.id); setApiReady(true); }
     });
   }, []);
 
@@ -58,9 +63,8 @@ const Ask = () => {
     setLoading(true);
     try {
       const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${profile.language}. Section: Ask AI.`;
-      const answer = live && agentId
-        ? await sendMessage(agentId, `${ctx}\n\nUser: ${value}`)
-        : getMockAnswer(value);
+      const useDemo = !isLive;
+      const answer = await sendMessage(agentId || "default", `${ctx}\n\nUser: ${value}`, undefined, useDemo);
       setMessages(m => [...m, { role: "ai", content: "", answer }]);
     } catch {
       setMessages(m => [...m, { role: "ai", content: "", answer: getMockAnswer(value) }]);
@@ -85,8 +89,8 @@ const Ask = () => {
         subtitle="Transport, documents, university, events, health, and local life in Ruse."
       >
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
-          <span className={`w-2 h-2 rounded-full ${live ? "bg-success animate-pulse-dot" : "bg-muted-foreground"}`} />
-          {live ? "Live AI" : "Demo mode"}
+          <span className={`w-2 h-2 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+          {isLive ? "Live AI" : "Demo mode"}
         </span>
       </PageHeader>
 

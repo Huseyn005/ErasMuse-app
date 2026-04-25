@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Search, Sun, Moon, BookmarkCheck, Languages, Menu } from "lucide-react";
+import { Search, Sun, Moon, BookmarkCheck, Languages, Menu, Sparkles, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { useProfile, type Language } from "@/hooks/useProfile";
+import { useAIMode } from "@/contexts/AIModeContext";
 import { Logo } from "./Logo";
 import { GlobalSearch } from "./GlobalSearch";
 import {
@@ -18,6 +19,7 @@ export function Header() {
   const navigate = useNavigate();
   const { mode, setMode } = useTheme();
   const [profile, setProfile] = useProfile();
+  const { mode: aiMode, setMode: setAIMode, isLive } = useAIMode();
   const isDark = mode === "dark";
 
   return (
@@ -40,9 +42,25 @@ export function Header() {
           <GlobalSearch />
         </div>
 
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted text-[11px] text-muted-foreground">
-          <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" /> Demo data
-        </span>
+        <Button
+          variant={isLive ? "default" : "outline"}
+          size="sm"
+          className={`hidden sm:inline-flex gap-1.5 text-xs ${isLive ? "bg-primary hover:bg-primary/90" : ""}`}
+          onClick={() => setAIMode(isLive ? "demo" : "live")}
+        >
+          {isLive ? (
+            <>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Live AI</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            </>
+          ) : (
+            <>
+              <FlaskConical className="w-3.5 h-3.5" />
+              <span>Demo</span>
+            </>
+          )}
+        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
