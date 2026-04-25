@@ -14,7 +14,7 @@ const types: { v: UserType; icon: typeof Sparkles; sub: string }[] = [
 ];
 
 const LANGS: { code: string; flag: string; name: Language }[] = [
-  { code: "en", flag: "🇬🇧", name: "English" },
+  { code: "en", flag: "🇺🇸", name: "English" },
   { code: "bg", flag: "🇧🇬", name: "Bulgarian" },
   { code: "es", flag: "🇪🇸", name: "Spanish" },
   { code: "tr", flag: "🇹🇷", name: "Turkish" },
