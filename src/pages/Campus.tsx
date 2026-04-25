@@ -1,23 +1,56 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { campus } from "@/data/campus";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { usePlan } from "@/hooks/usePlan";
-import { Check, Sparkles, MapPin } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Check, Sparkles, MapPin, Book, Home, UtensilsCrossed, Dumbbell, Users } from "lucide-react";
 
-const CHECKLIST = [
-  "Confirm accommodation",
-  "Visit Erasmus / international office",
-  "Check university schedule",
-  "Learn how to reach campus",
-  "Join student communication channels",
-  "Learn emergency number (112)",
-  "Understand healthcare options",
-  "Explore city center",
-  "Save important contacts",
+const FACILITY_CARDS = [
+  {
+    id: "campus-map",
+    image: "/images/campus-map.jpg",
+    icon: MapPin,
+    titleKey: "campus.campusMap",
+    descKey: "campus.campusMapDesc",
+  },
+  {
+    id: "library",
+    image: "/images/library.jpg",
+    icon: Book,
+    titleKey: "campus.library",
+    descKey: "campus.libraryDesc",
+  },
+  {
+    id: "dormitories",
+    image: "/images/dormitories.jpg",
+    icon: Home,
+    titleKey: "campus.dormitories",
+    descKey: "campus.dormitoriesDesc",
+  },
+  {
+    id: "cafeteria",
+    image: "/images/cafeteria.jpg",
+    icon: UtensilsCrossed,
+    titleKey: "campus.cafeteria",
+    descKey: "campus.cafeteriaDesc",
+  },
+  {
+    id: "sports-center",
+    image: "/images/sports-center.jpg",
+    icon: Dumbbell,
+    titleKey: "campus.sportsCenter",
+    descKey: "campus.sportsCenterDesc",
+  },
+  {
+    id: "student-services",
+    image: "/images/student-services.jpg",
+    icon: Users,
+    titleKey: "campus.studentServices",
+    descKey: "campus.studentServicesDesc",
+  },
 ];
 
 const ANNOUNCEMENTS = [
@@ -29,92 +62,154 @@ const ANNOUNCEMENTS = [
 ];
 
 const Campus = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { add } = usePlan();
   const [done, setDone] = useLocalStorage<string[]>("erasmuse:checklist", []);
   const [open, setOpen] = useState<string | null>(null);
 
-  const toggle = (i: string) =>
-    setDone(d => d.includes(i) ? d.filter(x => x !== i) : [...d, i]);
+  const checklistItems = [
+    t("campus.checklistItems.accommodation"),
+    t("campus.checklistItems.office"),
+    t("campus.checklistItems.schedule"),
+    t("campus.checklistItems.transport"),
+    t("campus.checklistItems.channels"),
+    t("campus.checklistItems.emergency"),
+    t("campus.checklistItems.healthcare"),
+    t("campus.checklistItems.explore"),
+    t("campus.checklistItems.contacts"),
+  ];
+
+  const toggle = (item: string) =>
+    setDone(d => d.includes(item) ? d.filter(x => x !== item) : [...d, item]);
 
   return (
     <div className="px-4 lg:px-8 py-6 max-w-6xl mx-auto space-y-10">
       <PageHeader
-        title="Campus Life"
-        subtitle="University facilities, Erasmus information, announcements, events, and first-week help."
+        title={t("campus.title")}
+        subtitle={t("campus.subtitle")}
       />
 
+      {/* Facility Image Cards Grid */}
       <section>
-        <h2 className="font-display text-xl font-bold mb-3">Facilities at the University of Ruse</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {campus.map(f => (
-            <div key={f.id} className="surface p-4 bg-gradient-card">
-              <div className="flex items-start justify-between gap-2">
-                <div className="font-semibold">{f.name}</div>
-                <Badge variant="secondary" className="text-[10px]">{f.usefulFor[0]}</Badge>
+        <h2 className="font-display text-xl font-bold mb-4">{t("campus.facilities")}</h2>
+        <p className="text-sm text-muted-foreground mb-6">{t("campus.facilitiesSubtitle")}</p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {FACILITY_CARDS.map((card) => {
+            const Icon = card.icon;
+            return (
+              <div
+                key={card.id}
+                className="group relative overflow-hidden rounded-2xl cursor-pointer"
+                onClick={() => navigate("/ask")}
+              >
+                {/* Image */}
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={t(card.titleKey)}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Icon className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="font-display font-bold text-white text-lg">{t(card.titleKey)}</h3>
+                  </div>
+                  <p className="text-white/80 text-sm">{t(card.descKey)}</p>
+                </div>
+
+                {/* Hover Button */}
+                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button size="sm" variant="secondary" className="gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" /> {t("campus.askAI")}
+                  </Button>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                <MapPin className="w-3 h-3" /> {f.location}
-              </div>
-              <p className="text-sm mt-2">{f.description}</p>
-              <div className="text-[11px] text-accent mt-2 italic">💡 {f.tips}</div>
-              <div className="flex gap-2 mt-3">
-                <Button size="sm" variant="outline" onClick={() => navigate("/ask")} className="gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" /> Ask AI
-                </Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
+      {/* First-week Checklist */}
       <section className="surface p-5 bg-gradient-card">
-        <h2 className="font-display text-xl font-bold mb-3">Erasmus first-week checklist</h2>
+        <h2 className="font-display text-xl font-bold mb-3">{t("campus.checklist")}</h2>
         <div className="grid md:grid-cols-2 gap-2">
-          {CHECKLIST.map(c => {
-            const isDone = done.includes(c);
+          {checklistItems.map(item => {
+            const isDone = done.includes(item);
             return (
-              <label key={c} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card cursor-pointer hover:border-primary/40">
-                <span className={`w-5 h-5 rounded-md flex items-center justify-center border ${isDone ? "bg-success border-success text-success-foreground" : "border-border"}`}>
+              <label 
+                key={item} 
+                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-background cursor-pointer hover:border-primary/40 transition-colors"
+              >
+                <span className={`w-5 h-5 rounded-md flex items-center justify-center border transition-colors ${
+                  isDone ? "bg-success border-success text-success-foreground" : "border-border"
+                }`}>
                   {isDone && <Check className="w-3.5 h-3.5" />}
                 </span>
-                <span className={`text-sm ${isDone ? "line-through text-muted-foreground" : ""}`}>{c}</span>
-                <input type="checkbox" checked={isDone} onChange={() => toggle(c)} className="sr-only" />
+                <span className={`text-sm ${isDone ? "line-through text-muted-foreground" : ""}`}>{item}</span>
+                <input 
+                  type="checkbox" 
+                  checked={isDone} 
+                  onChange={() => toggle(item)} 
+                  className="sr-only" 
+                />
               </label>
             );
           })}
         </div>
         <div className="text-xs text-muted-foreground mt-3">
-          Saved automatically — your progress stays here.
+          {t("campus.checklistSaved")}
         </div>
       </section>
 
+      {/* Announcements */}
       <section>
-        <h2 className="font-display text-xl font-bold mb-3">Announcements</h2>
+        <h2 className="font-display text-xl font-bold mb-3">{t("campus.announcements")}</h2>
         <div className="space-y-3">
           {ANNOUNCEMENTS.map(a => (
             <div key={a.id} className="surface p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="font-semibold">{a.title}</div>
-                  <div className="text-xs text-muted-foreground">{a.when} · {a.where}</div>
+                  <div className="text-xs text-muted-foreground">{a.when} - {a.where}</div>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setOpen(open === a.id ? null : a.id)}>
-                    {open === a.id ? "Hide summary" : "Summarize"}
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => setOpen(open === a.id ? null : a.id)}
+                  >
+                    {open === a.id ? t("campus.hideSummary") : t("campus.summarize")}
                   </Button>
-                  <Button size="sm" onClick={() => add({ refId: a.id, type: "reminder", title: a.title, meta: `${a.when} · ${a.where}`, href: "/campus" })}>
-                    Add to plan
+                  <Button 
+                    size="sm" 
+                    onClick={() => add({ 
+                      refId: a.id, 
+                      type: "reminder", 
+                      title: a.title, 
+                      meta: `${a.when} - ${a.where}`, 
+                      href: "/campus" 
+                    })}
+                  >
+                    {t("campus.addToPlan")}
                   </Button>
                 </div>
               </div>
               {open === a.id && (
                 <div className="mt-3 grid sm:grid-cols-2 gap-2 text-sm animate-fade-up">
-                  <Bullet label="What" value={a.title} />
-                  <Bullet label="When" value={a.when} />
-                  <Bullet label="Where" value={a.where} />
-                  <Bullet label="Who" value={a.who} />
-                  <Bullet label="Why it matters" value={a.why} />
+                  <Bullet label={t("campus.what")} value={a.title} />
+                  <Bullet label={t("campus.when")} value={a.when} />
+                  <Bullet label={t("campus.where")} value={a.where} />
+                  <Bullet label={t("campus.who")} value={a.who} />
+                  <Bullet label={t("campus.why")} value={a.why} />
                 </div>
               )}
             </div>

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +13,6 @@ import Explore from "./pages/Explore";
 import Campus from "./pages/Campus";
 import LifeAdmin from "./pages/LifeAdmin";
 import Buddies from "./pages/Buddies";
-import Plan from "./pages/Plan";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
@@ -36,7 +35,7 @@ const App = () => (
             <Route path="/campus" element={<Campus />} />
             <Route path="/life-admin" element={<LifeAdmin />} />
             <Route path="/buddies" element={<Buddies />} />
-            <Route path="/plan" element={<Plan />} />
+            <Route path="/plan" element={<Navigate to="/buddies?tab=my-plan" replace />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="*" element={<NotFound />} />
