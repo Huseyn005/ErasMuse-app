@@ -85,15 +85,12 @@ const Campus = () => {
 
   return (
     <div className="px-4 lg:px-8 py-6 max-w-6xl mx-auto space-y-10">
-      <PageHeader
-        title={t("campus.title")}
-        subtitle={t("campus.subtitle")}
-      />
+
 
       {/* Facility Image Cards Grid */}
       <section>
-        <h2 className="font-display text-xl font-bold mb-4">{t("campus.facilities")}</h2>
-        <p className="text-sm text-muted-foreground mb-6">{t("campus.facilitiesSubtitle")}</p>
+        <h2 className="font-display text-3xl font-bold mb-4 text-center">{t("campus.facilities")}</h2>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FACILITY_CARDS.map((card) => {
             const Icon = card.icon;
@@ -111,10 +108,10 @@ const Campus = () => {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                
+
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <div className="flex items-center gap-2 mb-1">
@@ -140,26 +137,27 @@ const Campus = () => {
 
       {/* First-week Checklist */}
       <section className="surface p-5 bg-gradient-card">
-        <h2 className="font-display text-xl font-bold mb-3">{t("campus.checklist")}</h2>
+        <div className="mb-4">
+          <h2 className="font-display text-2xl font-bold">{t("campus.checklist")}</h2>
+        </div>
         <div className="grid md:grid-cols-2 gap-2">
           {checklistItems.map(item => {
             const isDone = done.includes(item);
             return (
-              <label 
-                key={item} 
+              <label
+                key={item}
                 className="flex items-center gap-3 p-3 rounded-xl border border-border bg-background cursor-pointer hover:border-primary/40 transition-colors"
               >
-                <span className={`w-5 h-5 rounded-md flex items-center justify-center border transition-colors ${
-                  isDone ? "bg-success border-success text-success-foreground" : "border-border"
-                }`}>
+                <span className={`w-5 h-5 rounded-md flex items-center justify-center border transition-colors ${isDone ? "bg-success border-success text-success-foreground" : "border-border"
+                  }`}>
                   {isDone && <Check className="w-3.5 h-3.5" />}
                 </span>
                 <span className={`text-sm ${isDone ? "line-through text-muted-foreground" : ""}`}>{item}</span>
-                <input 
-                  type="checkbox" 
-                  checked={isDone} 
-                  onChange={() => toggle(item)} 
-                  className="sr-only" 
+                <input
+                  type="checkbox"
+                  checked={isDone}
+                  onChange={() => toggle(item)}
+                  className="sr-only"
                 />
               </label>
             );
@@ -172,7 +170,7 @@ const Campus = () => {
 
       {/* Announcements */}
       <section>
-        <h2 className="font-display text-xl font-bold mb-3">{t("campus.announcements")}</h2>
+        <h2 className="font-display text-3xl font-bold mb-3">{t("campus.announcements")}</h2>
         <div className="space-y-3">
           {ANNOUNCEMENTS.map(a => (
             <div key={a.id} className="surface p-4">
@@ -182,21 +180,21 @@ const Campus = () => {
                   <div className="text-xs text-muted-foreground">{a.when} - {a.where}</div>
                 </div>
                 <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     onClick={() => setOpen(open === a.id ? null : a.id)}
                   >
                     {open === a.id ? t("campus.hideSummary") : t("campus.summarize")}
                   </Button>
-                  <Button 
-                    size="sm" 
-                    onClick={() => add({ 
-                      refId: a.id, 
-                      type: "reminder", 
-                      title: a.title, 
-                      meta: `${a.when} - ${a.where}`, 
-                      href: "/campus" 
+                  <Button
+                    size="sm"
+                    onClick={() => add({
+                      refId: a.id,
+                      type: "reminder",
+                      title: a.title,
+                      meta: `${a.when} - ${a.where}`,
+                      href: "/campus"
                     })}
                   >
                     {t("campus.addToPlan")}

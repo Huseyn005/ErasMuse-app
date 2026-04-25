@@ -82,22 +82,8 @@ const Explore = () => {
           </div>
         </div>
 
-        {/* Quick filter chips */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {quickFilters.map(filter => (
-            <button
-              key={filter}
-              onClick={() => generatePlan(filter)}
-              disabled={loading}
-              className="chip hover:chip-active hover:bg-primary hover:text-primary-foreground hover:border-primary disabled:opacity-50 transition-all"
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-
         {/* AI Input */}
-        <form 
+        <form
           onSubmit={(e) => { e.preventDefault(); generatePlan(aiQuery); }}
           className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
         >
@@ -137,7 +123,7 @@ const Explore = () => {
       </section>
 
       {/* Category Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         {categories.map(c => (
           <button
             key={c.key}
@@ -157,9 +143,8 @@ const Explore = () => {
             <button
               key={e.id}
               onClick={() => setSelected(e.id)}
-              className={`w-full text-left surface p-4 hover:shadow-md transition-all ${
-                selected === e.id ? "ring-2 ring-accent" : ""
-              }`}
+              className={`w-full text-left surface p-4 hover:shadow-md transition-all ${selected === e.id ? "ring-2 ring-accent" : ""
+                }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
