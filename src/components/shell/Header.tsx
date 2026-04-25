@@ -92,6 +92,7 @@ export function Header() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
                             <Languages className="w-5 h-5" />
+                          <span className="text-xs font-medium">{currentLang.flag}</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
