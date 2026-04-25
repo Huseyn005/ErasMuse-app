@@ -4,7 +4,7 @@ import { Home, Compass, Bus, FileText, GraduationCap, Users, PanelLeftClose, Pan
 import { cn } from '@/lib/utils';
 import { useSidebarContext } from '@/contexts/SidebarContext';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { SidebarEmergencyButton } from '@/components/EmergencyButton';
+import { SidebarEmergencyButton } from '@/components/shell/EmergencyButton';
 
 export function Sidebar() {
     const { t } = useTranslation();
