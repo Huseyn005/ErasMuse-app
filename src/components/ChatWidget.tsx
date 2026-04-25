@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, X, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnswerCard } from "@/components/AnswerCard";
-import { sendMessage, sirmaConfigured } from "@/lib/sirmaAI";
+import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
 import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
 import { useAIMode } from "@/contexts/AIModeContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -42,6 +42,21 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isLive = globalLive && apiReady && sirmaConfigured;
+
+  // Initialize agent on mount
+  useEffect(() => {
+    if (!sirmaConfigured) { 
+      setApiReady(false); 
+      return; 
+    }
+    getAgents().then(list => {
+      const first = (list as { id?: string }[])[0];
+      if (first?.id) { 
+        setAgentId(first.id); 
+        setApiReady(true); 
+      }
+    });
+  }, []);
 
   // Focus input when widget opens
   useEffect(() => {
