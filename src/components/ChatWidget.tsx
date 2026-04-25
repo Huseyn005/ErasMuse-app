@@ -12,13 +12,13 @@ import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const SUGGESTIONS = [
-  "How do I buy a train ticket from Ruse to Sofia?",
-  "Explain this rental contract in simple English.",
-  "What can I do tonight in Ruse?",
-  "Where is the Erasmus office?",
-  "What should I do if I need a doctor?",
-  "Find me a travel buddy to Sofia.",
+const SUGGESTION_KEYS = [
+  "trainTicket",
+  "contract",
+  "tonight",
+  "erasmusOffice",
+  "doctor",
+  "travelBuddy",
 ];
 
 type Msg = { role: "user" | "ai"; content: string; answer?: AssistantAnswer };
@@ -30,7 +30,7 @@ interface ChatWidgetProps {
 
 export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [profile] = useProfile();
   const { isLive: globalLive } = useAIMode();
   const [text, setText] = useState("");
@@ -88,12 +88,13 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
     setLoading(true);
 
     try {
-      const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${profile.language}. Section: Chat Widget.`;
+      const currentLang = i18n.language || "en";
+      const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${currentLang}. Section: Chat Widget.`;
       const useDemo = !isLive;
-      const answer = await sendMessage(agentId, `${ctx}\n\nUser: ${value}`, undefined, useDemo);
+      const answer = await sendMessage(agentId, `${ctx}\n\nUser: ${value}`, undefined, useDemo, currentLang);
       setMessages(m => [...m, { role: "ai", content: "", answer }]);
     } catch {
-      setMessages(m => [...m, { role: "ai", content: "", answer: getMockAnswer(value) }]);
+      setMessages(m => [...m, { role: "ai", content: "", answer: getMockAnswer(value, i18n.language) }]);
     } finally {
       setLoading(false);
     }
@@ -263,13 +264,13 @@ function ChatBody({
               {t("chat.quickQuestions")}
             </p>
             <div className="flex flex-wrap gap-2">
-              {SUGGESTIONS.map(s => (
+              {SUGGESTION_KEYS.map(key => (
                 <button
-                  key={s}
-                  onClick={() => onSend(s)}
+                  key={key}
+                  onClick={() => onSend(t(`ask.suggestions.${key}`))}
                   className="text-xs px-3 py-2 rounded-xl border border-border bg-background hover:bg-muted hover:border-primary/30 transition-colors text-left"
                 >
-                  {s}
+                  {t(`ask.suggestions.${key}`)}
                 </button>
               ))}
             </div>
