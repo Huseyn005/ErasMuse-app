@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
+import { SidebarEmergencyButton } from "./EmergencyButton";
 
 export function Sidebar() {
   const { t } = useTranslation();
@@ -44,10 +45,8 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="px-5 py-4 border-t border-border text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted">
-          <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" /> {t("nav.demoData")}
-        </span>
+      <div className="px-3 py-4 border-t border-border">
+        <SidebarEmergencyButton />
       </div>
     </aside>
   );
