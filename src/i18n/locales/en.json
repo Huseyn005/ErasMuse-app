@@ -3,18 +3,6 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar"
   },
-  "weather": {
-    "sunny": "Sunny",
-    "partlyCloudy": "Partly cloudy",
-    "rainy": "Rainy",
-    "snowy": "Snowy",
-    "tips": {
-      "danubeWalk": "Good evening for a Danube walk",
-      "exploreDay": "Perfect day to explore Ruse",
-      "cafeWeather": "Cosy cafe weather",
-      "bringJacket": "Bring a jacket near the river"
-    }
-  },
   "nav": {
     "home": "Home",
     "explore": "Explore",
