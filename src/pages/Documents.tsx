@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { analyzeDocument, sirmaConfigured } from "@/lib/sirmaAI";
+import { useAIMode } from "@/contexts/AIModeContext";
 
 type Analysis = SampleDoc["analysis"] & { type?: string; title?: string };
 
@@ -16,6 +17,7 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED = ".pdf,.jpg,.jpeg,.png,.webp,.txt,.md,.docx";
 
 const Documents = () => {
+  const { isLive } = useAIMode();
   const [selected, setSelected] = useState<string>(sampleDocuments[0].id);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [docTitle, setDocTitle] = useState<string>("");
@@ -49,11 +51,7 @@ const Documents = () => {
       return;
     }
     
-    if (!sirmaConfigured) {
-      toast.error("AI service is not configured. Using sample analysis.");
-      analyzeSample();
-      return;
-    }
+    const useDemo = !isLive || !sirmaConfigured;
     
     setAnalyzing(true);
     reset();
@@ -64,11 +62,9 @@ const Documents = () => {
       if (file) {
         const isText = file.type.startsWith("text/") || /\.(txt|md)$/i.test(file.name);
         if (isText) {
-          // Read text files as string
           content = await file.text();
           fileName = file.name;
         } else {
-          // Send file directly for PDFs, images, etc.
           content = file;
           fileName = file.name;
         }
@@ -76,12 +72,12 @@ const Documents = () => {
         content = pasted;
       }
 
-      const result = await analyzeDocument(content, fileName);
+      const result = await analyzeDocument(content, fileName, useDemo);
 
       setAnalysis(result);
       setDocTitle(result.title || file?.name || "Your document");
       setDocType(result.type || "Document");
-      toast.success("Document analyzed ✓");
+      toast.success(useDemo ? "Document analyzed (Demo)" : "Document analyzed with AI");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to analyze document.";
       if (msg.includes("429")) toast.error("AI is rate-limited. Try again in a moment.");
@@ -118,8 +114,8 @@ const Documents = () => {
         subtitle="Upload a contract, university letter, official paper, or Bulgarian text. We explain it in simple language."
       >
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
-          <span className={`w-2 h-2 rounded-full ${sirmaConfigured ? "bg-success animate-pulse-dot" : "bg-muted-foreground"}`} />
-          {sirmaConfigured ? "Live AI" : "Demo mode"}
+          <span className={`w-2 h-2 rounded-full ${isLive && sirmaConfigured ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+          {isLive && sirmaConfigured ? "Live AI" : "Demo mode"}
         </span>
       </PageHeader>
 

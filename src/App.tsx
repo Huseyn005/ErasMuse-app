@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AIModeProvider } from "@/contexts/AIModeContext";
 import { AppShell } from "@/components/shell/AppShell";
 import Index from "./pages/Index";
 import Ask from "./pages/Ask";
@@ -20,6 +21,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <AIModeProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner position="top-center" />
@@ -41,6 +43,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </AIModeProvider>
   </QueryClientProvider>
 );
 
