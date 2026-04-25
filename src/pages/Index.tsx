@@ -24,6 +24,9 @@ const Index = () => {
   const navigate = useNavigate();
   const { isLive } = useAIMode();
   const [chatOpen, setChatOpen] = useState(false);
+  
+  // Debug: log state changes
+  console.log("[v0] Index: chatOpen =", chatOpen);
 
   const quickActions = [
     {
@@ -93,7 +96,11 @@ const Index = () => {
 
             <div className="flex flex-wrap gap-3">
               <Button
-                onClick={() => setChatOpen(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log("[v0] Ask AI button clicked!");
+                  setChatOpen(true);
+                }}
                 className="bg-white text-primary hover:bg-white/90 gap-2 px-8"
                 size="lg"
               >
