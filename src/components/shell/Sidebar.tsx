@@ -4,6 +4,7 @@ import { Home, Compass, Bus, FileText, GraduationCap, Users, PanelLeftClose, Pan
 import { cn } from '@/lib/utils';
 import { useSidebarContext } from '@/contexts/SidebarContext';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { SidebarEmergencyButton } from '@/components/EmergencyButton';
 
 export function Sidebar() {
     const { t } = useTranslation();
@@ -51,17 +52,22 @@ export function Sidebar() {
                     ))}
                 </nav>
 
-                {/* Collapse Button — bottom */}
-                <div className={cn('border-t border-border flex items-center h-14', isCollapsed ? 'px-2 justify-center' : 'px-4')}>
+                {/* Footer — Emergency + Collapse */}
+                <div className={cn('border-t border-border p-3 space-y-2')}>
+                    <SidebarEmergencyButton isCollapsed={isCollapsed} />
+
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <button
                                 onClick={toggleSidebar}
-                                className={cn('flex items-center gap-3 transition-colors hover:text-primary', isCollapsed ? 'justify-center' : '')}
+                                className={cn(
+                                    'w-full flex items-center gap-3 h-10 rounded-xl transition-colors text-muted-foreground hover:text-primary hover:bg-sidebar-accent',
+                                    isCollapsed ? 'justify-center' : 'px-3',
+                                )}
                                 aria-label={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
                             >
                                 {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-                                {!isCollapsed && <span className="text-base font-semibold text-muted-foreground hover:text-primary">{t('sidebar.collapse')}</span>}
+                                {!isCollapsed && <span className="text-sm font-semibold">{t('sidebar.collapse')}</span>}
                             </button>
                         </TooltipTrigger>
                         <TooltipContent side="right">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</TooltipContent>
