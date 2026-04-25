@@ -1,132 +1,310 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Sparkles, Compass, Bus, FileText, GraduationCap, Map as MapIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { 
+  ArrowRight, 
+  Sparkles, 
+  Compass, 
+  Bus, 
+  GraduationCap, 
+  Users,
+  Calendar,
+  AlertTriangle,
+  Send
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Logo } from "@/components/shell/Logo";
 import { WeatherWidget } from "@/components/WeatherWidget";
-import { RuseMap } from "@/components/RuseMap";
+import { usePlan } from "@/hooks/usePlan";
 import { events } from "@/data/events";
-import { hiddenGems } from "@/data/hiddenGems";
-import { campus } from "@/data/campus";
-import { useProfile, type UserType } from "@/hooks/useProfile";
-
-const userTypeMessages: Record<string, string> = {
-  "Erasmus / International student": "Great. We'll prioritize university, documents, events, and student-friendly places.",
-  "Tourist / Visitor": "Welcome! We'll focus on hidden gems, safe transport, and friendly local phrases.",
-  "Local student": "Nice — we'll surface campus events, help with documents, and weekend ideas.",
-  "Local citizen": "Welcome back. We'll keep events, hidden gems, and document help close at hand.",
-  "Other": "We'll show you a broad mix — adjust your interests anytime in your profile.",
-};
-
-const types: UserType[] = [
-  "Erasmus / International student",
-  "Tourist / Visitor",
-  "Local student",
-  "Local citizen",
-  "Other",
-];
+import { buddies } from "@/data/buddies";
+import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
+import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
+import { AnswerCard } from "@/components/AnswerCard";
+import { useAIMode } from "@/contexts/AIModeContext";
+import { useProfile } from "@/hooks/useProfile";
+import { toast } from "sonner";
 
 const Index = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [profile, setProfile] = useProfile();
+  const { items } = usePlan();
+  const { isLive } = useAIMode();
+  const [profile] = useProfile();
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [answer, setAnswer] = useState<AssistantAnswer | null>(null);
 
-  const allMarkers = [
-    ...events.slice(0, 6).map(e => ({ id: e.id, lat: e.lat, lng: e.lng, type: "event" as const, label: e.title })),
-    ...hiddenGems.slice(0, 4).map(g => ({ id: g.id, lat: g.lat, lng: g.lng, type: "gem" as const, label: g.name })),
-    ...campus.slice(0, 3).map(c => ({ id: c.id, lat: c.lat, lng: c.lng, type: "campus" as const, label: c.name })),
+  const quickPrompts = [
+    { key: "events", label: t("home.quickPrompts.events") },
+    { key: "planDay", label: t("home.quickPrompts.planDay") },
+    { key: "food", label: t("home.quickPrompts.food") },
+    { key: "documents", label: t("home.quickPrompts.documents") },
+    { key: "buddy", label: t("home.quickPrompts.buddy") },
   ];
 
+  const quickActions = [
+    { 
+      icon: Compass, 
+      title: t("home.quickActions.explore"), 
+      desc: t("home.quickActions.exploreDesc"), 
+      href: "/explore", 
+      accent: "teal" as const 
+    },
+    { 
+      icon: Users, 
+      title: t("home.quickActions.findBuddy"), 
+      desc: t("home.quickActions.findBuddyDesc"), 
+      href: "/buddies", 
+      accent: "coral" as const 
+    },
+    { 
+      icon: Calendar, 
+      title: t("home.quickActions.planWeek"), 
+      desc: t("home.quickActions.planWeekDesc"), 
+      href: "/buddies?tab=my-plan", 
+      accent: "amber" as const 
+    },
+    { 
+      icon: GraduationCap, 
+      title: t("home.quickActions.campusInfo"), 
+      desc: t("home.quickActions.campusInfoDesc"), 
+      href: "/campus", 
+      accent: "navy" as const 
+    },
+    { 
+      icon: Bus, 
+      title: t("home.quickActions.transport"), 
+      desc: t("home.quickActions.transportDesc"), 
+      href: "/move", 
+      accent: "teal" as const 
+    },
+    { 
+      icon: AlertTriangle, 
+      title: t("home.quickActions.emergency"), 
+      desc: t("home.quickActions.emergencyDesc"), 
+      href: "/life-admin", 
+      accent: "coral" as const 
+    },
+  ];
+
+  const handleAsk = async (text?: string) => {
+    const value = (text ?? query).trim();
+    if (!value || loading) return;
+    
+    setQuery("");
+    setLoading(true);
+    
+    try {
+      const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${profile.language}. Section: Homepage.`;
+      const result = await sendMessage("default", `${ctx}\n\nUser: ${value}`, undefined, !isLive || !sirmaConfigured);
+      setAnswer(result);
+    } catch {
+      setAnswer(getMockAnswer(value));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onAction = (a: string) => {
+    if (a.toLowerCase().includes("plan")) navigate("/buddies?tab=my-plan");
+    else if (a.toLowerCase().includes("buddy")) navigate("/buddies");
+    else if (a.toLowerCase().includes("map") || a.toLowerCase().includes("route")) navigate("/explore");
+    else if (a.toLowerCase().includes("explore")) navigate("/explore");
+    else if (a.toLowerCase().includes("document")) navigate("/documents");
+    else toast.success("Saved");
+  };
+
+  // Get upcoming plan items
+  const upcomingItems = items.slice(0, 3);
+  
+  // Get recommended events
+  const recommendedEvents = events.slice(0, 3);
+  
+  // Get suggested buddies
+  const suggestedBuddies = buddies.filter(b => b.type === "event").slice(0, 3);
+
   return (
-    <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-12 max-w-7xl mx-auto">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-hero text-primary-foreground p-6 sm:p-10 lg:p-14 shadow-glow">
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-accent/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-20 w-72 h-72 bg-coral/30 rounded-full blur-3xl" />
-        <div className="relative grid lg:grid-cols-[1.2fr_1fr] gap-8 items-center">
-          <div className="space-y-5">
-            <Badge className="bg-card/15 text-primary-foreground border border-card/20 backdrop-blur hover:bg-card/20">
-              ✨ Built for Erasmus students, useful for everyone
-            </Badge>
-            <Logo size="lg" />
-            <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05]">
-              Your AI life copilot in <span className="bg-gradient-to-r from-accent to-warning bg-clip-text text-transparent">Ruse</span>
+    <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-8 max-w-6xl mx-auto">
+      {/* Welcome Section */}
+      <section className="space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+              {t("home.heroTitle")} <span className="text-accent">{t("home.heroCity")}</span>
             </h1>
-            <p className="text-base sm:text-lg opacity-90 max-w-xl">
-              A multilingual assistant that helps Erasmus students, foreigners, tourists, and locals discover the city, understand documents, move around, and handle daily life.
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base max-w-xl">
+              {t("home.subtitle")}
             </p>
-            <div className="flex flex-wrap gap-3 pt-1">
-              <Button size="lg" onClick={() => navigate("/ask")} className="bg-card text-primary hover:bg-card/90 gap-2">
-                <Sparkles className="w-4 h-4" /> Ask AI Assistant
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/explore")}
-                className="bg-transparent border-card/40 text-primary-foreground hover:bg-card/15 gap-2">
-                Try demo flows <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="pt-2"><WeatherWidget /></div>
           </div>
-
-          {/* Hero conversation card */}
-          <div className="surface bg-card text-card-foreground p-5 rounded-3xl shadow-glow">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-success animate-pulse-dot" />
-              <span className="text-xs font-semibold text-muted-foreground">Live AI · Demo</span>
-              <Badge variant="secondary" className="ml-auto text-[10px]">Sample chat</Badge>
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-end">
-                <div className="bg-secondary text-secondary-foreground px-3 py-2 rounded-2xl rounded-br-sm text-sm max-w-[85%]">
-                  Can you help me buy a train ticket to Sofia?
-                </div>
-              </div>
-              <div className="flex">
-                <div className="bg-primary text-primary-foreground px-3 py-2 rounded-2xl rounded-bl-sm text-sm max-w-[90%]">
-                  Yes. I'll show you the steps, the Bulgarian phrase to use, and what to check before travel.
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <span className="chip">📋 Steps</span>
-                <span className="chip">🇧🇬 Phrase</span>
-                <span className="chip">🎫 Discounts</span>
-              </div>
-            </div>
-          </div>
+          <WeatherWidget />
         </div>
       </section>
 
-      {/* Quick action cards */}
-      <section>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <QuickAction icon={Compass} title="Explore nearby" desc="Events, hidden gems, and people to go with." onClick={() => navigate("/explore")} accent="amber" />
-          <QuickAction icon={Bus} title="Move around" desc="Routes, tickets, trains, buses and travel buddies." onClick={() => navigate("/move")} accent="teal" />
-          <QuickAction icon={FileText} title="Decode documents" desc="Understand contracts, forms and university letters." onClick={() => navigate("/documents")} accent="navy" />
-          <QuickAction icon={GraduationCap} title="Campus & Life" desc="University, health, emergency, and daily life guidance." onClick={() => navigate("/campus")} accent="coral" />
+      {/* Ask ERASMuse Card - Prominent at Top */}
+      <section className="surface p-6 lg:p-8 bg-gradient-card">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-bold">{t("home.askERASMuse")}</h2>
+            <p className="text-sm text-muted-foreground">{t("home.askPlaceholder")}</p>
+          </div>
+          <Badge className="ml-auto" variant="secondary">
+            <span className={`w-2 h-2 rounded-full mr-1.5 ${isLive && sirmaConfigured ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+            {isLive && sirmaConfigured ? "Live AI" : "Demo"}
+          </Badge>
         </div>
-      </section>
 
-      {/* Map preview */}
-      <section className="grid lg:grid-cols-[1fr_1.4fr] gap-6 items-center">
-        <div>
-          <Badge variant="secondary" className="mb-3">📍 The map</Badge>
-          <h2 className="font-display text-2xl lg:text-3xl font-bold">See Ruse on the map</h2>
-          <p className="text-muted-foreground mt-2">
-            Find nearby events, hidden gems, campus places, and people to go with — all in one place.
-          </p>
-          <Button onClick={() => navigate("/explore")} className="mt-5 gap-2">
-            <MapIcon className="w-4 h-4" /> Open the map in Explore
+        {/* Quick Prompt Chips */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {quickPrompts.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => handleAsk(label)}
+              disabled={loading}
+              className="chip hover:chip-active hover:bg-primary hover:text-primary-foreground hover:border-primary disabled:opacity-50 transition-all"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Input */}
+        <form 
+          onSubmit={(e) => { e.preventDefault(); handleAsk(); }}
+          className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
+        >
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("ask.placeholder")}
+            disabled={loading}
+            className="flex-1 bg-transparent px-3 py-2 text-sm outline-none"
+          />
+          <Button type="submit" disabled={!query.trim() || loading} size="sm" className="gap-1.5">
+            <Send className="w-4 h-4" /> {t("ask.send")}
           </Button>
-        </div>
-        <RuseMap markers={allMarkers} height="h-[360px]" />
+        </form>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" />
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" style={{ animationDelay: "0.2s" }} />
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" style={{ animationDelay: "0.4s" }} />
+            <span className="ml-2">{t("ask.thinking")}</span>
+          </div>
+        )}
+
+        {/* Answer */}
+        {answer && !loading && (
+          <div className="mt-4">
+            <AnswerCard answer={answer} onAction={onAction} />
+          </div>
+        )}
       </section>
+
+      {/* Quick Action Cards Grid */}
+      <section>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quickActions.map((action) => (
+            <QuickActionCard
+              key={action.href}
+              icon={action.icon}
+              title={action.title}
+              desc={action.desc}
+              onClick={() => navigate(action.href)}
+              accent={action.accent}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Below-the-fold Sections */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Upcoming Plan Items */}
+        <section className="surface p-5 bg-gradient-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display font-semibold">{t("home.upcoming")}</h3>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/buddies?tab=my-plan")} className="text-xs">
+              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
+            </Button>
+          </div>
+          {upcomingItems.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("plan.emptyDesc")}</p>
+          ) : (
+            <div className="space-y-2">
+              {upcomingItems.map((item) => (
+                <div key={item.id} className="p-3 rounded-xl bg-background border border-border">
+                  <div className="font-medium text-sm truncate">{item.title}</div>
+                  {item.meta && <div className="text-xs text-muted-foreground">{item.meta}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Recommended Events */}
+        <section className="surface p-5 bg-gradient-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display font-semibold">{t("home.recommended")}</h3>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/explore")} className="text-xs">
+              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {recommendedEvents.map((event) => (
+              <div 
+                key={event.id} 
+                className="p-3 rounded-xl bg-background border border-border cursor-pointer hover:border-primary/40 transition-colors"
+                onClick={() => navigate("/explore")}
+              >
+                <div className="font-medium text-sm truncate">{event.title}</div>
+                <div className="text-xs text-muted-foreground">{event.date} - {event.locationName}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Suggested Buddies */}
+        <section className="surface p-5 bg-gradient-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display font-semibold">{t("home.suggestedBuddies")}</h3>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/buddies")} className="text-xs">
+              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {suggestedBuddies.map((buddy) => (
+              <div 
+                key={buddy.id} 
+                className="p-3 rounded-xl bg-background border border-border flex items-center gap-3 cursor-pointer hover:border-primary/40 transition-colors"
+                onClick={() => navigate("/buddies")}
+              >
+                <div className="w-8 h-8 rounded-full bg-coral/15 text-coral font-bold flex items-center justify-center text-sm">
+                  {buddy.firstName.charAt(0)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-sm truncate">{buddy.firstName}</div>
+                  <div className="text-xs text-muted-foreground">{buddy.userType}</div>
+                </div>
+                <Badge variant="secondary" className="text-[10px]">{buddy.matchScore}%</Badge>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* How it works */}
       <section>
-        <h2 className="font-display text-2xl font-bold mb-5">How it works</h2>
+        <h2 className="font-display text-xl font-bold mb-4">{t("home.howItWorks")}</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { n: 1, t: "Ask or upload", d: "Ask a question, upload a document, or pick a topic." },
-            { n: 2, t: "AI explains", d: "ERASMuse translates, summarizes, and creates action steps." },
-            { n: 3, t: "Do it confidently", d: "Get routes, phrases, checklists, buddies, and guidance." },
+            { n: 1, t: t("home.step1Title"), d: t("home.step1Desc") },
+            { n: 2, t: t("home.step2Title"), d: t("home.step2Desc") },
+            { n: 3, t: t("home.step3Title"), d: t("home.step3Desc") },
           ].map(s => (
             <div key={s.n} className="surface p-5 bg-gradient-card">
               <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground font-bold flex items-center justify-center mb-3">{s.n}</div>
@@ -136,38 +314,16 @@ const Index = () => {
           ))}
         </div>
       </section>
-
-      {/* User type selector */}
-      <section className="surface p-6 lg:p-8 bg-gradient-card">
-        <h2 className="font-display text-xl font-bold">Who are you?</h2>
-        <p className="text-sm text-muted-foreground mt-1">Pick what fits — we'll personalise your home.</p>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 mt-4">
-          {types.map(t => (
-            <button
-              key={t}
-              onClick={() => setProfile(p => ({ ...p, userType: t }))}
-              className={`text-left p-3 rounded-xl border text-sm font-medium transition-all ${
-                profile.userType === t
-                  ? "border-primary bg-secondary shadow-soft"
-                  : "border-border hover:border-primary/40 bg-card"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-        {profile.userType && (
-          <p className="mt-4 text-sm text-primary font-medium">
-            {userTypeMessages[profile.userType] ?? userTypeMessages.Other}
-          </p>
-        )}
-      </section>
     </div>
   );
 };
 
-function QuickAction({
-  icon: Icon, title, desc, onClick, accent,
+function QuickActionCard({
+  icon: Icon,
+  title,
+  desc,
+  onClick,
+  accent,
 }: {
   icon: typeof Compass;
   title: string;
@@ -181,9 +337,12 @@ function QuickAction({
     navy: "bg-primary/10 text-primary",
     coral: "bg-coral/15 text-coral",
   } as const;
+  
   return (
-    <button onClick={onClick}
-      className="surface p-5 text-left hover:shadow-glow transition-all hover:-translate-y-0.5 bg-gradient-card group">
+    <button
+      onClick={onClick}
+      className="surface p-5 text-left hover:shadow-glow transition-all hover:-translate-y-0.5 bg-gradient-card group"
+    >
       <div className={`w-11 h-11 rounded-2xl flex items-center justify-center mb-3 ${accentMap[accent]}`}>
         <Icon className="w-5 h-5" />
       </div>
