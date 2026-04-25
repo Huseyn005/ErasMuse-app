@@ -31,12 +31,7 @@ export function Sidebar() {
           isCollapsed ? "w-16" : "w-64"
         )}
       >
-        {/* Emergency Button at top when collapsed */}
-        {isCollapsed && (
-          <div className="px-2 pt-3 pb-2">
-            <SidebarEmergencyButton collapsed />
-          </div>
-        )}
+
 
         {/* Header with Logo and Collapse Button */}
         <div className={cn(
@@ -85,14 +80,14 @@ export function Sidebar() {
                     <span className={cn(
                       "flex items-center rounded-xl transition-colors",
                       isCollapsed 
-                        ? "justify-center w-10 h-10 mx-auto"
-                        : "gap-3 px-4 py-2.5",
+                        ? "justify-center w-12 h-12 mx-auto"
+                        : "gap-3 px-4 py-3",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-soft font-semibold"
                         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium"
                     )}>
-                      <Icon className={cn("shrink-0", isCollapsed ? "w-5 h-5" : "w-4 h-4")} strokeWidth={isActive ? 2.5 : 2} />
-                      {!isCollapsed && <span className="text-[15px]">{label}</span>}
+                      <Icon className={cn("shrink-0", isCollapsed ? "w-6 h-6" : "w-5 h-5")} strokeWidth={isActive ? 2.5 : 2} />
+                      {!isCollapsed && <span className="text-base font-medium">{label}</span>}
                     </span>
                   )}
                 </NavLink>
@@ -106,12 +101,10 @@ export function Sidebar() {
           ))}
         </nav>
 
-        {/* Emergency Button at bottom when expanded */}
-        {!isCollapsed && (
-          <div className="px-3 py-4 border-t border-border">
-            <SidebarEmergencyButton />
-          </div>
-        )}
+        {/* Emergency Button - always full-width at bottom */}
+        <div className="px-3 py-4 border-t border-border">
+          <SidebarEmergencyButton />
+        </div>
       </aside>
     </TooltipProvider>
   );

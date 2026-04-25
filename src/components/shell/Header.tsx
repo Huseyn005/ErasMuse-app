@@ -63,6 +63,9 @@ export function Header() {
           <GlobalSearch />
         </div>
 
+        {/* Spacer to push icons to right */}
+        <div className="flex-1 md:flex-none" />
+
         {/* AI Mode Toggle */}
         <Button
           variant={isLive ? "default" : "outline"}

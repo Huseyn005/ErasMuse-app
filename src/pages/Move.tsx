@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PhraseCard } from "@/components/PhraseCard";
+import { RoutesMap } from "@/components/RoutesMap";
 import { routes, type Route } from "@/data/routes";
 import { usePlan } from "@/hooks/usePlan";
 import { Bus, Train, MapPin, ArrowRight, Users } from "lucide-react";
@@ -65,6 +66,7 @@ const Move = () => {
 
           {route && (
             <div className="space-y-3 pt-1">
+              <RoutesMap from={from} to={to} />
               <div className="flex items-center gap-2 text-sm">
                 <Badge>{route.estimatedTime}</Badge>
                 <Badge variant="secondary">{route.difficulty}</Badge>
