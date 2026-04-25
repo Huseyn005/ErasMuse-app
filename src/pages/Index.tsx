@@ -12,6 +12,7 @@ import {
   MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RuseMap, type MapMarker } from "@/components/RuseMap";
 import { Badge } from "@/components/ui/badge";
 import { WeatherWidget } from "@/components/WeatherWidget";
 import { sirmaConfigured } from "@/lib/sirmaAI";
@@ -190,11 +191,15 @@ const Index = () => {
             {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
           </Button>
         </div>
-        <div className="aspect-[2/1] lg:aspect-[3/1] rounded-xl bg-muted flex items-center justify-center">
-          <div className="text-center text-muted-foreground dark:text-slate-300">
-            <Map className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">{t("explore.mapPlaceholder")}</p>
-          </div>
+        <div className="rounded-xl overflow-hidden border border-border shadow-soft">
+          <RuseMap
+            markers={[
+              { id: "avtogara", lat: 43.834774, lng: 25.9574489, type: "gem", label: "Avtogara Ruse" },
+              { id: "kaufland", lat: 43.8321604, lng: 25.969904, type: "gem", label: "Kaufland Ruse Drujba" },
+              { id: "dormitory", lat: 43.8375, lng: 25.9680, type: "campus", label: "Dormitory" },
+            ]}
+            height="h-[240px] lg:h-[280px]"
+          />
         </div>
       </section>
 

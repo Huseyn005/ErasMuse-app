@@ -103,6 +103,7 @@ export function SidebarEmergencyButton() {
 }
 
 // Floating emergency button - visible on both mobile and desktop
+// Floating emergency button - visible on both mobile and desktop
 export function EmergencyButton() {
   const { t } = useTranslation();
 
@@ -125,7 +126,9 @@ export function EmergencyButton() {
           aria-label={t("emergency.button")}
         >
           <ShieldAlert className="w-5 h-5" />
-          <span className="font-semibold text-sm">SOS</span>
+          {/* Mobile: SOS, Desktop: Emergency */}
+          <span className="font-semibold text-base block lg:hidden">SOS</span>
+          <span className="font-semibold text-base hidden lg:block"> Emergency </span>
         </button>
       </SheetTrigger>
       <EmergencySheetContent />
