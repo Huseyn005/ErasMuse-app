@@ -3,6 +3,18 @@
     "collapse": "Kenar çubuğunu daralt",
     "expand": "Kenar çubuğunu genişlet"
   },
+  "weather": {
+    "sunny": "Gunesli",
+    "partlyCloudy": "Parcali bulutlu",
+    "rainy": "Yagmurlu",
+    "snowy": "Karli",
+    "tips": {
+      "danubeWalk": "Tuna kenarinda yuruus icin guzel bir aksam",
+      "exploreDay": "Ruse'yi kesfetmek icin mukkemmel bir gun",
+      "cafeWeather": "Rahat kafe havasi",
+      "bringJacket": "Nehir kenarinda ceket getirin"
+    }
+  },
   "chat": {
     "assistant": "ERASMuse Asistan",
     "live": "Canlı",
