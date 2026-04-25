@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Cloud, Sun, CloudRain, Snowflake } from "lucide-react";
 
-const tips = [
-  "Good evening for a Danube walk 🌅",
-  "Perfect day to explore Ruse.",
-  "Cosy café weather — try Kafe Bulgaria.",
-  "Bring a jacket near the river.",
-];
-
 export function WeatherWidget() {
+  const { t } = useTranslation();
   const [data, setData] = useState<{ temp: number; code: number } | null>(null);
+  
   useEffect(() => {
     let alive = true;
     fetch("https://api.open-meteo.com/v1/forecast?latitude=43.8356&longitude=25.9657&current_weather=true")
@@ -18,11 +14,24 @@ export function WeatherWidget() {
       .catch(() => { if (alive) setData({ temp: 19, code: 1 }); });
     return () => { alive = false; };
   }, []);
-  const t = data?.temp ?? 19;
-  const c = data?.code ?? 1;
-  const Icon = c >= 71 ? Snowflake : c >= 51 ? CloudRain : c >= 2 ? Cloud : Sun;
-  const desc = c >= 71 ? "Snowy" : c >= 51 ? "Rainy" : c >= 2 ? "Partly cloudy" : "Sunny";
-  const tip = tips[t % tips.length];
+  
+  const temp = data?.temp ?? 19;
+  const code = data?.code ?? 1;
+  const Icon = code >= 71 ? Snowflake : code >= 51 ? CloudRain : code >= 2 ? Cloud : Sun;
+  
+  // Get translated weather description
+  const getWeatherKey = () => {
+    if (code >= 71) return "snowy";
+    if (code >= 51) return "rainy";
+    if (code >= 2) return "partlyCloudy";
+    return "sunny";
+  };
+  
+  // Get translated tip based on temperature
+  const getTipKey = () => {
+    const tips = ["danubeWalk", "exploreDay", "cafeWeather", "bringJacket"];
+    return tips[temp % tips.length];
+  };
 
   return (
     <div className="surface px-4 py-3 inline-flex items-center gap-3 bg-gradient-card">
@@ -30,8 +39,8 @@ export function WeatherWidget() {
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <div className="text-sm font-semibold">{t}°C · {desc}</div>
-        <div className="text-xs text-muted-foreground">{tip}</div>
+        <div className="text-sm font-semibold">{temp}°C · {t(`weather.${getWeatherKey()}`)}</div>
+        <div className="text-xs text-muted-foreground">{t(`weather.tips.${getTipKey()}`)}</div>
       </div>
     </div>
   );
