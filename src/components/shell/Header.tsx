@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Search, Sun, Moon, BookmarkCheck, Languages, Menu, Sparkles, FlaskConical } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Search, Sun, Moon, Languages, Menu, Sparkles, FlaskConical, UserCircle2, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
-import { useProfile, type Language } from "@/hooks/useProfile";
 import { useAIMode } from "@/contexts/AIModeContext";
 import { Logo } from "./Logo";
 import { GlobalSearch } from "./GlobalSearch";
@@ -12,19 +12,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "./Sidebar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const LANGS: Language[] = ["English", "Bulgarian", "Spanish", "Turkish", "French", "German"];
+const LANGS = [
+  { code: "en", name: "English", flag: "EN" },
+  { code: "bg", name: "Bulgarian", flag: "BG" },
+  { code: "az", name: "Azerbaijani", flag: "AZ" },
+  { code: "ka", name: "Georgian", flag: "KA" },
+  { code: "ru", name: "Russian", flag: "RU" },
+  { code: "es", name: "Spanish", flag: "ES" },
+  { code: "tr", name: "Turkish", flag: "TR" },
+  { code: "fr", name: "French", flag: "FR" },
+  { code: "de", name: "German", flag: "DE" },
+];
 
 export function Header() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { mode, setMode } = useTheme();
-  const [profile, setProfile] = useProfile();
   const { mode: aiMode, setMode: setAIMode, isLive } = useAIMode();
   const isDark = mode === "dark";
+
+  const currentLang = LANGS.find(l => l.code === i18n.language) || LANGS[0];
+
+  const changeLanguage = (code: string) => {
+    i18n.changeLanguage(code);
+    document.documentElement.lang = code;
+  };
 
   return (
     <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border">
       <div className="flex items-center gap-3 px-4 lg:px-6 h-14">
+        {/* Mobile menu */}
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
@@ -36,12 +55,15 @@ export function Header() {
           </SheetContent>
         </Sheet>
 
+        {/* Mobile logo */}
         <div className="lg:hidden"><Logo size="sm" /></div>
 
+        {/* Search */}
         <div className="flex-1 max-w-xl hidden md:block">
           <GlobalSearch />
         </div>
 
+        {/* AI Mode Toggle */}
         <Button
           variant={isLive ? "default" : "outline"}
           size="sm"
@@ -51,35 +73,42 @@ export function Header() {
           {isLive ? (
             <>
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Live AI</span>
+              <span>{t("header.liveAI")}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             </>
           ) : (
             <>
               <FlaskConical className="w-3.5 h-3.5" />
-              <span>Demo</span>
+              <span>{t("header.demo")}</span>
             </>
           )}
         </Button>
 
+        {/* Language Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-1.5 hidden sm:inline-flex">
               <Languages className="w-4 h-4" />
-              <span className="text-xs font-medium">{profile.language.slice(0, 2).toUpperCase()}</span>
+              <span className="text-xs font-medium">{currentLang.flag}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Language</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuLabel>{t("header.language")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {LANGS.map(l => (
-              <DropdownMenuItem key={l} onClick={() => setProfile(p => ({ ...p, language: l }))}>
-                {l}
+              <DropdownMenuItem 
+                key={l.code} 
+                onClick={() => changeLanguage(l.code)}
+                className={i18n.language === l.code ? "bg-accent" : ""}
+              >
+                <span className="w-6 text-xs font-medium text-muted-foreground">{l.flag}</span>
+                {l.name}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Theme Toggle */}
         <Button
           variant="ghost" size="icon"
           aria-label="Toggle theme"
@@ -88,14 +117,52 @@ export function Header() {
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
 
-        <Button
-          variant="outline" size="sm"
-          className="hidden sm:inline-flex gap-1.5"
-          onClick={() => navigate("/plan")}
-        >
-          <BookmarkCheck className="w-4 h-4" /> My Plan
-        </Button>
+        {/* Profile Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full" aria-label="Profile menu">
+              <Avatar className="w-8 h-8">
+                <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                  <UserCircle2 className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>{t("nav.profile")}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
+              <UserCircle2 className="w-4 h-4 mr-2" />
+              {t("nav.profile")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setMode(isDark ? "light" : "dark")}>
+              {isDark ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />}
+              {t("header.theme")}: {isDark ? t("profile.dark") : t("profile.light")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {/* Language submenu in profile */}
+            <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">{t("header.language")}</DropdownMenuLabel>
+            <div className="max-h-32 overflow-y-auto">
+              {LANGS.slice(0, 5).map(l => (
+                <DropdownMenuItem 
+                  key={l.code} 
+                  onClick={() => changeLanguage(l.code)}
+                  className={`text-sm ${i18n.language === l.code ? "bg-accent" : ""}`}
+                >
+                  <span className="w-6 text-xs">{l.flag}</span>
+                  {l.name}
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
+              <Settings className="w-4 h-4 mr-2" />
+              {t("header.settings")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
+        {/* Mobile search */}
         <Button size="icon" variant="ghost" className="md:hidden" onClick={() => navigate("/explore")}>
           <Search className="w-4 h-4" />
         </Button>
