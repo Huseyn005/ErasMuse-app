@@ -155,7 +155,7 @@ const Explore = () => {
           <div className="mt-5">
             <AnswerCard answer={plan} onAction={(a) => {
               if (a.toLowerCase().includes("buddy")) navigate("/buddies");
-              else if (a.toLowerCase().includes("map")) navigate("/map");
+              else if (a.toLowerCase().includes("map")) navigate("/explore");
               else if (a.toLowerCase().includes("plan")) navigate("/plan");
             }} />
           </div>
