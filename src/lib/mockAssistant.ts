@@ -144,11 +144,10 @@ const fallback: AssistantAnswer = {
   nextActions: ["Open Explore", "Open Documents", "Open Move"],
 };
 
-export function getMockAnswer(message: string, _language = "en"): AssistantAnswer {
+export function getMockAnswer(message: string): AssistantAnswer {
   const m = message.toLowerCase();
   const best = responses.find(r => r.keys.every(k => m.includes(k))) ||
                responses.find(r => r.keys.some(k => m.includes(k)));
-  // Note: In demo mode, responses are in English. Live mode will use the language parameter.
   return best ? best.answer : fallback;
 }
 
