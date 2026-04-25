@@ -78,7 +78,7 @@ function EmergencySheetContent() {
 }
 
 // Sidebar version - embedded in sidebar footer on desktop
-export function SidebarEmergencyButton() {
+export function SidebarEmergencyButton({ collapsed = false }: { collapsed?: boolean }) {
   const { t } = useTranslation();
 
   return (
@@ -86,15 +86,18 @@ export function SidebarEmergencyButton() {
       <SheetTrigger asChild>
         <button
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium",
+            "flex items-center rounded-xl font-medium",
             "bg-red-600 hover:bg-red-700 text-white",
             "transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
+            collapsed 
+              ? "justify-center w-10 h-10 mx-auto"
+              : "w-full gap-3 px-3 py-2.5 text-sm"
           )}
           aria-label={t("emergency.button")}
         >
-          <ShieldAlert className="w-4 h-4" />
-          {t("emergency.button")}
+          <ShieldAlert className={collapsed ? "w-5 h-5" : "w-4 h-4"} />
+          {!collapsed && t("emergency.button")}
         </button>
       </SheetTrigger>
       <EmergencySheetContent />

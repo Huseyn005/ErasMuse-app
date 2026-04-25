@@ -1,4 +1,8 @@
 {
+  "sidebar": {
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
+  },
   "nav": {
     "home": "Home",
     "explore": "Explore",
@@ -16,6 +20,15 @@
     "theme": "Theme",
     "settings": "Settings",
     "logout": "Logout"
+  },
+  "chat": {
+    "assistant": "ERASMuse Assistant",
+    "live": "Live",
+    "demo": "Demo",
+    "emptyTitle": "How can I help you today?",
+    "emptySubtitle": "Ask about transport, documents, events, or life in Ruse.",
+    "quickQuestions": "Quick questions",
+    "thinking": "ERASMuse is thinking..."
   },
   "emergency": {
     "button": "Emergency",

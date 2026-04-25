@@ -140,16 +140,18 @@ const Index = () => {
 
                 {/* Quick Action Pills */}
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {["Steps", "Phrase", "Discounts"].map((pill) => (
+                  {[
+                    { key: "steps", icon: "📋" },
+                    { key: "phrase", icon: "бг", isText: true },
+                    { key: "discounts", icon: "💳" }
+                  ].map((pill) => (
                     <button
-                      key={pill}
+                      key={pill.key}
                       onClick={() => setChatOpen(true)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
                     >
-                      {pill === "Steps" && <span>📋</span>}
-                      {pill === "Phrase" && <span className="text-[10px]">бг</span>}
-                      {pill === "Discounts" && <span>💳</span>}
-                      {pill}
+                      <span className={pill.isText ? "text-[10px]" : ""}>{pill.icon}</span>
+                      {t(`home.${pill.key}`)}
                     </button>
                   ))}
                 </div>

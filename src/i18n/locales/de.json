@@ -1,4 +1,17 @@
 {
+  "sidebar": {
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen"
+  },
+  "chat": {
+    "assistant": "ERASMuse Assistent",
+    "live": "Live",
+    "demo": "Demo",
+    "emptyTitle": "Wie kann ich Ihnen heute helfen?",
+    "emptySubtitle": "Fragen Sie nach Transport, Dokumenten, Veranstaltungen oder dem Leben in Ruse.",
+    "quickQuestions": "Schnelle Fragen",
+    "thinking": "ERASMuse denkt nach..."
+  },
   "nav": {
     "home": "Startseite",
     "explore": "Entdecken",
