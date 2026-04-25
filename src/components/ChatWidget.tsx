@@ -34,12 +34,14 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [loading, setLoading] = useState(false);
-  const [agentId] = useState<string>("default");
+  const [agentId, setAgentId] = useState<string>("");
+  const [apiReady, setApiReady] = useState(false);
+
   const lastSendRef = useRef(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isLive = globalLive && sirmaConfigured;
+  const isLive = globalLive && apiReady && sirmaConfigured;
 
   // Focus input when widget opens
   useEffect(() => {
