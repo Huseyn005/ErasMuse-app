@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
+import { EmergencyButton } from "./EmergencyButton";
 import { OnboardingModal } from "@/components/OnboardingModal";
 
 export function AppShell() {
@@ -15,6 +16,7 @@ export function AppShell() {
         </main>
       </div>
       <BottomNav />
+      <EmergencyButton />
       <OnboardingModal />
     </div>
   );
