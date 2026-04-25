@@ -7,6 +7,22 @@ const AGENT_ID = (import.meta.env.VITE_SIRMA_AGENT_ID as string | undefined) || 
 
 export const sirmaConfigured = Boolean(DOMAIN && KEY && AGENT_ID);
 
+// Helper to get full language name from code
+function getLanguageName(code: string): string {
+  const names: Record<string, string> = {
+    en: "English",
+    bg: "Bulgarian",
+    es: "Spanish",
+    tr: "Turkish",
+    fr: "French",
+    de: "German",
+    az: "Azerbaijani",
+    ka: "Georgian",
+    ru: "Russian",
+  };
+  return names[code] || "English";
+}
+
 export type DocumentAnalysis = {
   simpleExplanation: string;
   keyDetails: { label: string; value: string }[];
@@ -29,18 +45,24 @@ export async function getAgents(): Promise<{ id: string }[]> {
  * Send a message to the Sirma AI agent
  * Uses multipart/form-data as required by the API
  * @param forceDemo - If true, uses demo mode regardless of API availability
+ * @param language - The language code to respond in (e.g., 'en', 'bg', 'es')
  */
 export async function sendMessage(
   agentId: string,
   message: string,
   _conversationId?: string,
-  forceDemo = false
+  forceDemo = false,
+  language = "en"
 ): Promise<AssistantAnswer> {
-  if (forceDemo || !sirmaConfigured || !agentId) return getMockAnswer(message);
+  if (forceDemo || !sirmaConfigured || !agentId) return getMockAnswer(message, language);
   
   try {
     const formData = new FormData();
-    formData.append("message", message);
+    // Add language instruction to ensure AI responds in the requested language
+    const languageInstruction = language !== "en" 
+      ? `\n\nIMPORTANT: Please respond in ${getLanguageName(language)} language.`
+      : "";
+    formData.append("message", message + languageInstruction);
     
     const res = await fetch(`${DOMAIN}/client/api/v1/agents/${agentId}/run`, {
       method: "POST",

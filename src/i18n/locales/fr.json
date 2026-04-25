@@ -3,6 +3,18 @@
     "collapse": "Réduire la barre latérale",
     "expand": "Développer la barre latérale"
   },
+  "weather": {
+    "sunny": "Ensoleillé",
+    "partlyCloudy": "Partiellement nuageux",
+    "rainy": "Pluvieux",
+    "snowy": "Neigeux",
+    "tips": {
+      "danubeWalk": "Bonne soirée pour une promenade au Danube",
+      "exploreDay": "Journée parfaite pour explorer Ruse",
+      "cafeWeather": "Temps confortable pour un café",
+      "bringJacket": "Prenez une veste près de la rivière"
+    }
+  },
   "chat": {
     "assistant": "Assistant ERASMuse",
     "live": "En direct",
