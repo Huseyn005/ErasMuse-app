@@ -165,7 +165,14 @@ const Index = () => {
                     </Button>
                 </div>
                 <div className="rounded-xl overflow-hidden border border-border shadow-soft">
-                    <RuseMap markers={[]} height="h-[240px] lg:h-[280px]" />
+                    <RuseMap
+                        markers={[
+                            { id: 'avtogara', lat: 43.834774, lng: 25.9574489, type: 'gem', label: 'Avtogara Ruse' },
+                            { id: 'kaufland', lat: 43.8321604, lng: 25.969904, type: 'gem', label: 'Kaufland Ruse Drujba' },
+                            { id: 'dormitory', lat: 43.8375, lng: 25.968, type: 'campus', label: 'Dormitory' },
+                        ]}
+                        height="h-[240px] lg:h-[280px]"
+                    />
                 </div>
             </section>
 
