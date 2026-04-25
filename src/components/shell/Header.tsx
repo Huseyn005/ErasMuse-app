@@ -81,7 +81,7 @@ export function Header() {
                         </>
                     ) : (
                         <>
-                            <FlaskConical className="w-3.5 h-3.5" />
+                            <FlaskConical className="w-4 h-4\\" />
                             <span>{t('header.demo')}</span>
                         </>
                     )}
@@ -91,7 +91,7 @@ export function Header() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="hidden sm:inline-flex items-center gap-1.5 px-3">
-                            <Languages className="w-4 h-4" />
+                            <Languages className="w-5 h-5" />
                             <span className="text-xs font-medium">{currentLang.flag}</span>
                         </Button>
                     </DropdownMenuTrigger>
@@ -109,7 +109,7 @@ export function Header() {
 
                 {/* Theme Toggle */}
                 <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={() => setMode(isDark ? 'light' : 'dark')}>
-                    {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                 </Button>
 
                 {/* Profile Dropdown */}
