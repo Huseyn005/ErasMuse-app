@@ -36,18 +36,13 @@ export function OnboardingModal() {
         <DialogTitle className="sr-only">Welcome to ERASMuse</DialogTitle>
         <div className="bg-gradient-hero p-6 text-primary-foreground">
           <Logo size="lg" />
-          <p className="mt-2 text-sm opacity-90">
-            Your AI companion for studying, living, travelling, and discovering Ruse.
-          </p>
         </div>
         <div className="p-6 space-y-5">
           {step === 0 && (
             <>
               <div>
                 <h3 className="text-xl font-display font-bold">Welcome to ERASMuse</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Your AI companion in Ruse. Let's set up your profile in 30 seconds.
-                </p>
+
               </div>
               <div className="flex justify-end">
                 <Button onClick={() => setStep(1)} className="bg-primary text-primary-foreground">
@@ -67,11 +62,10 @@ export function OnboardingModal() {
                   <button
                     key={v}
                     onClick={() => setDraftType(v)}
-                    className={`text-left p-3 rounded-xl border transition-all ${
-                      draftType === v
-                        ? "border-primary bg-secondary shadow-soft"
-                        : "border-border hover:border-primary/40"
-                    }`}
+                    className={`text-left p-3 rounded-xl border transition-all ${draftType === v
+                      ? "border-primary bg-secondary shadow-soft"
+                      : "border-border hover:border-primary/40"
+                      }`}
                   >
                     <Icon className="w-5 h-5 text-primary mb-1.5" />
                     <div className="text-sm font-semibold leading-tight">{v}</div>
@@ -96,11 +90,10 @@ export function OnboardingModal() {
                   <button
                     key={l}
                     onClick={() => setDraftLang(l)}
-                    className={`p-3 rounded-xl border text-sm font-medium transition-all ${
-                      draftLang === l
-                        ? "border-accent bg-secondary"
-                        : "border-border hover:border-accent/40"
-                    }`}
+                    className={`p-3 rounded-xl border text-sm font-medium transition-all ${draftLang === l
+                      ? "border-accent bg-secondary"
+                      : "border-border hover:border-accent/40"
+                      }`}
                   >
                     {l}
                   </button>
