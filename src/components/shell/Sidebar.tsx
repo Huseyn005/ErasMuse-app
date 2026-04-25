@@ -1,14 +1,18 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-  Home, Compass, Bus, FileText, GraduationCap, Users,
+  Home, Compass, Bus, FileText, GraduationCap, Users, PanelLeftClose, PanelLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import { SidebarEmergencyButton } from "./EmergencyButton";
+import { useSidebarContext } from "@/contexts/SidebarContext";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export function Sidebar() {
   const { t } = useTranslation();
+  const { isCollapsed, toggleSidebar } = useSidebarContext();
 
   const items = [
     { to: "/", label: t("nav.home"), icon: Home },
@@ -20,37 +24,95 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-border bg-sidebar h-screen sticky top-0">
-      <div className="px-5 py-5 border-b border-border">
-        <Logo />
-        <p className="text-xs text-muted-foreground mt-1.5 leading-snug">
-          {t("home.subtitle")}
-        </p>
-      </div>
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {items.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === "/"}
-          >
-            {({ isActive }) => (
-              <span className={cn(
-                "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors",
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-soft font-semibold"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium"
-              )}>
-                <Icon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
-                {label}
-              </span>
-            )}
-          </NavLink>
-        ))}
-      </nav>
-      <div className="px-3 py-4 border-t border-border">
-        <SidebarEmergencyButton />
-      </div>
-    </aside>
+    <TooltipProvider delayDuration={0}>
+      <aside 
+        className={cn(
+          "hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 transition-all duration-300 ease-in-out",
+          isCollapsed ? "w-16" : "w-64"
+        )}
+      >
+        {/* Emergency Button at top when collapsed */}
+        {isCollapsed && (
+          <div className="px-2 pt-3 pb-2">
+            <SidebarEmergencyButton collapsed />
+          </div>
+        )}
+
+        {/* Header with Logo and Collapse Button */}
+        <div className={cn(
+          "border-b border-border flex items-center",
+          isCollapsed ? "px-2 py-3 justify-center" : "px-5 py-5 justify-between"
+        )}>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <Logo />
+              <p className="text-xs text-muted-foreground mt-1.5 leading-snug">
+                {t("home.subtitle")}
+              </p>
+            </div>
+          )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={toggleSidebar}
+                className="h-8 w-8 shrink-0"
+                aria-label={isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
+              >
+                {isCollapsed ? <PanelLeft className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
+        {/* Navigation */}
+        <nav className={cn(
+          "flex-1 overflow-y-auto py-4 space-y-0.5",
+          isCollapsed ? "px-2" : "px-3"
+        )}>
+          {items.map(({ to, label, icon: Icon }) => (
+            <Tooltip key={to}>
+              <TooltipTrigger asChild>
+                <NavLink
+                  to={to}
+                  end={to === "/"}
+                >
+                  {({ isActive }) => (
+                    <span className={cn(
+                      "flex items-center rounded-xl transition-colors",
+                      isCollapsed 
+                        ? "justify-center w-10 h-10 mx-auto"
+                        : "gap-3 px-4 py-2.5",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-soft font-semibold"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium"
+                    )}>
+                      <Icon className={cn("shrink-0", isCollapsed ? "w-5 h-5" : "w-4 h-4")} strokeWidth={isActive ? 2.5 : 2} />
+                      {!isCollapsed && <span className="text-[15px]">{label}</span>}
+                    </span>
+                  )}
+                </NavLink>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right" className="font-medium">
+                  {label}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          ))}
+        </nav>
+
+        {/* Emergency Button at bottom when expanded */}
+        {!isCollapsed && (
+          <div className="px-3 py-4 border-t border-border">
+            <SidebarEmergencyButton />
+          </div>
+        )}
+      </aside>
+    </TooltipProvider>
   );
 }
