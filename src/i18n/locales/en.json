@@ -31,13 +31,18 @@
     "warning": "For emergencies in Bulgaria, call 112. This app does not replace medical, legal, or official advice."
   },
   "home": {
+    "badge": "Built for Erasmus students, useful for everyone",
     "tagline": "Built for Erasmus students, useful for everyone",
     "heroTitle": "Your AI life copilot in",
     "heroCity": "Ruse",
     "heroDescription": "A multilingual assistant that helps Erasmus students, foreigners, tourists, and locals discover the city, understand documents, move around, and handle daily life.",
+    "askAssistant": "Ask AI Assistant",
+    "tryDemoFlows": "Try demo flows",
     "askAI": "Ask AI Assistant",
     "tryDemo": "Try demo flows",
     "sampleChat": "Sample chat",
+    "sampleQuery": "Can you help me buy a train ticket to Sofia?",
+    "sampleResponse": "Yes. I'll show you the steps, the Bulgarian phrase to use, and what to check before travel.",
     "sampleQuestion": "Can you help me buy a train ticket to Sofia?",
     "sampleAnswer": "Yes. I'll show you the steps, the Bulgarian phrase to use, and what to check before travel.",
     "steps": "Steps",
@@ -100,6 +105,8 @@
   "explore": {
     "title": "Explore Ruse",
     "subtitle": "Events, hidden gems, student places, and people to go with.",
+    "nearby": "See Ruse on the map",
+    "mapPlaceholder": "Click to explore events, places, and hidden gems",
     "askAI": "Ask AI to find events, places, food, activities...",
     "filters": {
       "all": "All",

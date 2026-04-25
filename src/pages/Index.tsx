@@ -8,17 +8,13 @@ import {
   Bus, 
   GraduationCap, 
   Users,
-  Calendar,
-  AlertTriangle,
+  Map,
   Send
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WeatherWidget } from "@/components/WeatherWidget";
-import { usePlan } from "@/hooks/usePlan";
-import { events } from "@/data/events";
-import { buddies } from "@/data/buddies";
-import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
+import { sendMessage, sirmaConfigured } from "@/lib/sirmaAI";
 import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
 import { AnswerCard } from "@/components/AnswerCard";
 import { useAIMode } from "@/contexts/AIModeContext";
@@ -28,7 +24,6 @@ import { toast } from "sonner";
 const Index = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { items } = usePlan();
   const { isLive } = useAIMode();
   const [profile] = useProfile();
   const [query, setQuery] = useState("");
@@ -37,9 +32,6 @@ const Index = () => {
 
   const quickPrompts = [
     { key: "events", label: t("home.quickPrompts.events") },
-    { key: "planDay", label: t("home.quickPrompts.planDay") },
-    { key: "food", label: t("home.quickPrompts.food") },
-    { key: "documents", label: t("home.quickPrompts.documents") },
     { key: "buddy", label: t("home.quickPrompts.buddy") },
   ];
 
@@ -52,17 +44,10 @@ const Index = () => {
       accent: "teal" as const 
     },
     { 
-      icon: Users, 
-      title: t("home.quickActions.findBuddy"), 
-      desc: t("home.quickActions.findBuddyDesc"), 
-      href: "/buddies", 
-      accent: "coral" as const 
-    },
-    { 
-      icon: Calendar, 
-      title: t("home.quickActions.planWeek"), 
-      desc: t("home.quickActions.planWeekDesc"), 
-      href: "/buddies?tab=my-plan", 
+      icon: Bus, 
+      title: t("home.quickActions.transport"), 
+      desc: t("home.quickActions.transportDesc"), 
+      href: "/move", 
       accent: "amber" as const 
     },
     { 
@@ -73,17 +58,10 @@ const Index = () => {
       accent: "navy" as const 
     },
     { 
-      icon: Bus, 
-      title: t("home.quickActions.transport"), 
-      desc: t("home.quickActions.transportDesc"), 
-      href: "/move", 
-      accent: "teal" as const 
-    },
-    { 
-      icon: AlertTriangle, 
-      title: t("home.quickActions.emergency"), 
-      desc: t("home.quickActions.emergencyDesc"), 
-      href: "/life-admin", 
+      icon: Users, 
+      title: t("home.quickActions.findBuddy"), 
+      desc: t("home.quickActions.findBuddyDesc"), 
+      href: "/buddies", 
       accent: "coral" as const 
     },
   ];
@@ -115,100 +93,164 @@ const Index = () => {
     else toast.success("Saved");
   };
 
-  // Get upcoming plan items
-  const upcomingItems = items.slice(0, 3);
-  
-  // Get recommended events
-  const recommendedEvents = events.slice(0, 3);
-  
-  // Get suggested buddies
-  const suggestedBuddies = buddies.filter(b => b.type === "event").slice(0, 3);
-
   return (
-    <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-8 max-w-6xl mx-auto">
-      {/* Welcome Section */}
-      <section className="space-y-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
-              {t("home.heroTitle")} <span className="text-accent">{t("home.heroCity")}</span>
-            </h1>
-            <p className="text-muted-foreground mt-1 text-sm sm:text-base max-w-xl">
-              {t("home.subtitle")}
+    <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-6 max-w-6xl mx-auto">
+      {/* Welcome Section - Outside the card */}
+      <section className="flex items-start justify-between">
+        <div>
+          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground dark:text-slate-50">
+            {t("home.heroTitle")} <span className="text-accent">{t("home.heroCity")}</span>
+          </h1>
+          <p className="text-muted-foreground dark:text-slate-300 mt-2 text-sm sm:text-base max-w-xl">
+            {t("home.subtitle")}
+          </p>
+        </div>
+        <WeatherWidget />
+      </section>
+
+      {/* Compact Hero Card - Teal/Green Gradient with AI on Right */}
+      <section className="rounded-2xl bg-gradient-hero overflow-hidden">
+        <div className="flex flex-col lg:flex-row min-h-[280px]">
+          {/* Left Side - Branding & CTAs */}
+          <div className="flex-1 p-6 lg:p-8 flex flex-col justify-center">
+            <Badge className="w-fit mb-4 bg-white/15 text-white border-white/20 hover:bg-white/20">
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+              {t("home.badge")}
+            </Badge>
+            
+            <div className="mb-4">
+              <span className="font-display text-2xl lg:text-3xl font-extrabold tracking-tight">
+                <span className="text-white">ERAS</span>
+                <span className="text-amber-400">M</span>
+                <span className="text-white">use</span>
+              </span>
+            </div>
+
+            <p className="text-white/80 text-sm lg:text-base max-w-md mb-6">
+              {t("home.heroDescription")}
             </p>
+
+            <div className="flex flex-wrap gap-3">
+              <Button 
+                onClick={() => navigate("/ask")}
+                className="bg-white text-primary hover:bg-white/90 gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                {t("home.askAssistant")}
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => navigate("/explore")}
+                className="border-white/30 text-white hover:bg-white/10 gap-2"
+              >
+                {t("home.tryDemoFlows")}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-          <WeatherWidget />
-        </div>
-      </section>
 
-      {/* Ask ERASMuse Card - Prominent at Top */}
-      <section className="surface p-6 lg:p-8 bg-gradient-card">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
-            <Sparkles className="w-6 h-6" />
+          {/* Right Side - Compact AI Chat Interface */}
+          <div className="lg:w-[380px] p-4 lg:p-6 lg:pl-0 flex items-center">
+            <div className="w-full bg-card rounded-xl border border-border/50 shadow-lg overflow-hidden">
+              {/* Chat Header */}
+              <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${isLive && sirmaConfigured ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+                  <span className="text-sm font-medium text-foreground">Live AI</span>
+                  <span className="text-xs text-muted-foreground">- Demo</span>
+                </div>
+                <Badge variant="secondary" className="text-[10px]">Sample chat</Badge>
+              </div>
+
+              {/* Chat Content */}
+              <div className="p-4 space-y-3">
+                {/* Sample User Message */}
+                <div className="flex justify-end">
+                  <div className="bg-accent/10 text-accent-foreground dark:text-slate-200 text-sm px-3 py-2 rounded-xl max-w-[90%]">
+                    {t("home.sampleQuery")}
+                  </div>
+                </div>
+
+                {/* Sample AI Response */}
+                <div className="bg-primary text-primary-foreground text-sm px-4 py-3 rounded-xl">
+                  {t("home.sampleResponse")}
+                </div>
+
+                {/* Quick Action Pills */}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {["Steps", "Phrase", "Discounts"].map((pill) => (
+                    <button
+                      key={pill}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                    >
+                      {pill === "Steps" && <span>📋</span>}
+                      {pill === "Phrase" && <span className="text-[10px]">бг</span>}
+                      {pill === "Discounts" && <span>💳</span>}
+                      {pill}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Prompts */}
+              <div className="px-4 pb-3 flex flex-wrap gap-2">
+                {quickPrompts.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => handleAsk(label)}
+                    disabled={loading}
+                    className="text-xs px-3 py-1.5 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-50"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Input */}
+              <div className="px-3 pb-3">
+                <form 
+                  onSubmit={(e) => { e.preventDefault(); handleAsk(); }}
+                  className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
+                >
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={t("ask.placeholder")}
+                    disabled={loading}
+                    className="flex-1 bg-transparent px-2 py-1.5 text-sm outline-none"
+                  />
+                  <Button type="submit" disabled={!query.trim() || loading} size="sm" className="h-8 w-8 p-0">
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </form>
+              </div>
+            </div>
           </div>
-          <div>
-            <h2 className="font-display text-xl font-bold">{t("home.askERASMuse")}</h2>
-            <p className="text-sm text-muted-foreground">{t("home.askPlaceholder")}</p>
-          </div>
-          <Badge className="ml-auto" variant="secondary">
-            <span className={`w-2 h-2 rounded-full mr-1.5 ${isLive && sirmaConfigured ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
-            {isLive && sirmaConfigured ? "Live AI" : "Demo"}
-          </Badge>
         </div>
 
-        {/* Quick Prompt Chips */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {quickPrompts.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => handleAsk(label)}
-              disabled={loading}
-              className="chip hover:chip-active hover:bg-primary hover:text-primary-foreground hover:border-primary disabled:opacity-50 transition-all"
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Input */}
-        <form 
-          onSubmit={(e) => { e.preventDefault(); handleAsk(); }}
-          className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
-        >
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("ask.placeholder")}
-            disabled={loading}
-            className="flex-1 bg-transparent px-3 py-2 text-sm outline-none"
-          />
-          <Button type="submit" disabled={!query.trim() || loading} size="sm" className="gap-1.5">
-            <Send className="w-4 h-4" /> {t("ask.send")}
-          </Button>
-        </form>
-
-        {/* Loading State */}
-        {loading && (
-          <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" style={{ animationDelay: "0.2s" }} />
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" style={{ animationDelay: "0.4s" }} />
-            <span className="ml-2">{t("ask.thinking")}</span>
+        {/* Loading & Answer */}
+        {(loading || answer) && (
+          <div className="px-6 pb-6">
+            {loading && (
+              <div className="flex items-center gap-2 text-sm text-white/70">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" />
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" style={{ animationDelay: "0.2s" }} />
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" style={{ animationDelay: "0.4s" }} />
+                <span className="ml-2">{t("ask.thinking")}</span>
+              </div>
+            )}
+            {answer && !loading && (
+              <div className="bg-card rounded-xl p-4">
+                <AnswerCard answer={answer} onAction={onAction} />
+              </div>
+            )}
           </div>
         )}
-
-        {/* Answer */}
-        {answer && !loading && (
-          <div className="mt-4">
-            <AnswerCard answer={answer} onAction={onAction} />
-          </div>
-        )}
       </section>
 
-      {/* Quick Action Cards Grid */}
+      {/* Quick Action Cards Grid - 4 columns */}
       <section>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((action) => (
             <QuickActionCard
               key={action.href}
@@ -222,84 +264,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Below-the-fold Sections */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Upcoming Plan Items */}
-        <section className="surface p-5 bg-gradient-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display font-semibold">{t("home.upcoming")}</h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/buddies?tab=my-plan")} className="text-xs">
-              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
+      {/* Map Section */}
+      <section className="surface p-5 bg-gradient-card">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display font-semibold text-foreground dark:text-slate-50">{t("explore.nearby")}</h3>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/explore")} className="text-xs">
+            {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
+          </Button>
+        </div>
+        <div className="aspect-[2/1] lg:aspect-[3/1] rounded-xl bg-muted flex items-center justify-center">
+          <div className="text-center text-muted-foreground dark:text-slate-300">
+            <Map className="w-12 h-12 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">{t("explore.mapPlaceholder")}</p>
           </div>
-          {upcomingItems.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("plan.emptyDesc")}</p>
-          ) : (
-            <div className="space-y-2">
-              {upcomingItems.map((item) => (
-                <div key={item.id} className="p-3 rounded-xl bg-background border border-border">
-                  <div className="font-medium text-sm truncate">{item.title}</div>
-                  {item.meta && <div className="text-xs text-muted-foreground">{item.meta}</div>}
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Recommended Events */}
-        <section className="surface p-5 bg-gradient-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display font-semibold">{t("home.recommended")}</h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/explore")} className="text-xs">
-              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
-          <div className="space-y-2">
-            {recommendedEvents.map((event) => (
-              <div 
-                key={event.id} 
-                className="p-3 rounded-xl bg-background border border-border cursor-pointer hover:border-primary/40 transition-colors"
-                onClick={() => navigate("/explore")}
-              >
-                <div className="font-medium text-sm truncate">{event.title}</div>
-                <div className="text-xs text-muted-foreground">{event.date} - {event.locationName}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Suggested Buddies */}
-        <section className="surface p-5 bg-gradient-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display font-semibold">{t("home.suggestedBuddies")}</h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/buddies")} className="text-xs">
-              {t("common.viewAll")} <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
-          <div className="space-y-2">
-            {suggestedBuddies.map((buddy) => (
-              <div 
-                key={buddy.id} 
-                className="p-3 rounded-xl bg-background border border-border flex items-center gap-3 cursor-pointer hover:border-primary/40 transition-colors"
-                onClick={() => navigate("/buddies")}
-              >
-                <div className="w-8 h-8 rounded-full bg-coral/15 text-coral font-bold flex items-center justify-center text-sm">
-                  {buddy.firstName.charAt(0)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium text-sm truncate">{buddy.firstName}</div>
-                  <div className="text-xs text-muted-foreground">{buddy.userType}</div>
-                </div>
-                <Badge variant="secondary" className="text-[10px]">{buddy.matchScore}%</Badge>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* How it works */}
       <section>
-        <h2 className="font-display text-xl font-bold mb-4">{t("home.howItWorks")}</h2>
+        <h2 className="font-display text-xl font-bold mb-4 text-foreground dark:text-slate-50">{t("home.howItWorks")}</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
             { n: 1, t: t("home.step1Title"), d: t("home.step1Desc") },
@@ -308,8 +291,8 @@ const Index = () => {
           ].map(s => (
             <div key={s.n} className="surface p-5 bg-gradient-card">
               <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground font-bold flex items-center justify-center mb-3">{s.n}</div>
-              <div className="font-semibold">{s.t}</div>
-              <div className="text-sm text-muted-foreground mt-1">{s.d}</div>
+              <div className="font-semibold text-foreground dark:text-slate-50">{s.t}</div>
+              <div className="text-sm text-muted-foreground dark:text-slate-300 mt-1">{s.d}</div>
             </div>
           ))}
         </div>
@@ -334,7 +317,7 @@ function QuickActionCard({
   const accentMap = {
     amber: "bg-warning/15 text-warning",
     teal: "bg-accent/15 text-accent",
-    navy: "bg-primary/10 text-primary",
+    navy: "bg-primary/10 text-primary dark:bg-primary/20",
     coral: "bg-coral/15 text-coral",
   } as const;
   
@@ -346,8 +329,8 @@ function QuickActionCard({
       <div className={`w-11 h-11 rounded-2xl flex items-center justify-center mb-3 ${accentMap[accent]}`}>
         <Icon className="w-5 h-5" />
       </div>
-      <div className="font-semibold">{title}</div>
-      <div className="text-sm text-muted-foreground mt-1">{desc}</div>
+      <div className="font-semibold text-foreground dark:text-slate-50">{title}</div>
+      <div className="text-sm text-muted-foreground dark:text-slate-300 mt-1 line-clamp-2">{desc}</div>
       <ArrowRight className="w-4 h-4 mt-3 text-muted-foreground group-hover:translate-x-1 transition-transform" />
     </button>
   );
