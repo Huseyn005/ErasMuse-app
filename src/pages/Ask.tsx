@@ -72,7 +72,7 @@ const Ask = () => {
   const onAction = (a: string) => {
     if (a.toLowerCase().includes("plan")) navigate("/plan");
     else if (a.toLowerCase().includes("buddy")) navigate("/buddies");
-    else if (a.toLowerCase().includes("map") || a.toLowerCase().includes("route")) navigate("/map");
+    else if (a.toLowerCase().includes("map") || a.toLowerCase().includes("route")) navigate("/explore");
     else if (a.toLowerCase().includes("explore")) navigate("/explore");
     else if (a.toLowerCase().includes("document")) navigate("/documents");
     else toast.success("Saved ✓");
