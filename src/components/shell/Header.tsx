@@ -60,19 +60,22 @@ export function Header() {
 
         {/* Logo - visible on mobile and desktop */}
         <div className="shrink-0">
-          <Logo size="sm" />
+          <Logo size="md" />
         </div>
 
-        {/* Search - expands when sidebar is collapsed */}
+        {/* Spacer to center search */}
+        <div className="flex-1" />
+
+        {/* Search - centered */}
         <div className={cn(
           "hidden md:block transition-all duration-300",
-          isCollapsed ? "flex-1 max-w-2xl" : "flex-1 max-w-xl"
+          isCollapsed ? "w-full max-w-2xl" : "w-full max-w-xl"
         )}>
           <GlobalSearch />
         </div>
 
-        {/* Spacer to push icons to right - only needed when search doesn't take full space */}
-        <div className="flex-1 md:hidden" />
+        {/* Spacer to push icons to right */}
+        <div className="flex-1" />
 
         {/* AI Mode Toggle */}
         <Button

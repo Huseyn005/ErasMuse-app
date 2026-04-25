@@ -34,13 +34,13 @@ export function WeatherWidget() {
   };
 
   return (
-    <div className="surface px-4 py-3 inline-flex items-center gap-3 bg-gradient-card">
-      <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary">
-        <Icon className="w-5 h-5" />
+    <div className="surface px-6 py-4 inline-flex items-center gap-4 bg-gradient-card min-w-[280px]">
+      <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-primary">
+        <Icon className="w-6 h-6" />
       </div>
-      <div>
-        <div className="text-sm font-semibold">{temp}°C · {t(`weather.${getWeatherKey()}`)}</div>
-        <div className="text-xs text-muted-foreground">{t(`weather.tips.${getTipKey()}`)}</div>
+      <div className="flex-1">
+        <div className="text-base font-semibold">{temp}°C · {t(`weather.${getWeatherKey()}`)}</div>
+        <div className="text-sm text-muted-foreground">{t(`weather.tips.${getTipKey()}`)}</div>
       </div>
     </div>
   );

@@ -94,7 +94,8 @@ const Index = () => {
             <div className="flex flex-wrap gap-3">
               <Button
                 onClick={() => setChatOpen(true)}
-                className="bg-white text-primary hover:bg-white/90 gap-2"
+                className="bg-white text-primary hover:bg-white/90 gap-2 px-8"
+                size="lg"
               >
                 <Sparkles className="w-4 h-4" />
                 {t("home.askAssistant")}
