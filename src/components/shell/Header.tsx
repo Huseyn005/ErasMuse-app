@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Search, Sun, Moon, Languages, Menu, Sparkles, FlaskConical, UserCircle2, Settings } from "lucide-react";
+import { Search, Sun, Moon, Languages, Menu, Sparkles, FlaskConical, UserCircle2, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { useAIMode } from "@/contexts/AIModeContext";
-import { useSidebarContext } from "@/contexts/SidebarContext";
 import { Logo } from "./Logo";
 import { GlobalSearch } from "./GlobalSearch";
 import {
@@ -14,7 +13,6 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "./Sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 
 const LANGS = [
   { code: "en", name: "English", flag: "EN" },
@@ -33,7 +31,6 @@ export function Header() {
   const { t, i18n } = useTranslation();
   const { mode, setMode } = useTheme();
   const { mode: aiMode, setMode: setAIMode, isLive } = useAIMode();
-  const { isCollapsed } = useSidebarContext();
   const isDark = mode === "dark";
 
   const currentLang = LANGS.find(l => l.code === i18n.language) || LANGS[0];
@@ -58,21 +55,16 @@ export function Header() {
           </SheetContent>
         </Sheet>
 
-        {/* Logo - visible on mobile and desktop */}
-        <div className="shrink-0">
-          <Logo size="sm" />
-        </div>
+        {/* Mobile logo */}
+        <div className="lg:hidden"><Logo size="sm" /></div>
 
-        {/* Search - expands when sidebar is collapsed */}
-        <div className={cn(
-          "hidden md:block transition-all duration-300",
-          isCollapsed ? "flex-1 max-w-2xl" : "flex-1 max-w-xl"
-        )}>
+        {/* Search */}
+        <div className="flex-1 max-w-xl hidden md:block">
           <GlobalSearch />
         </div>
 
-        {/* Spacer to push icons to right - only needed when search doesn't take full space */}
-        <div className="flex-1 md:hidden" />
+        {/* Spacer to push icons to right */}
+        <div className="flex-1 md:flex-none" />
 
         {/* AI Mode Toggle */}
         <Button

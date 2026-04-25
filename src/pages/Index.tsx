@@ -98,6 +98,14 @@ const Index = () => {
                 <Sparkles className="w-4 h-4" />
                 {t("home.askAssistant")}
               </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/explore")}
+                className="border-white/30 text-white hover:bg-white/10 gap-2"
+              >
+                {t("home.tryDemoFlows")}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 

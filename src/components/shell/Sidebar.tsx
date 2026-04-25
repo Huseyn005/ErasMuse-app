@@ -4,6 +4,8 @@ import {
   Home, Compass, Bus, FileText, GraduationCap, Users, PanelLeftClose, PanelLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "./Logo";
+import { SidebarEmergencyButton } from "./EmergencyButton";
 import { useSidebarContext } from "@/contexts/SidebarContext";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -30,11 +32,18 @@ export function Sidebar() {
         )}
       >
 
-        {/* Header with Collapse Button and Label */}
+
+        {/* Header with Logo and Collapse Button */}
         <div className={cn(
-          "border-b border-border flex items-center h-14",
-          isCollapsed ? "px-2 justify-center" : "px-4 gap-2"
+          "border-b border-border flex items-center",
+          isCollapsed ? "px-2 py-3 justify-center" : "px-5 py-5 justify-between"
         )}>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <Logo />
+
+            </div>
+          )}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -51,11 +60,6 @@ export function Sidebar() {
               {isCollapsed ? t("sidebar.expand") : t("sidebar.collapse")}
             </TooltipContent>
           </Tooltip>
-          {!isCollapsed && (
-            <span className="text-sm font-medium text-muted-foreground">
-              {t("sidebar.collapse")}
-            </span>
-          )}
         </div>
 
         {/* Navigation */}
@@ -94,6 +98,11 @@ export function Sidebar() {
             </Tooltip>
           ))}
         </nav>
+
+        {/* Emergency Button - always full-width at bottom */}
+        <div className="px-3 py-4 border-t border-border">
+          <SidebarEmergencyButton />
+        </div>
       </aside>
     </TooltipProvider>
   );

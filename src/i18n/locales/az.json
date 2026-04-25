@@ -3,18 +3,6 @@
     "collapse": "Yan paneli yığ",
     "expand": "Yan paneli genişlət"
   },
-  "weather": {
-    "sunny": "Günəşli",
-    "partlyCloudy": "Qismən buludlu",
-    "rainy": "Yağışlı",
-    "snowy": "Qarlı",
-    "tips": {
-      "danubeWalk": "Dunay kənarında gəzinti üçün yaxşı axşam",
-      "exploreDay": "Ruse-ni kəşf etmək üçün mükəmməl gün",
-      "cafeWeather": "Rahat kafe havası",
-      "bringJacket": "Çay kənarında gödəkcə götürün"
-    }
-  },
   "chat": {
     "assistant": "ERASMuse Köməkçi",
     "live": "Canlı",
