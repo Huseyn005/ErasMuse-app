@@ -112,8 +112,8 @@ const Index = () => {
           <p className="text-muted-foreground mt-2">
             Find nearby events, hidden gems, campus places, and people to go with — all in one place.
           </p>
-          <Button onClick={() => navigate("/map")} className="mt-5 gap-2">
-            <MapIcon className="w-4 h-4" /> Open Ruse Map
+          <Button onClick={() => navigate("/explore")} className="mt-5 gap-2">
+            <MapIcon className="w-4 h-4" /> Open the map in Explore
           </Button>
         </div>
         <RuseMap markers={allMarkers} height="h-[360px]" />
