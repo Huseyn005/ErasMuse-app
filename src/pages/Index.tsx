@@ -9,31 +9,20 @@ import {
   GraduationCap,
   Users,
   Map,
-  Send
+  MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WeatherWidget } from "@/components/WeatherWidget";
-import { sendMessage, sirmaConfigured } from "@/lib/sirmaAI";
-import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
-import { AnswerCard } from "@/components/AnswerCard";
+import { sirmaConfigured } from "@/lib/sirmaAI";
 import { useAIMode } from "@/contexts/AIModeContext";
-import { useProfile } from "@/hooks/useProfile";
-import { toast } from "sonner";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const Index = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLive } = useAIMode();
-  const [profile] = useProfile();
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [answer, setAnswer] = useState<AssistantAnswer | null>(null);
-
-  const quickPrompts = [
-    { key: "events", label: t("home.quickPrompts.events") },
-    { key: "buddy", label: t("home.quickPrompts.buddy") },
-  ];
+  const [chatOpen, setChatOpen] = useState(false);
 
   const quickActions = [
     {
@@ -65,33 +54,6 @@ const Index = () => {
       accent: "coral" as const
     },
   ];
-
-  const handleAsk = async (text?: string) => {
-    const value = (text ?? query).trim();
-    if (!value || loading) return;
-
-    setQuery("");
-    setLoading(true);
-
-    try {
-      const ctx = `User type: ${profile.userType ?? "Other"}. Language: ${profile.language}. Section: Homepage.`;
-      const result = await sendMessage("default", `${ctx}\n\nUser: ${value}`, undefined, !isLive || !sirmaConfigured);
-      setAnswer(result);
-    } catch {
-      setAnswer(getMockAnswer(value));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onAction = (a: string) => {
-    if (a.toLowerCase().includes("plan")) navigate("/buddies?tab=my-plan");
-    else if (a.toLowerCase().includes("buddy")) navigate("/buddies");
-    else if (a.toLowerCase().includes("map") || a.toLowerCase().includes("route")) navigate("/explore");
-    else if (a.toLowerCase().includes("explore")) navigate("/explore");
-    else if (a.toLowerCase().includes("document")) navigate("/documents");
-    else toast.success("Saved");
-  };
 
   return (
     <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-6 max-w-6xl mx-auto">
@@ -132,7 +94,7 @@ const Index = () => {
 
             <div className="flex flex-wrap gap-3">
               <Button
-                onClick={() => navigate("/ask")}
+                onClick={() => setChatOpen(true)}
                 className="bg-white text-primary hover:bg-white/90 gap-2"
               >
                 <Sparkles className="w-4 h-4" />
@@ -149,8 +111,8 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Right Side - Compact AI Chat Interface */}
-          <div className="lg:w-[480px] p-4 lg:p-6 lg:pl-0 flex items-center">
+          {/* Right Side - Compact AI Chat Preview */}
+          <div className="lg:w-[420px] p-4 lg:p-6 lg:pl-0 flex items-center">
             <div className="w-full bg-card rounded-xl border border-border/50 shadow-lg overflow-hidden">
               {/* Chat Header */}
               <div className="px-4 py-3 border-b border-border flex items-center justify-between">
@@ -162,38 +124,27 @@ const Index = () => {
                 <Badge variant="secondary" className="text-[10px]">Sample chat</Badge>
               </div>
 
-              {/* Chat Content */}
+              {/* Sample Chat Content */}
               <div className="p-4 space-y-3">
                 {/* Sample User Message */}
                 <div className="flex justify-end">
-                  <div className="bg-accent/10 text-accent-foreground dark:text-slate-200 text-sm px-3 py-2 rounded-xl max-w-[90%]">
+                  <div className="bg-primary text-primary-foreground text-sm px-3 py-2 rounded-xl max-w-[90%]">
                     {t("home.sampleQuery")}
                   </div>
                 </div>
 
                 {/* Sample AI Response */}
-                {/*
-                <div className="bg-primary text-primary-foreground text-sm px-4 py-3 rounded-xl">
+                <div className="bg-muted text-foreground text-sm px-4 py-3 rounded-xl">
                   {t("home.sampleResponse")}
                 </div>
-                */}
 
                 {/* Quick Action Pills */}
                 <div className="flex flex-wrap gap-2 pt-1">
                   {["Steps", "Phrase", "Discounts"].map((pill) => (
                     <button
                       key={pill}
-                      // Add the onClick handler here
-                      onClick={() => {
-                        const promptMap = {
-                          Steps: "Give me the step-by-step instructions for this.",
-                          Phrase: "What is the Bulgarian phrase for this?",
-                          Discounts: "Are there any Erasmus discounts available for this?"
-                        };
-                        handleAsk(promptMap[pill as keyof typeof promptMap]);
-                      }}
-                      disabled={loading} // Prevent multiple clicks while loading
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border  text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors disabled:opacity-50"
+                      onClick={() => setChatOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
                     >
                       {pill === "Steps" && <span>📋</span>}
                       {pill === "Phrase" && <span className="text-[10px]">бг</span>}
@@ -204,62 +155,24 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Quick Prompts */}
-              {/*
-              <div className="px-4 pb-3 flex flex-wrap gap-2">
-                {quickPrompts.map(({ key, label }) => (
-                  <button
-                    key={key}
-                    onClick={() => handleAsk(label)}
-                    disabled={loading}
-                    className="text-xs px-3 py-1.5 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-50"
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div> */}
-
-              {/* Input */}
+              {/* Input Trigger - clicking opens the ChatWidget */}
               <div className="px-3 pb-3">
-                <form
-                  onSubmit={(e) => { e.preventDefault(); handleAsk(); }}
-                  className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background"
+                <button
+                  onClick={() => setChatOpen(true)}
+                  className="w-full flex items-center gap-2 p-3 rounded-xl border border-border bg-background hover:bg-muted transition-colors text-left"
                 >
-                  <input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("ask.placeholder")}
-                    disabled={loading}
-                    className="flex-1 bg-transparent px-2 py-1.5 text-sm outline-none"
-                  />
-                  <Button type="submit" disabled={!query.trim() || loading} size="sm" className="h-8 w-8 p-0">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </form>
+                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                  <span className="flex-1 text-sm text-muted-foreground">{t("ask.placeholder")}</span>
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Loading & Answer */}
-        {(loading || answer) && (
-          <div className="px-6 pb-6">
-            {loading && (
-              <div className="flex items-center gap-2 text-sm text-white/70">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" />
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" style={{ animationDelay: "0.2s" }} />
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse-dot" style={{ animationDelay: "0.4s" }} />
-                <span className="ml-2">{t("ask.thinking")}</span>
-              </div>
-            )}
-            {answer && !loading && (
-              <div className="bg-card rounded-xl p-4">
-                <AnswerCard answer={answer} onAction={onAction} />
-              </div>
-            )}
-          </div>
-        )}
       </section>
+
+      {/* Chat Widget - Floating on desktop, full-screen on mobile */}
+      <ChatWidget isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
       {/* Quick Action Cards Grid - 4 columns */}
       <section>
