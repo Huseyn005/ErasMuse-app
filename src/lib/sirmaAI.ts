@@ -133,9 +133,15 @@ export async function analyzeDocument(
   let prompt: string;
   
   if (content instanceof File) {
-    // Attach file to form data
-    formData.append("file", content, content.name);
-    prompt = `Please analyze this document "${content.name}" and provide:
+    // For non-text files, we need to extract text content first
+    // or explain to the user that we need text content
+    const isTextFile = content.type.startsWith("text/") || 
+                       /\.(txt|md|csv)$/i.test(content.name);
+    
+    if (isTextFile) {
+      // Read text content from the file
+      const textContent = await content.text();
+      prompt = `Please analyze this document text and provide:
 1. A simple explanation of what this document is about (in plain English that a student can understand)
 2. Key details extracted from the document (dates, amounts, names, requirements, etc.)
 3. Any risk flags or concerning clauses that need attention
@@ -143,6 +149,11 @@ export async function analyzeDocument(
 5. A brief summary in Bulgarian (Резюме на български)
 6. A suggested response message in English
 7. A suggested response message in Bulgarian
+
+Document (${content.name}):
+"""
+${textContent}
+"""
 
 Format your response as JSON with these fields:
 {
@@ -156,6 +167,13 @@ Format your response as JSON with these fields:
   "enMessage": "...",
   "bgMessage": "..."
 }`;
+    } else {
+      // For PDF/images, the Sirma AI API doesn't support direct file parsing
+      // Show a helpful error message to the user
+      throw new Error(
+        "PDF and image files cannot be processed directly. Please copy and paste the text content from your document, or use a text file (.txt, .md) instead."
+      );
+    }
   } else {
     // Text content
     prompt = `Please analyze this document text and provide:

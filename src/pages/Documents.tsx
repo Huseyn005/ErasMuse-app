@@ -137,9 +137,9 @@ const Documents = () => {
         }`}
       >
         <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
-        <p className="mt-2 font-semibold">Drop your document here or choose a file</p>
+        <p className="mt-2 font-semibold">Drop your text document here or choose a file</p>
         <p className="text-xs text-muted-foreground mt-1">
-          Accepted: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB
+          Best results with: TXT, MD files · For PDF/DOCX, please paste the text below
         </p>
         <input
           ref={inputRef}
@@ -167,16 +167,16 @@ const Documents = () => {
           )}
         </div>
 
-        {/* Paste fallback */}
+        {/* Paste text - primary method for PDF/complex documents */}
         <div className="mt-5 text-left">
           <label className="block text-xs font-semibold text-muted-foreground mb-1">
-            Or paste document text
+            Paste document text (recommended for PDF/DOCX)
           </label>
           <textarea
             value={pasted}
             onChange={(e) => { setPasted(e.target.value); if (e.target.value) setFile(null); }}
-            placeholder="Paste a contract clause, a letter, or any document text in any language…"
-            rows={4}
+            placeholder="Copy and paste text from your contract, letter, or any document in any language. For PDF files, open them and copy the text content here…"
+            rows={6}
             className="w-full rounded-xl border border-border bg-card text-sm p-3 outline-none focus:ring-2 focus:ring-primary/40"
           />
         </div>
