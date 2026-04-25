@@ -1,100 +1,183 @@
-import { useMemo, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useMemo } from 'react';
+import { cn } from '@/lib/utils';
 
 export type MapMarker = {
-  id: string;
-  lat: number;
-  lng: number;
-  type: "event" | "gem" | "campus" | "buddy";
-  label?: string;
+    id: string;
+    lat: number;
+    lng: number;
+    type: 'event' | 'gem' | 'campus' | 'buddy';
+    label?: string;
 };
 
-const TYPE_COLOR: Record<MapMarker["type"], string> = {
-  event: "bg-warning",
-  gem: "bg-accent",
-  campus: "bg-primary",
-  buddy: "bg-coral",
+const TYPE_COLOR: Record<MapMarker['type'], string> = {
+    event: '#FFA500', // warning orange
+    gem: '#EC4899', // accent pink
+    campus: '#3B82F6', // primary blue
+    buddy: '#FF6B6B', // coral red
 };
 
-// Ruse approximate bounds for our mock data.
-const BOUNDS = { minLat: 43.825, maxLat: 43.858, minLng: 25.945, maxLng: 25.975 };
+export function RuseMap({ markers, selectedId, onSelect, height = 'h-[420px]' }: { markers: MapMarker[]; selectedId?: string | null; onSelect?: (m: MapMarker) => void; height?: string }) {
+    const mapRef = useRef<HTMLDivElement>(null);
+    const googleMapRef = useRef<google.maps.Map | null>(null);
+    const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
+    const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
 
-function project(lat: number, lng: number) {
-  const x = ((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * 100;
-  const y = (1 - (lat - BOUNDS.minLat) / (BOUNDS.maxLat - BOUNDS.minLat)) * 100;
-  return { x: Math.max(2, Math.min(98, x)), y: Math.max(4, Math.min(96, y)) };
-}
+    // Ruse, Bulgaria coordinates
+    const RUSE_CENTER = { lat: 43.8356, lng: 25.9657 };
 
-export function RuseMap({
-  markers, selectedId, onSelect, height = "h-[420px]",
-}: {
-  markers: MapMarker[];
-  selectedId?: string | null;
-  onSelect?: (m: MapMarker) => void;
-  height?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const items = useMemo(() => markers.map(m => ({ ...m, p: project(m.lat, m.lng) })), [markers]);
+    // Load Google Maps script
+    useEffect(() => {
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  return (
-    <div ref={ref} className={cn("relative w-full overflow-hidden rounded-2xl border border-border shadow-soft", height)}>
-      {/* Stylised mock map background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--sky))_0%,transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--sand))_0%,transparent_55%),linear-gradient(180deg,hsl(var(--secondary)),hsl(var(--background)))]" />
-      {/* River band */}
-      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-        <path d="M0,82 C25,72 45,90 65,80 S95,70 100,76 L100,100 L0,100 Z"
-              fill="hsl(var(--accent) / 0.18)" stroke="hsl(var(--accent) / 0.4)" strokeWidth="0.4" />
-        <path d="M0,32 C20,28 40,40 60,34 S90,30 100,34"
-              fill="none" stroke="hsl(var(--primary) / 0.18)" strokeWidth="0.5" strokeDasharray="1.5,1.5" />
-        <circle cx="50" cy="48" r="0.6" fill="hsl(var(--primary))" opacity="0.4" />
-      </svg>
-      <div className="absolute top-3 left-3 px-2 py-1 rounded-md bg-card/80 backdrop-blur text-[10px] font-medium border border-border text-muted-foreground">
-        Ruse · 43.8356°N, 25.9657°E
-      </div>
-      <div className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
-        <Legend color="bg-warning" label="Events" />
-        <Legend color="bg-accent" label="Gems" />
-        <Legend color="bg-primary" label="Campus" />
-        <Legend color="bg-coral" label="Buddies" />
-      </div>
+        if (!apiKey) {
+            console.error('Google Maps API key not found in VITE_GOOGLE_MAPS_API_KEY');
+            return;
+        }
 
-      {items.map(m => {
-        const isSel = m.id === selectedId;
-        return (
-          <button
-            key={`${m.type}-${m.id}`}
-            onClick={() => onSelect?.(m)}
-            style={{ left: `${m.p.x}%`, top: `${m.p.y}%` }}
-            className={cn(
-              "absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none",
-              isSel && "z-10"
+        // Check if Google Maps is already loaded
+        if (window.google?.maps) {
+            initializeMap();
+            return;
+        }
+
+        // Load the script if not already present
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            console.log('✓ Google Maps API loaded');
+            initializeMap();
+        };
+        script.onerror = () => {
+            console.error('✗ Failed to load Google Maps API');
+        };
+        document.head.appendChild(script);
+
+        return () => {
+            // Cleanup on unmount
+            if (infoWindowRef.current) {
+                infoWindowRef.current.close();
+            }
+        };
+    }, []);
+
+    const initializeMap = () => {
+        if (!mapRef.current || googleMapRef.current) return;
+
+        try {
+            googleMapRef.current = new google.maps.Map(mapRef.current, {
+                center: RUSE_CENTER,
+                zoom: 14,
+                mapTypeId: 'roadmap',
+                fullscreenControl: true,
+                zoomControl: true,
+                mapTypeControl: true,
+                streetViewControl: false,
+            });
+
+            console.log('✓ Map initialized at Ruse, Bulgaria');
+
+            // Update markers after map is ready
+            updateMarkers(markers);
+        } catch (error) {
+            console.error('Error initializing map:', error);
+        }
+    };
+
+    const updateMarkers = (markerList: MapMarker[]) => {
+        if (!googleMapRef.current) return;
+
+        // Remove markers not in new list
+        Object.keys(markersRef.current).forEach(key => {
+            if (!markerList.find(m => m.id === key)) {
+                markersRef.current[key].setMap(null);
+                delete markersRef.current[key];
+            }
+        });
+
+        // Add or update markers
+        markerList.forEach(markerData => {
+            if (markersRef.current[markerData.id]) {
+                // Update existing marker
+                const existingMarker = markersRef.current[markerData.id];
+                existingMarker.setPosition({
+                    lat: markerData.lat,
+                    lng: markerData.lng,
+                });
+            } else {
+                // Create new marker
+                const marker = new google.maps.Marker({
+                    position: { lat: markerData.lat, lng: markerData.lng },
+                    map: googleMapRef.current,
+                    title: markerData.label || markerData.type,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: TYPE_COLOR[markerData.type],
+                        fillOpacity: 0.8,
+                        strokeColor: '#fff',
+                        strokeWeight: 2,
+                    },
+                });
+
+                // Add click listener
+                marker.addListener('click', () => {
+                    onSelect?.(markerData);
+
+                    // Show info window
+                    if (!infoWindowRef.current) {
+                        infoWindowRef.current = new google.maps.InfoWindow();
+                    }
+
+                    infoWindowRef.current.setContent(
+                        `<div style="padding: 8px; font-family: system-ui; font-size: 12px;">
+              <strong>${markerData.label || markerData.type}</strong>
+              <br/>
+              <small>${markerData.type}</small>
+              <br/>
+              <small>${markerData.lat.toFixed(4)}, ${markerData.lng.toFixed(4)}</small>
+            </div>`,
+                    );
+                    infoWindowRef.current.open(googleMapRef.current, marker);
+                });
+
+                markersRef.current[markerData.id] = marker;
+                console.log(`✓ Marker added: ${markerData.label || markerData.type}`);
+            }
+        });
+    };
+
+    // Update markers when they change
+    useEffect(() => {
+        if (googleMapRef.current && markers.length > 0) {
+            updateMarkers(markers);
+        }
+    }, [markers]);
+
+    // Handle selected marker
+    useEffect(() => {
+        if (selectedId && markersRef.current[selectedId]) {
+            const marker = markersRef.current[selectedId];
+            googleMapRef.current?.panTo(marker.getPosition()!);
+            googleMapRef.current?.setZoom(15);
+
+            // Trigger click to show info window
+            google.maps.event.trigger(marker, 'click');
+        }
+    }, [selectedId]);
+
+    return (
+        <div ref={mapRef} className={cn('relative w-full overflow-hidden rounded-2xl border border-border shadow-soft', height)}>
+            {/* Loading state */}
+            {!googleMapRef.current && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/50 backdrop-blur-sm z-10">
+                    <div className="text-center">
+                        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                        <p className="text-xs text-muted-foreground">Loading map...</p>
+                    </div>
+                </div>
             )}
-            aria-label={m.label}
-          >
-            <span className={cn(
-              "block rounded-full ring-2 ring-card transition-all",
-              TYPE_COLOR[m.type],
-              isSel ? "w-5 h-5 shadow-glow scale-110" : "w-3.5 h-3.5 shadow-soft group-hover:scale-125"
-            )} />
-            {(isSel || m.label) && (
-              <span className={cn(
-                "absolute left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap text-[10px] font-medium px-1.5 py-0.5 rounded-md border border-border bg-card/90 backdrop-blur",
-                isSel ? "opacity-100" : "opacity-0 group-hover:opacity-100 transition-opacity"
-              )}>
-                {m.label}
-              </span>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function Legend({ color, label }: { color: string; label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-card/80 backdrop-blur text-[10px] border border-border">
-      <span className={cn("w-2 h-2 rounded-full", color)} /> {label}
-    </span>
-  );
+        </div>
+    );
 }
