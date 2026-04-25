@@ -25,7 +25,7 @@ export function Sidebar() {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <aside 
+      <aside
         className={cn(
           "hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 transition-all duration-300 ease-in-out",
           isCollapsed ? "w-16" : "w-64"
@@ -41,15 +41,13 @@ export function Sidebar() {
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
               <Logo />
-              <p className="text-xs text-muted-foreground mt-1.5 leading-snug">
-                {t("home.subtitle")}
-              </p>
+
             </div>
           )}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="icon"
                 onClick={toggleSidebar}
                 className="h-8 w-8 shrink-0"
@@ -79,7 +77,7 @@ export function Sidebar() {
                   {({ isActive }) => (
                     <span className={cn(
                       "flex items-center rounded-xl transition-colors",
-                      isCollapsed 
+                      isCollapsed
                         ? "justify-center w-12 h-12 mx-auto"
                         : "gap-3 px-4 py-3",
                       isActive
