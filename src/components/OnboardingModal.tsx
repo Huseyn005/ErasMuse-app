@@ -7,7 +7,7 @@ import { Sparkles, GraduationCap, Plane, MapPin, Building2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next';
 
 const types: { v: UserType; icon: typeof Sparkles; sub: string }[] = [
-    { v: 'Erasmus / International student', icon: GraduationCap, sub: 'University, dorms, events, friends' },
+    { v: 'International student', icon: GraduationCap, sub: 'University, dorms, events, friends' },
     { v: 'Tourist / Visitor', icon: Plane, sub: 'Hidden gems, transport, phrases' },
     { v: 'Local student', icon: MapPin, sub: 'Events, campus, documents' },
     { v: 'Local citizen', icon: Building2, sub: 'Events, hidden gems, documents' },
