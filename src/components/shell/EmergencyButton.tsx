@@ -67,14 +67,14 @@ export function SidebarEmergencyButton({ isCollapsed }: { isCollapsed: boolean }
                     // Collapsed: vertical SOS text, rotated
                     <button
                         className={cn(
-                            'w-12 h-16 mx-auto flex items-center justify-center rounded-xl',
+                            'w-14 h-14 mx-auto flex items-center justify-center rounded-2xl',
                             'bg-red-600 hover:bg-red-700 text-white',
-                            'transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+                            'transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
                         )}
                         aria-label={t('emergency.button')}
                     >
                         <span
-                            className="font-bold text-[11px] tracking-widest leading-none"
+                            className="font-bold text-[11px] tracking-widest leading-none transition-transform duration-500 ease-in-out"
                             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: '0.15em' }}
                         >
                             SOS
@@ -86,7 +86,7 @@ export function SidebarEmergencyButton({ isCollapsed }: { isCollapsed: boolean }
                         className={cn(
                             'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
                             'bg-red-600 hover:bg-red-700 text-white',
-                            'transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+                            'transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
                         )}
                         aria-label={t('emergency.button')}
                     >
@@ -111,7 +111,7 @@ export function EmergencyButton() {
                     className={cn(
                         'fixed z-50 flex items-center gap-2 rounded-full shadow-lg',
                         'bg-red-600 hover:bg-red-700 text-white',
-                        'transition-all duration-200 hover:scale-105',
+                        'transition-all duration-500 ease-in-out hover:scale-105',
                         'focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
                         'left-4 bottom-20',
                         'px-4 py-3',
