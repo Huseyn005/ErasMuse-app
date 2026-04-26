@@ -97,7 +97,7 @@ export function Header() {
 
                 {/* Theme Toggle */}
                 <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={() => setMode(isDark ? 'light' : 'dark')}>
-                    {isDark ? <Sun className="w-7 h-7" /> : <Moon className="w-7 h-7" />}
+                    {isDark ? <Sun className="w-9 h-9" /> : <Moon className="w-9 h-9" />}
                 </Button>
 
                 {/* Profile Dropdown */}
