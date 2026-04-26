@@ -325,7 +325,37 @@
   },
   "documents": {
     "title": "Documents",
-    "subtitle": "Téléchargez et décodez des documents, contrats et lettres officielles."
+    "subtitle": "Téléchargez et décodez des documents, contrats et lettres officielles.",
+    "notLegalAdvice": "Pas un conseil juridique.",
+    "disclaimer": "Cet outil vous aide à comprendre les documents, repérer les points clés et préparer des questions.",
+    "dropHere": "Déposez votre document ici ou choisissez un fichier",
+    "accepted": "Accepté : PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 Mo",
+    "chooseFile": "Choisir un fichier",
+    "orPasteText": "Ou collez le texte du document",
+    "pastePlaceholder": "Collez une clause de contrat, une lettre ou tout texte de document dans n'importe quelle langue...",
+    "analyzeWithAI": "Analyser avec AI",
+    "analyzing": "Analyse en cours...",
+    "orTrySample": "OU ESSAYEZ UN EXEMPLE",
+    "sampleDocument": "Document exemple",
+    "loadSample": "Charger l'exemple",
+    "newDocument": "Nouveau Document",
+    "simpleExplanation": "Explication simple",
+    "keyDetails": "Détails clés",
+    "riskFlags": "Signaux de risque",
+    "questionsToAsk": "Questions à poser",
+    "translatedSummary": "Résumé traduit (Bulgare)",
+    "generateMessage": "Générer un message",
+    "english": "Anglais",
+    "bulgarian": "Bulgare",
+    "copy": "Copier",
+    "fileTooLarge": "Fichier trop volumineux. Max 10 Mo.",
+    "chooseFileOrPaste": "Choisissez d'abord un fichier ou collez le texte du document."
+  },
+  "search": {
+    "placeholder": "Rechercher événements, trésors, campus, itinéraires..."
+  },
+  "search": {
+    "placeholder": "Rechercher événements, trésors, campus, itinéraires..."
   },
   "common": {
     "save": "Sauvegarder",
