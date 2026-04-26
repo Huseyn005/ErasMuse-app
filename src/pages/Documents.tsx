@@ -147,17 +147,20 @@ const Documents = () => {
   return (
     <div className="px-4 lg:px-8 py-6 max-w-5xl mx-auto space-y-8">
       <PageHeader
-        title="Document Decoder"
-        subtitle="Upload a contract, university letter, official paper, or Bulgarian text. We explain it in simple language."
+        title="Document Analyzer"
+        subtitle="Upload any document in Bulgarian or another language — I'll explain it simply."
       >
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
           <span className={`w-2 h-2 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
-          {isLive ? "Live AI (Gemini)" : "Demo mode"}
+          {isLive ? "Live AI" : "Demo mode"}
         </span>
       </PageHeader>
 
-      <div className="rounded-2xl border border-border p-3 text-xs text-muted-foreground bg-secondary">
-        ⚖️ This tool does not replace legal advice. It helps you understand the document, identify important points, and prepare questions.
+      <div className="rounded-2xl border border-primary/20 p-4 text-sm text-foreground/80 bg-primary/5 flex items-start gap-3">
+        <span className="text-primary text-lg leading-none">&#9432;</span>
+        <span>
+          <strong className="text-foreground">Not legal advice.</strong> This tool helps you understand documents, spot key points, and prepare questions to ask.
+        </span>
       </div>
 
       {/* Hidden file input - always present for reference */}
@@ -260,15 +263,21 @@ const Documents = () => {
 
       {analysis && (
         <div className="space-y-4 animate-fade-up">
-          {/* Header with document info and new scan button */}
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-2 flex-wrap">
-              {docType && <Badge variant="secondary">{docType}</Badge>}
-              {docTitle && <span className="text-sm font-medium text-muted-foreground">{docTitle}</span>}
-            </div>
-            <Button variant="outline" onClick={startNewScan} className="gap-2">
-              <Upload className="w-4 h-4" /> New Document
+          {/* New Document button - centered and larger */}
+          <div className="flex justify-center">
+            <Button 
+              variant="outline" 
+              onClick={startNewScan} 
+              className="gap-2 px-8 py-6 text-base h-auto"
+            >
+              <Upload className="w-5 h-5" /> New Document
             </Button>
+          </div>
+
+          {/* Document info */}
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            {docType && <Badge variant="secondary">{docType}</Badge>}
+            {docTitle && <span className="text-sm font-medium text-muted-foreground">{docTitle}</span>}
           </div>
 
           <div className="surface p-5 bg-gradient-card">
