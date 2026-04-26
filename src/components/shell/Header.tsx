@@ -59,10 +59,11 @@ export function Header() {
                 <div className="shrink-0 lg:hidden">
                     <Logo size="md" />
                 </div>
-                <div className={cn('shrink-0 hidden lg:block', !isCollapsed && 'lg:hidden')}>
-                    <Logo size="md" />
+                {/* Desktop collapsed: text only (icon is in sidebar) */}
+                <div className={cn('shrink-0 hidden', isCollapsed && 'lg:block')}>
+                    <Logo size="md" showIcon={false} />
                 </div>
-
+                
                 {/* Spacer to center search */}
                 <div className="flex-1" />
 
