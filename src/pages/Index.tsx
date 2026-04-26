@@ -59,7 +59,7 @@ const Index = () => {
   return (
     <div className="px-4 lg:px-8 py-6 lg:py-10 space-y-6 max-w-6xl mx-auto">
       {/* Welcome Section - Outside the card */}
-      <section className="flex items-start justify-between">
+      <section className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground dark:text-slate-50">
             {t("home.heroTitle")} <span className="text-accent">{t("home.heroCity")}</span>
