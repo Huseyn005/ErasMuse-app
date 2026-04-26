@@ -223,7 +223,7 @@ function BuddyCard({
             <div className="text-[11px] text-muted-foreground">{b.userType}</div>
           </div>
         </div>
-        <Badge className="bg-success text-success-foreground gap-1">
+        <Badge className="bg-primary text-primary-foreground gap-1 hover:bg-coral/20 hover:text-coral transition-colors cursor-default">
           <Sparkles className="w-3 h-3" /> {b.matchScore}%
         </Badge>
       </div>
