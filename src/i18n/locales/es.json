@@ -325,7 +325,37 @@
   },
   "documents": {
     "title": "Documentos",
-    "subtitle": "Sube y decodifica documentos, contratos y cartas oficiales."
+    "subtitle": "Sube y decodifica documentos, contratos y cartas oficiales.",
+    "notLegalAdvice": "No es asesoría legal.",
+    "disclaimer": "Esta herramienta te ayuda a entender documentos, identificar puntos clave y preparar preguntas.",
+    "dropHere": "Arrastra tu documento aquí o elige un archivo",
+    "accepted": "Aceptado: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Máx 10 MB",
+    "chooseFile": "Elegir archivo",
+    "orPasteText": "O pega texto del documento",
+    "pastePlaceholder": "Pega una cláusula de contrato, una carta o cualquier texto de documento en cualquier idioma...",
+    "analyzeWithAI": "Analizar con AI",
+    "analyzing": "Analizando...",
+    "orTrySample": "O PRUEBA UN EJEMPLO",
+    "sampleDocument": "Documento de ejemplo",
+    "loadSample": "Cargar ejemplo",
+    "newDocument": "Nuevo Documento",
+    "simpleExplanation": "Explicación simple",
+    "keyDetails": "Detalles clave",
+    "riskFlags": "Señales de riesgo",
+    "questionsToAsk": "Preguntas para hacer",
+    "translatedSummary": "Resumen traducido (Búlgaro)",
+    "generateMessage": "Generar mensaje",
+    "english": "Inglés",
+    "bulgarian": "Búlgaro",
+    "copy": "Copiar",
+    "fileTooLarge": "Archivo muy grande. Máx 10 MB.",
+    "chooseFileOrPaste": "Elige un archivo o pega texto del documento primero."
+  },
+  "search": {
+    "placeholder": "Buscar eventos, joyas, campus, rutas..."
+  },
+  "search": {
+    "placeholder": "Buscar eventos, joyas, campus, rutas..."
   },
   "common": {
     "save": "Guardar",
