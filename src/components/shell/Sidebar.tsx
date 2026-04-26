@@ -27,7 +27,7 @@ export function Sidebar() {
                 {/* Logo at top */}
                 <div className={cn('flex items-center h-14 border-b border-border transition-all duration-500 shrink-0', isCollapsed ? 'justify-center px-2' : 'px-4')}>
                     {isCollapsed
-                        ? <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-8 w-8 rounded-lg object-cover" />
+                        ? <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-10 w-10 rounded-lg object-cover" />
                         : <Logo size="sm" />
                     }
                 </div>
