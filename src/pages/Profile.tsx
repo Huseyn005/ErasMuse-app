@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ const STARTS = ["Use my location", "University of Ruse", "Student dorms", "City 
 const TRANSPORT = ["Beginner", "Getting there", "Comfortable"] as const;
 
 const Profile = () => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useProfile();
   const { mode, setMode } = useTheme();
 
@@ -23,17 +25,17 @@ const Profile = () => {
 
   return (
     <div className="px-4 lg:px-8 py-6 max-w-3xl mx-auto space-y-6">
-      <PageHeader title="Your preferences" subtitle="No login needed — everything is saved on this device." />
+      <PageHeader title={t('profile.title')} subtitle={t('profile.subtitle')} />
 
-      <Section title="User type">
+      <Section title={t('profile.userType')}>
         <Pills values={TYPES} active={profile.userType ?? ""} onPick={(v) => setProfile(p => ({ ...p, userType: v as UserType }))} />
       </Section>
 
-      <Section title="Preferred language">
+      <Section title={t('profile.language')}>
         <Pills values={LANGS} active={profile.language} onPick={(v) => setProfile(p => ({ ...p, language: v as Language }))} />
       </Section>
 
-      <Section title="Interests">
+      <Section title={t('profile.interests')}>
         <div className="flex flex-wrap gap-2">
           {INTERESTS.map(i => (
             <button key={i} onClick={() => toggleInterest(i)}
@@ -44,34 +46,34 @@ const Profile = () => {
         </div>
       </Section>
 
-      <Section title="Budget">
+      <Section title={t('profile.budget')}>
         <Pills values={[...BUDGETS]} active={profile.budget} onPick={(v) => setProfile(p => ({ ...p, budget: v as typeof BUDGETS[number] }))} />
       </Section>
 
-      <Section title="Social preference">
+      <Section title={t('profile.socialPreference')}>
         <Pills values={SOCIAL} active={profile.social} onPick={(v) => setProfile(p => ({ ...p, social: v }))} />
       </Section>
 
-      <Section title="Buddy preference">
+      <Section title={t('profile.buddyPreference')}>
         <Pills values={BUDDY} active={profile.buddyPref} onPick={(v) => setProfile(p => ({ ...p, buddyPref: v }))} />
       </Section>
 
-      <Section title="Map starting point">
+      <Section title={t('profile.mapStartingPoint')}>
         <Pills values={STARTS} active={profile.startPoint} onPick={(v) => setProfile(p => ({ ...p, startPoint: v }))} />
       </Section>
 
-      <Section title="Transport confidence">
+      <Section title={t('profile.transportConfidence')}>
         <Pills values={[...TRANSPORT]} active={profile.transportConfidence} onPick={(v) => setProfile(p => ({ ...p, transportConfidence: v as typeof TRANSPORT[number] }))} />
       </Section>
 
-      <Section title="Theme">
+      <Section title={t('profile.theme')}>
         <Pills values={["light", "dark", "system"]} active={mode} onPick={(v) => setMode(v as "light" | "dark" | "system")} />
       </Section>
 
       <div className="sticky bottom-20 lg:bottom-4 flex justify-end">
         <Button size="lg" className="shadow-glow"
-          onClick={() => toast.success("Preferences saved ✓")}>
-          Save preferences
+          onClick={() => toast.success(t('profile.saved'))}>
+          {t('profile.savePreferences')}
         </Button>
       </div>
 

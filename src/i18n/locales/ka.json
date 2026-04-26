@@ -179,7 +179,7 @@
     "summarize": "შეაჯამე",
     "hideSummary": "შეჯამების დამალვა",
     "addToPlan": "გეგმაში დამატება",
-    "askAI": "AI-ს ჰკითხე",
+    "askAI": "AI-ს ჰ���ითხე",
     "what": "რა",
     "when": "როდის",
     "where": "სად",
@@ -308,11 +308,20 @@
   "profile": {
     "title": "პროფილი",
     "subtitle": "თქვენი პრეფერენციები და პარამეტრები.",
-    "language": "ენა",
+    "language": "სასურველი ენა",
     "theme": "თემა",
     "light": "ნათელი",
     "dark": "მუქი",
-    "system": "სისტემური"
+    "system": "სისტემური",
+    "userType": "მომხმარებლის ტიპი",
+    "interests": "ინტერესები",
+    "budget": "ბიუჯეტი",
+    "socialPreference": "სოციალური პრეფერენცია",
+    "buddyPreference": "მეგობრის პრეფერენცია",
+    "mapStartingPoint": "რუკის საწყისი წერტილი",
+    "transportConfidence": "ტრანსპორტის გამოყენების დამაჯერებლობა",
+    "savePreferences": "პრეფერენციების შენახვა",
+    "saved": "პრეფერენციები შენახულია"
   },
   "documents": {
     "title": "დოკუმენტები",

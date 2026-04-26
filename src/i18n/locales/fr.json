@@ -308,11 +308,20 @@
   "profile": {
     "title": "Profil",
     "subtitle": "Vos préférences et paramètres.",
-    "language": "Langue",
+    "language": "Langue préférée",
     "theme": "Thème",
     "light": "Clair",
     "dark": "Sombre",
-    "system": "Système"
+    "system": "Système",
+    "userType": "Type d'utilisateur",
+    "interests": "Intérêts",
+    "budget": "Budget",
+    "socialPreference": "Préférence sociale",
+    "buddyPreference": "Préférence d'amis",
+    "mapStartingPoint": "Point de départ de la carte",
+    "transportConfidence": "Confiance en transport",
+    "savePreferences": "Enregistrer les préférences",
+    "saved": "Préférences enregistrées"
   },
   "documents": {
     "title": "Documents",
