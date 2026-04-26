@@ -53,8 +53,10 @@ export function Sidebar() {
                 </nav>
 
                 {/* Footer — Emergency + Collapse */}
-                <div className={cn('border-t border-border p-3 space-y-4')}>
-                    <SidebarEmergencyButton isCollapsed={isCollapsed} />
+                <div className={cn(' p-3 space-y-4')}>
+                    <div className="pb-1 border-b border-border">
+                        <SidebarEmergencyButton isCollapsed={isCollapsed} />
+                    </div>
 
                     <Tooltip>
                         <TooltipTrigger asChild>
