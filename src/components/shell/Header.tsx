@@ -61,14 +61,14 @@ export function Header() {
                 </div>
                 {/* Desktop collapsed: text only (icon is in sidebar) */}
                 <div className={cn('shrink-0 hidden', isCollapsed && 'lg:block')}>
-                    <Logo size="md" showIcon={false} />
+                    <Logo size="lg" showIcon={false} />
                 </div>
 
                 {/* Spacer to center search */}
                 <div className="flex-1" />
 
                 {/* Search - centered */}
-                <div className={cn('hidden md:block transition-all duration-300', isCollapsed ? 'w-full max-w-4xl' : 'w-full max-w-3xl')}>
+                <div className={cn('hidden md:block transition-all duration-300', isCollapsed ? 'w-full max-w-3xl' : 'w-full max-w-2.5xl')}>
                     <GlobalSearch />
                 </div>
 
