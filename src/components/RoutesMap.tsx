@@ -1,5 +1,5 @@
-import { useCallback, useRef } from "react";
-import { GoogleMap, useJsApiLoader, Marker, Polyline } from "@react-google-maps/api";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { GoogleMap, useJsApiLoader, DirectionsRenderer } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
@@ -7,21 +7,10 @@ const containerStyle = {
   borderRadius: "12px",
 };
 
-// Ruse city center coordinates
 const ruseCenterCoordinates = {
   lat: 43.8516,
   lng: 25.9597,
 };
-
-// Define key locations in Ruse
-const locationMarkers = [
-  { id: 1, name: "University of Ruse", lat: 43.8652, lng: 25.9656 },
-  { id: 2, name: "Student dorms", lat: 43.8450, lng: 25.9700 },
-  { id: 3, name: "City Center", lat: 43.8516, lng: 25.9597 },
-  { id: 4, name: "Railway Station", lat: 43.8390, lng: 25.9520 },
-  { id: 5, name: "Bus Station", lat: 43.8370, lng: 25.9450 },
-  { id: 6, name: "Danube River area", lat: 43.8650, lng: 25.9450 },
-];
 
 interface RoutesMapProps {
   from?: string;
@@ -29,28 +18,43 @@ interface RoutesMapProps {
 }
 
 export function RoutesMap({ from = "University of Ruse", to = "Railway Station" }: RoutesMapProps) {
-  const mapRef = useRef<GoogleMap>(null);
-
-  // Get coordinates for location names
-  const getLocationCoordinates = (location: string) => {
-    const marker = locationMarkers.find(m => m.name === location);
-    return marker ? { lat: marker.lat, lng: marker.lng } : ruseCenterCoordinates;
-  };
-
-  const fromCoords = getLocationCoordinates(from);
-  const toCoords = getLocationCoordinates(to);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
-  console.log("[v0] Google Maps API Key present:", !!apiKey, "Key starts with:", apiKey?.substring(0, 10));
-  
+
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: apiKey,
     libraries: ["places"],
   });
-  
-  console.log("[v0] Google Maps isLoaded:", isLoaded, "loadError:", loadError);
 
-  const onLoad = useCallback((map: GoogleMap) => {
+  // Fetch directions when map is loaded or from/to changes
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const service = new google.maps.DirectionsService();
+    setError(null);
+    setDirections(null);
+
+    service.route(
+      {
+        origin: `${from}, Ruse, Bulgaria`,
+        destination: `${to}, Ruse, Bulgaria`,
+        travelMode: google.maps.TravelMode.WALKING,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK && result) {
+          setDirections(result);
+        } else {
+          console.error("Directions request failed:", status);
+          setError(`Could not find a route: ${status}`);
+        }
+      }
+    );
+  }, [isLoaded, from, to]);
+
+  const onLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
   }, []);
 
@@ -85,7 +89,7 @@ export function RoutesMap({ from = "University of Ruse", to = "Railway Station" 
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={ruseCenterCoordinates}
-        zoom={13}
+        zoom={14}
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={{
@@ -93,65 +97,31 @@ export function RoutesMap({ from = "University of Ruse", to = "Railway Station" 
           zoomControl: true,
           mapTypeControl: false,
           fullscreenControl: true,
+          streetViewControl: false,
         }}
       >
-        {/* Route markers */}
-        <Marker
-          position={fromCoords}
-          title={from}
-          icon={{
-            path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z",
-            fillColor: "#10b981",
-            fillOpacity: 1,
-            scale: 2,
-            strokeColor: "#fff",
-            strokeWeight: 1,
-          }}
-        />
+        {directions && (
+          <DirectionsRenderer
+            directions={directions}
+            options={{
+              suppressMarkers: false,
+              polylineOptions: {
+                strokeColor: "#3b82f6",
+                strokeWeight: 5,
+                strokeOpacity: 0.8,
+              },
+            }}
+          />
+        )}
 
-        <Marker
-          position={toCoords}
-          title={to}
-          icon={{
-            path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-12.5c.83 0 1.5.67 1.5 1.5S12.83 11 12 11s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z",
-            fillColor: "#ef4444",
-            fillOpacity: 1,
-            scale: 2,
-            strokeColor: "#fff",
-            strokeWeight: 1,
-          }}
-        />
-
-        {/* Route line */}
-        <Polyline
-          path={[fromCoords, toCoords]}
-          options={{
-            strokeColor: "#3b82f6",
-            strokeOpacity: 0.8,
-            strokeWeight: 3,
-            geodesic: true,
-          }}
-        />
-
-        {/* Other location markers */}
-        {locationMarkers
-          .filter(m => m.name !== from && m.name !== to)
-          .map(marker => (
-            <Marker
-              key={marker.id}
-              position={{ lat: marker.lat, lng: marker.lng }}
-              title={marker.name}
-              icon={{
-                path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z",
-                fillColor: "#9ca3af",
-                fillOpacity: 0.6,
-                scale: 1.5,
-                strokeColor: "#fff",
-                strokeWeight: 1,
-              }}
-            />
-          ))}
+        {/* Error fallback */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/60 rounded-xl">
+            <p className="text-sm text-destructive bg-background px-4 py-2 rounded-lg shadow">{error}</p>
+          </div>
+        )}
       </GoogleMap>
+
       <p className="text-xs text-muted-foreground">
         {from} → {to}
       </p>
