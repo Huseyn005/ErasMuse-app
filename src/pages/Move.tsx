@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +23,7 @@ const TICKET_VOCAB: { bg: string; en: string }[] = [
 ];
 
 const Move = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { add } = usePlan();
     const [from, setFrom] = useState('University of Ruse');
@@ -44,7 +46,7 @@ const Move = () => {
 
     return (
         <div className="px-4 lg:px-8 py-6 max-w-6xl mx-auto space-y-10">
-            <PageHeader title="Move around Ruse and Bulgaria" subtitle="Routes, buses, trains, tickets, stations, and travel phrases — explained simply." />
+            <PageHeader title={t('move.title')} subtitle={t('move.subtitle')} />
 
             <section className="grid lg:grid-cols-2 gap-5">
                 <div className="surface p-5 bg-gradient-card space-y-4">
@@ -52,14 +54,14 @@ const Move = () => {
                         <div className="w-9 h-9 rounded-xl bg-accent/15 text-accent flex items-center justify-center">
                             <Bus className="w-4 h-4" />
                         </div>
-                        <h3 className="font-display font-bold text-lg">Route helper</h3>
+                        <h3 className="font-display font-bold text-lg">{t('move.routeHelper')}</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                        <SelectField label="From" value={from} onChange={setFrom} options={STOPS} />
-                        <SelectField label="To" value={to} onChange={setTo} options={STOPS} />
+                        <SelectField label={t('move.from')} value={from} onChange={setFrom} options={STOPS} />
+                        <SelectField label={t('move.to')} value={to} onChange={setTo} options={STOPS} />
                     </div>
                     <Button onClick={findRoute} className="w-full gap-2">
-                        <MapPin className="w-4 h-4" /> Find route
+                        <MapPin className="w-4 h-4" /> {t('move.findRoute')}
                     </Button>
 
                     {route && (
@@ -68,7 +70,7 @@ const Move = () => {
                             <div className="flex items-center gap-2 text-sm">
                                 <Badge>{route.estimatedTime}</Badge>
                                 <Badge variant="secondary">{route.difficulty}</Badge>
-                                {route.travelBuddyAvailable && <Badge className="bg-coral text-coral-foreground hover:bg-coral/90">Buddy available</Badge>}
+                                {route.travelBuddyAvailable && <Badge className="bg-coral text-coral-foreground hover:bg-coral/90">{t('move.buddyAvailable')}</Badge>}
                             </div>
                             <ol className="space-y-1.5">
                                 {route.steps.map((s, i) => (
@@ -83,11 +85,11 @@ const Move = () => {
                             <div className="text-xs text-muted-foreground">{route.notes}</div>
                             <div className="flex gap-2">
                                 <Button size="sm" variant="outline" onClick={() => add({ refId: route.id, type: 'route', title: `${route.from} → ${route.to}`, meta: route.estimatedTime, href: '/move' })}>
-                                    Add to plan
+                                    {t('move.addToPlan')}
                                 </Button>
                                 {route.travelBuddyAvailable && (
                                     <Button size="sm" className="gap-1.5 bg-coral text-coral-foreground hover:bg-coral/90" onClick={() => navigate('/buddies')}>
-                                        <Users className="w-3.5 h-3.5" /> Find travel buddy
+                                        <Users className="w-3.5 h-3.5" /> {t('move.findTravelBuddy')}
                                     </Button>
                                 )}
                             </div>
@@ -100,30 +102,30 @@ const Move = () => {
                         <div className="w-9 h-9 rounded-xl bg-warning/15 text-warning flex items-center justify-center">
                             <Train className="w-4 h-4" />
                         </div>
-                        <h3 className="font-display font-bold text-lg">Train ticket assistant</h3>
+                        <h3 className="font-display font-bold text-lg">{t('move.trainAssistant')}</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                        <Field label="From">
+                        <Field label={t('move.from')}>
                             <input value={tFrom} onChange={e => setTFrom(e.target.value)} className="input" />
                         </Field>
-                        <Field label="To">
+                        <Field label={t('move.to')}>
                             <input value={tTo} onChange={e => setTTo(e.target.value)} className="input" />
                         </Field>
                     </div>
                     <div className="flex justify-center">
                         <div style={{ width: '48%' }}>
-                            <Field label="Date">
+                            <Field label={t('move.date')}>
                                 <input type="date" value={tDate} onChange={e => setTDate(e.target.value)} className="input" />
                             </Field>
                         </div>
                     </div>
                     <Button onClick={explainTicket} className="w-full">
-                        Explain how to buy ticket
+                        {t('move.explainTicket')}
                     </Button>
 
                     {ticket && (
                         <div className="space-y-3 pt-1">
-                            <div className="text-sm font-semibold">Steps</div>
+                            <div className="text-sm font-semibold">{t('move.steps')}</div>
                             <ol className="space-y-1.5">
                                 {ticket.steps.map((s, i) => (
                                     <li key={i} className="text-sm flex gap-2">
@@ -131,7 +133,7 @@ const Move = () => {
                                     </li>
                                 ))}
                             </ol>
-                            <div className="text-sm font-semibold pt-1">Vocabulary</div>
+                            <div className="text-sm font-semibold pt-1">{t('move.vocabulary')}</div>
                             <div className="grid grid-cols-2 gap-2">
                                 {TICKET_VOCAB.map(v => (
                                     <div key={v.bg} className="px-3 py-2 rounded-xl border border-border bg-card text-sm flex items-center justify-between">
@@ -144,12 +146,12 @@ const Move = () => {
                                 <PhraseCard key={i} {...p} />
                             ))}
                             <div className="surface p-3 bg-warning-soft border-warning/30">
-                                <div className="text-xs font-semibold text-warning-foreground">Travel checklist</div>
+                                <div className="text-xs font-semibold text-warning-foreground">{t('move.travelChecklist')}</div>
                                 <ul className="text-xs mt-1 list-disc list-inside text-warning-foreground/90">
-                                    <li>Bring passport / ID</li>
-                                    <li>Cash for the ticket counter</li>
-                                    <li>Student card if eligible</li>
-                                    <li>Arrive 15 minutes early</li>
+                                    <li>{t('move.checklistItems.passport')}</li>
+                                    <li>{t('move.checklistItems.cash')}</li>
+                                    <li>{t('move.checklistItems.studentCard')}</li>
+                                    <li>{t('move.checklistItems.arriveEarly')}</li>
                                 </ul>
                             </div>
                         </div>
@@ -158,7 +160,7 @@ const Move = () => {
             </section>
 
             <section>
-                <h2 className="font-display text-xl font-bold mb-3">Common routes</h2>
+                <h2 className="font-display text-xl font-bold mb-3">{t('move.commonRoutes')}</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {routes.map(r => (
                         <div key={r.id} className="surface p-4 hover:shadow-md transition-shadow">
@@ -181,10 +183,10 @@ const Move = () => {
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
                                     }}
                                 >
-                                    View
+                                    {t('move.view')}
                                 </Button>
                                 <Button size="sm" variant="ghost" onClick={() => navigate('/ask')}>
-                                    Ask AI
+                                    {t('campus.askAI')}
                                 </Button>
                             </div>
                         </div>
@@ -195,11 +197,11 @@ const Move = () => {
             <section className="surface p-5 bg-gradient-card">
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div>
-                        <h3 className="font-display font-bold text-lg">Travel buddy</h3>
-                        <p className="text-sm text-muted-foreground">Going somewhere? Find someone taking the same route.</p>
+                        <h3 className="font-display font-bold text-lg">{t('move.travelBuddySection.title')}</h3>
+                        <p className="text-sm text-muted-foreground">{t('move.travelBuddySection.description')}</p>
                     </div>
                     <Button className="bg-coral text-coral-foreground hover:bg-coral/90 gap-2" onClick={() => navigate('/buddies')}>
-                        <Users className="w-4 h-4" /> Open Buddy Finder
+                        <Users className="w-4 h-4" /> {t('move.openBuddyFinder')}
                     </Button>
                 </div>
             </section>
