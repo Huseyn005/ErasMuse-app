@@ -106,7 +106,7 @@ export function Header() {
                         <Button variant="ghost" size="icon" className="rounded-full" aria-label="Profile menu">
                             <Avatar className="w-10 h-10">
                                 <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                                    <UserCircle2 className="w-8 h-8" />
+                                    <UserCircle2 className="w-9 h-9" />
                                 </AvatarFallback>
                             </Avatar>
                         </Button>
@@ -148,7 +148,7 @@ export function Header() {
                 </Button>
 
                 {/* AI Mode Toggle */}
-                <Button variant={isLive ? 'default' : 'outline'} size="sm" className={`hidden sm:inline-flex gap-1.5 text-xs ${isLive ? 'bg-primary hover:bg-primary/90' : ''}`} onClick={() => setAIMode(isLive ? 'demo' : 'live')}>
+                <Button variant={isLive ? 'default' : 'outline'} size="sm" style={{marginLeft: '8px'}} className={`hidden sm:inline-flex gap-1.5 text-xs ${isLive ? 'bg-primary hover:bg-primary/90' : ''}`} onClick={() => setAIMode(isLive ? 'demo' : 'live')}>
                     {isLive ? (
                         <>
                             <Sparkles className="w-3.5 h-3.5" />
