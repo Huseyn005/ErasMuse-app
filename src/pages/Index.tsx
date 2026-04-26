@@ -80,7 +80,7 @@ const Index = () => {
                         <p className="text-white/80 text-sm lg:text-base max-w-md mb-6">{t('home.heroDescription')}</p>
 
                         <div className="flex flex-wrap gap-3">
-                            <Button onClick={() => setChatOpen(true)} className="bg-white text-primary hover:bg-white/90 gap-2 px-8" size="lg">
+                            <Button onClick={() => setChatOpen(true)} className="bg-white text-primary hover:bg-white font-bold shadow-lg gap-2 px-8 border-2 border-white/50" size="lg">
                                 <Sparkles className="w-4 h-4" />
                                 {t('home.askAssistant')}
                             </Button>
