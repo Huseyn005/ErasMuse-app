@@ -57,7 +57,7 @@ export function Header() {
 
                 {/* Logo - on mobile always full, on desktop only text when sidebar expanded, full when collapsed */}
                 <div className="shrink-0 lg:hidden">
-                    <Logo size="md" />
+                    <Logo size="lg" />
                 </div>
                 {/* Desktop collapsed: text only (icon is in sidebar) */}
                 <div className={cn('shrink-0 hidden', isCollapsed && 'lg:block')}>
@@ -68,7 +68,7 @@ export function Header() {
                 <div className="flex-1" />
 
                 {/* Search - centered */}
-                <div className={cn('hidden md:block transition-all duration-300', isCollapsed ? 'w-full max-w-2xl' : 'w-full max-w-xl')}>
+                <div className={cn('hidden md:block transition-all duration-300', isCollapsed ? 'w-full max-w-4xl' : 'w-full max-w-3xl')}>
                     <GlobalSearch />
                 </div>
 
@@ -85,7 +85,7 @@ export function Header() {
                         </>
                     ) : (
                         <>
-                            <FlaskConical className="w-4 h-4\\" />
+                            <FlaskConical className="w-5 h-5" />
                             <span>{t('header.demo')}</span>
                         </>
                     )}
@@ -95,7 +95,7 @@ export function Header() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="hidden sm:inline-flex items-center gap-1.5 px-3">
-                            <Languages className="w-5 h-5" />
+                            <Languages className="w-6 h-6" />
                             <span className="text-xs font-medium">{currentLang.flag}</span>
                         </Button>
                     </DropdownMenuTrigger>
@@ -113,16 +113,16 @@ export function Header() {
 
                 {/* Theme Toggle */}
                 <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={() => setMode(isDark ? 'light' : 'dark')}>
-                    {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                    {isDark ? <Sun className="w-7 h-7" /> : <Moon className="w-7 h-7" />}
                 </Button>
 
                 {/* Profile Dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="rounded-full" aria-label="Profile menu">
-                            <Avatar className="w-9 h-9">
+                            <Avatar className="w-10 h-10">
                                 <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                                    <UserCircle2 className="w-6 h-6" />
+                                    <UserCircle2 className="w-8 h-8" />
                                 </AvatarFallback>
                             </Avatar>
                         </Button>
