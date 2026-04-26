@@ -108,6 +108,23 @@ export async function sendMessage(
 }
 
 /**
+ * Convert a File to base64 string
+ */
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Remove the data URL prefix (e.g., "data:application/pdf;base64,")
+      const base64 = result.split(',')[1] || result;
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
  * Analyze a document using Sirma AI
  * Supports text content or file uploads
  * @param forceDemo - If true, uses demo mode regardless of API availability
@@ -133,9 +150,22 @@ export async function analyzeDocument(
   let prompt: string;
   
   if (content instanceof File) {
-    // Attach file to form data
-    formData.append("file", content, content.name);
-    prompt = `Please analyze this document "${content.name}" and provide:
+    // For PDF and image files, we need to convert to base64 and include in the message
+    // because the Sirma AI API may not properly parse raw file attachments
+    const isTextFile = content.type.startsWith("text/") || /\.(txt|md)$/i.test(content.name);
+    const isPDF = content.type === "application/pdf" || /\.pdf$/i.test(content.name);
+    const isImage = content.type.startsWith("image/") || /\.(jpg|jpeg|png|webp|gif)$/i.test(content.name);
+    
+    if (isTextFile) {
+      // For text files, read the content directly
+      const textContent = await content.text();
+      prompt = `Please analyze this document "${content.name}" with the following content:
+
+---DOCUMENT START---
+${textContent}
+---DOCUMENT END---
+
+Please provide:
 1. A simple explanation of what this document is about (in plain English that a student can understand)
 2. Key details extracted from the document (dates, amounts, names, requirements, etc.)
 3. Any risk flags or concerning clauses that need attention
@@ -156,8 +186,68 @@ Format your response as JSON with these fields:
   "enMessage": "...",
   "bgMessage": "..."
 }`;
+    } else if (isPDF || isImage) {
+      // For PDFs and images, convert to base64 and attach the file
+      // The Sirma AI API needs both the file attachment AND proper instructions
+      const base64Content = await fileToBase64(content);
+      formData.append("file", content, content.name);
+      
+      // Include base64 in the message as a fallback if the API doesn't parse the file
+      prompt = `I am uploading a document file "${content.name}" (${content.type}).
+
+The file is attached to this message. Please analyze this document and provide:
+1. A simple explanation of what this document is about (in plain English that a student can understand)
+2. Key details extracted from the document (dates, amounts, names, requirements, etc.)
+3. Any risk flags or concerning clauses that need attention
+4. Questions the reader should ask before signing or accepting this document
+5. A brief summary in Bulgarian (Резюме на български)
+6. A suggested response message in English
+7. A suggested response message in Bulgarian
+
+If you cannot read the attached file directly, here is the file content as base64 (first 50000 chars):
+${base64Content.slice(0, 50000)}
+
+Format your response as JSON with these fields:
+{
+  "type": "document type (e.g., Rental Contract, University Letter, etc.)",
+  "title": "brief title",
+  "simpleExplanation": "...",
+  "keyDetails": [{"label": "...", "value": "..."}],
+  "riskFlags": [{"title": "...", "detail": "..."}],
+  "questionsToAsk": ["..."],
+  "bgSummary": "...",
+  "enMessage": "...",
+  "bgMessage": "..."
+}`;
+    } else {
+      // For other binary files (DOCX, etc.), try to attach and hope the API handles it
+      formData.append("file", content, content.name);
+      prompt = `I am uploading a document file "${content.name}" (${content.type}).
+
+The file is attached to this message. Please analyze this document and provide:
+1. A simple explanation of what this document is about (in plain English that a student can understand)
+2. Key details extracted from the document (dates, amounts, names, requirements, etc.)
+3. Any risk flags or concerning clauses that need attention
+4. Questions the reader should ask before signing or accepting this document
+5. A brief summary in Bulgarian (Резюме на български)
+6. A suggested response message in English
+7. A suggested response message in Bulgarian
+
+Format your response as JSON with these fields:
+{
+  "type": "document type (e.g., Rental Contract, University Letter, etc.)",
+  "title": "brief title",
+  "simpleExplanation": "...",
+  "keyDetails": [{"label": "...", "value": "..."}],
+  "riskFlags": [{"title": "...", "detail": "..."}],
+  "questionsToAsk": ["..."],
+  "bgSummary": "...",
+  "enMessage": "...",
+  "bgMessage": "..."
+}`;
+    }
   } else {
-    // Text content
+    // Text content (string passed directly)
     prompt = `Please analyze this document text and provide:
 1. A simple explanation of what this document is about (in plain English that a student can understand)
 2. Key details extracted from the document (dates, amounts, names, requirements, etc.)
