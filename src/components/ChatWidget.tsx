@@ -16,7 +16,6 @@ const SUGGESTION_KEYS = [
   "trainTicket",
   "contract",
   "tonight",
-  "erasmusOffice",
   "doctor",
   "travelBuddy",
 ];
