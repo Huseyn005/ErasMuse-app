@@ -73,7 +73,7 @@ export function SidebarEmergencyButton({ isCollapsed }: { isCollapsed: boolean }
                         )}
                         aria-label={t('emergency.button')}
                     >
-                        <span className="font-bold text-[11px] tracking-widest leading-none transition-transform duration-500 ease-in-out" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: '0.15em' }}>
+                        <span className="font-bold text-[11px] tracking-widest leading-none transition-transform duration-500 ease-in-out" style={{ writingMode: 'vertical-rl', letterSpacing: '0.15em' }}>
                             SOS
                         </span>
                     </button>
