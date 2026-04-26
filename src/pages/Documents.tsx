@@ -8,7 +8,7 @@ import {
   Upload, FileText, AlertTriangle, Copy, Languages, MessageSquare, Loader2, Sparkles, X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { analyzeDocument, sirmaConfigured } from "@/lib/sirmaAI";
+import { supabase } from "@/integrations/supabase/client";
 import { useAIMode } from "@/contexts/AIModeContext";
 
 type Analysis = SampleDoc["analysis"] & { type?: string; title?: string };
@@ -51,36 +51,66 @@ const Documents = () => {
       return;
     }
     
-    const useDemo = !isLive || !sirmaConfigured;
-    
     setAnalyzing(true);
     reset();
     try {
-      let content: string | File;
-      let fileName: string | undefined;
+      let payload: { text?: string; fileBase64?: string; mimeType?: string; fileName?: string };
       
       if (file) {
         const isText = file.type.startsWith("text/") || /\.(txt|md)$/i.test(file.name);
         if (isText) {
-          content = await file.text();
-          fileName = file.name;
+          // For text files, read content directly
+          const textContent = await file.text();
+          payload = { text: textContent, fileName: file.name };
         } else {
-          content = file;
-          fileName = file.name;
+          // For PDF/images, convert to base64
+          const base64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = reader.result as string;
+              // Remove data URL prefix
+              const base64Data = result.split(',')[1] || result;
+              resolve(base64Data);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          payload = { 
+            fileBase64: base64, 
+            mimeType: file.type || "application/pdf", 
+            fileName: file.name 
+          };
         }
       } else {
-        content = pasted;
+        payload = { text: pasted };
       }
 
-      const result = await analyzeDocument(content, fileName, useDemo);
+      // Call the Supabase edge function which uses Gemini for proper multimodal support
+      const { data, error } = await supabase.functions.invoke("analyze-document", {
+        body: payload,
+      });
+
+      if (error) {
+        throw new Error(error.message || "Failed to analyze document");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const result = data?.analysis;
+      if (!result) {
+        throw new Error("No analysis returned from AI");
+      }
 
       setAnalysis(result);
       setDocTitle(result.title || file?.name || "Your document");
       setDocType(result.type || "Document");
-      toast.success(useDemo ? "Document analyzed (Demo)" : "Document analyzed with AI");
+      toast.success("Document analyzed with AI");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to analyze document.";
       if (msg.includes("429")) toast.error("AI is rate-limited. Try again in a moment.");
+      else if (msg.includes("402")) toast.error("AI quota exceeded. Please try again later.");
       else toast.error(msg);
     } finally {
       setAnalyzing(false);
@@ -114,8 +144,8 @@ const Documents = () => {
         subtitle="Upload a contract, university letter, official paper, or Bulgarian text. We explain it in simple language."
       >
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
-          <span className={`w-2 h-2 rounded-full ${isLive && sirmaConfigured ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
-          {isLive && sirmaConfigured ? "Live AI" : "Demo mode"}
+          <span className={`w-2 h-2 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+          {isLive ? "Live AI (Gemini)" : "Demo mode"}
         </span>
       </PageHeader>
 
