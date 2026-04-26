@@ -25,10 +25,10 @@ export function Sidebar() {
             <aside className={cn('hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 transition-all duration-500 ease-in-out', isCollapsed ? 'w-16' : 'w-64')}>
 
                 {/* Logo at top */}
-                <div className={cn('flex items-center h-14 border-b border-border transition-all duration-500 shrink-0', isCollapsed ? 'justify-center px-2' : 'px-4')}>
+                <div className={cn('flex items-center h-14 transition-all duration-500 shrink-0', isCollapsed ? 'justify-center px-2' : 'px-4')}>
                     {isCollapsed
                         ? <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-10 w-10 rounded-lg object-cover" />
-                        : <Logo size="sm" />
+                        : <Logo size="lg" />
                     }
                 </div>
 
