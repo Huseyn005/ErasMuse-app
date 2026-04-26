@@ -78,7 +78,7 @@ export function Header() {
                 {/* Language Selector */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="hidden sm:inline-flex items-center gap-1.5 px-3">
+                        <Button variant="ghost" size="sm" className="hidden sm:inline-flex items-center gap-1.5 px-3 m1-2">
                             <Languages className="w-6 h-6" />
                             <span className="text-xs font-medium">{currentLang.flag}</span>
                         </Button>
