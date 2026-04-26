@@ -123,17 +123,6 @@ export function Header() {
                             {t('header.theme')}: {isDark ? t('profile.dark') : t('profile.light')}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        {/* Language submenu in profile */}
-                        <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">{t('header.language')}</DropdownMenuLabel>
-                        <div className="max-h-32 overflow-y-auto">
-                            {LANGS.slice(0, 5).map(l => (
-                                <DropdownMenuItem key={l.code} onClick={() => changeLanguage(l.code)} className={`text-sm ${i18n.language === l.code ? 'bg-accent' : ''}`}>
-                                    <span className="w-6 text-xs">{l.flag}</span>
-                                    {l.name}
-                                </DropdownMenuItem>
-                            ))}
-                        </div>
-                        <DropdownMenuSeparator />
                     </DropdownMenuContent>
                 </DropdownMenu>
 
