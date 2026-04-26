@@ -308,11 +308,20 @@
   "profile": {
     "title": "Profil",
     "subtitle": "Seçimləriniz və parametrləriniz.",
-    "language": "Dil",
+    "language": "Üstünlük verilən dil",
     "theme": "Mövzu",
     "light": "İşıqlı",
     "dark": "Qaranlıq",
-    "system": "Sistem"
+    "system": "Sistem",
+    "userType": "İstifadəçi növü",
+    "interests": "Maraqlar",
+    "budget": "Büdcə",
+    "socialPreference": "Sosial seçim",
+    "buddyPreference": "Dost seçimi",
+    "mapStartingPoint": "Xəritə başlanğıc nöqtəsi",
+    "transportConfidence": "Nəqliyyat inamı",
+    "savePreferences": "Seçimləri saxla",
+    "saved": "Seçimlər saxlanıldı"
   },
   "documents": {
     "title": "Sənədlər",

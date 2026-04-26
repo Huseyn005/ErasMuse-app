@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED = ".pdf,.jpg,.jpeg,.png,.webp,.txt,.md,.docx";
 
 const Documents = () => {
+  const { t } = useTranslation();
   const { isLive } = useAIMode();
   const [selected, setSelected] = useState<string>(sampleDocuments[0].id);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -147,12 +149,12 @@ const Documents = () => {
   return (
     <div className="px-4 lg:px-8 py-6 max-w-5xl mx-auto space-y-4">
       <PageHeader
-        title="Document Analyzer"
-        subtitle="Upload any document in Bulgarian or another language — I'll explain it simply."
+        title={t('documents.title')}
+        subtitle={t('documents.subtitle')}
       >
         <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-medium">
           <span className={`w-2 h-2 rounded-full ${isLive ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
-          {isLive ? "Live AI" : "Demo mode"}
+          {isLive ? t('ask.liveAI') : t('ask.demoMode')}
         </span>
       </PageHeader>
 

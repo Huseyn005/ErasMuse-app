@@ -308,11 +308,20 @@
   "profile": {
     "title": "Профиль",
     "subtitle": "Ваши предпочтения и настройки.",
-    "language": "Язык",
+    "language": "Предпочитаемый язык",
     "theme": "Тема",
     "light": "Светлая",
     "dark": "Тёмная",
-    "system": "Системная"
+    "system": "Системная",
+    "userType": "Тип пользователя",
+    "interests": "Интересы",
+    "budget": "Бюджет",
+    "socialPreference": "Социальные предпочтения",
+    "buddyPreference": "Предпочтения по друзьям",
+    "mapStartingPoint": "Начальная точка на карте",
+    "transportConfidence": "Уровень владения транспортом",
+    "savePreferences": "Сохранить настройки",
+    "saved": "Настройки сохранены"
   },
   "documents": {
     "title": "Документы",
