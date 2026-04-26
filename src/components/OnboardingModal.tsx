@@ -58,7 +58,7 @@ export function OnboardingModal() {
                         </span>
                     </div>
                 </div>
-                <div className="p-4 space-y-3 min-h-[320px] flex flex-col">
+                <div className="pt-2 px-4 pb-4 space-y-3 min-h-[320px] flex flex-col">
                     {step === 1 && (
                         <>
                             <h3 className="text-lg font-display font-bold">Welcome! Who are you?</h3>
