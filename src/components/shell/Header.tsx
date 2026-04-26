@@ -55,8 +55,11 @@ export function Header() {
                     </SheetContent>
                 </Sheet>
 
-                {/* Logo - visible on mobile and desktop */}
-                <div className="shrink-0">
+                {/* Logo - on mobile always full, on desktop only text when sidebar expanded, full when collapsed */}
+                <div className="shrink-0 lg:hidden">
+                    <Logo size="md" />
+                </div>
+                <div className={cn('shrink-0 hidden lg:block', !isCollapsed && 'lg:hidden')}>
                     <Logo size="md" />
                 </div>
 
