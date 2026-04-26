@@ -325,7 +325,37 @@
   },
   "documents": {
     "title": "Belgeler",
-    "subtitle": "Belgeleri, sözleşmeleri ve resmi mektupları yükleyin ve çözün."
+    "subtitle": "Belgeleri, sözleşmeleri ve resmi mektupları yükleyin ve çözün.",
+    "notLegalAdvice": "Hukuki tavsiye değildir.",
+    "disclaimer": "Bu araç belgeleri anlamanıza, önemli noktaları görmenize ve sorular hazırlamanıza yardımcı olur.",
+    "dropHere": "Belgenizi buraya bırakın veya dosya seçin",
+    "accepted": "Kabul edilenler: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Maks 10 MB",
+    "chooseFile": "Dosya seç",
+    "orPasteText": "Veya belge metni yapıştırın",
+    "pastePlaceholder": "Bir sözleşme maddesi, mektup veya herhangi bir belge metnini herhangi bir dilde yapıştırın...",
+    "analyzeWithAI": "AI ile analiz et",
+    "analyzing": "Analiz ediliyor...",
+    "orTrySample": "VEYA BİR ÖRNEK DENEYİN",
+    "sampleDocument": "Örnek belge",
+    "loadSample": "Örnek yükle",
+    "newDocument": "Yeni Belge",
+    "simpleExplanation": "Basit açıklama",
+    "keyDetails": "Temel detaylar",
+    "riskFlags": "Risk işaretleri",
+    "questionsToAsk": "Sorulacak sorular",
+    "translatedSummary": "Çevrilmiş özet (Bulgarca)",
+    "generateMessage": "Mesaj oluştur",
+    "english": "İngilizce",
+    "bulgarian": "Bulgarca",
+    "copy": "Kopyala",
+    "fileTooLarge": "Dosya çok büyük. Maks 10 MB.",
+    "chooseFileOrPaste": "Önce bir dosya seçin veya belge metni yapıştırın."
+  },
+  "search": {
+    "placeholder": "Etkinlik, gizli hazine, kampüs, rota ara..."
+  },
+  "search": {
+    "placeholder": "Etkinlik, gizli hazine, kampüs, rota ara..."
   },
   "common": {
     "save": "Kaydet",

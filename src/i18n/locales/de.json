@@ -325,7 +325,37 @@
   },
   "documents": {
     "title": "Dokumente",
-    "subtitle": "Laden Sie Dokumente, Verträge und offizielle Briefe hoch und dekodieren Sie sie."
+    "subtitle": "Laden Sie Dokumente, Verträge und offizielle Briefe hoch und dekodieren Sie sie.",
+    "notLegalAdvice": "Keine Rechtsberatung.",
+    "disclaimer": "Dieses Tool hilft Ihnen, Dokumente zu verstehen, wichtige Punkte zu erkennen und Fragen vorzubereiten.",
+    "dropHere": "Legen Sie Ihr Dokument hier ab oder wählen Sie eine Datei",
+    "accepted": "Akzeptiert: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB",
+    "chooseFile": "Datei wählen",
+    "orPasteText": "Oder Dokumenttext einfügen",
+    "pastePlaceholder": "Fügen Sie eine Vertragsklausel, einen Brief oder einen beliebigen Dokumenttext in einer beliebigen Sprache ein...",
+    "analyzeWithAI": "Mit AI analysieren",
+    "analyzing": "Analysieren...",
+    "orTrySample": "ODER PROBIEREN SIE EIN BEISPIEL",
+    "sampleDocument": "Beispieldokument",
+    "loadSample": "Beispiel laden",
+    "newDocument": "Neues Dokument",
+    "simpleExplanation": "Einfache Erklärung",
+    "keyDetails": "Wichtige Details",
+    "riskFlags": "Risikohinweise",
+    "questionsToAsk": "Zu stellende Fragen",
+    "translatedSummary": "Übersetzte Zusammenfassung (Bulgarisch)",
+    "generateMessage": "Nachricht generieren",
+    "english": "Englisch",
+    "bulgarian": "Bulgarisch",
+    "copy": "Kopieren",
+    "fileTooLarge": "Datei zu groß. Max 10 MB.",
+    "chooseFileOrPaste": "Wählen Sie zuerst eine Datei oder fügen Sie Dokumenttext ein."
+  },
+  "search": {
+    "placeholder": "Events, Schätze, Campus, Routen suchen..."
+  },
+  "search": {
+    "placeholder": "Events, Schätze, Campus, Routen suchen..."
   },
   "common": {
     "save": "Speichern",

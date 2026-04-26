@@ -161,7 +161,7 @@ const Documents = () => {
       <div className="rounded-2xl border border-primary/20 py-2 px-4 text-sm text-foreground/80 bg-primary/5 flex items-start gap-3">
         <span className="text-primary text-lg leading-none">&#9432;</span>
         <span>
-          <strong className="text-foreground">{t('documents.notLegalAdvice')}</strong> {t('documents.disclaimer')}
+          <strong className="text-foreground">{t('documents.notLegalAdvice')}</strong>{' '}{t('documents.disclaimer')}
         </span>
       </div>
 
@@ -190,13 +190,13 @@ const Documents = () => {
             }`}
           >
             <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
-            <p className="mt-2 font-semibold">Drop your document here or choose a file</p>
+            <p className="mt-2 font-semibold">{t('documents.dropHere')}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Accepted: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB
+              {t('documents.accepted')}
             </p>
             <div className="mt-3 flex flex-wrap gap-2 justify-center">
-              <Button variant="outline" onClick={() => inputRef.current?.click()}>
-                Choose file
+<Button variant="outline" onClick={() => inputRef.current?.click()}>
+                {t('documents.chooseFile')}
               </Button>
               {file && (
                 <span className="inline-flex items-center gap-2 px-3 h-9 rounded-xl border border-border bg-card text-sm">
@@ -215,13 +215,13 @@ const Documents = () => {
 
             {/* Paste fallback */}
             <div className="mt-5 text-left">
-              <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                Or paste document text
+<label className="block text-xs font-semibold text-muted-foreground mb-1">
+                {t('documents.orPasteText')}
               </label>
               <textarea
                 value={pasted}
                 onChange={(e) => { setPasted(e.target.value); if (e.target.value) setFile(null); }}
-                placeholder="Paste a contract clause, a letter, or any document text in any language…"
+                placeholder={t('documents.pasteTextPlaceholder')}
                 rows={4}
                 className="w-full rounded-xl border border-border bg-card text-sm p-3 outline-none focus:ring-2 focus:ring-primary/40"
               />
@@ -235,18 +235,18 @@ const Documents = () => {
                 className="gap-2"
               >
                 {analyzing
-                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing…</>
-                  : <><Sparkles className="w-4 h-4" /> Analyze with AI</>}
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('documents.analyzing')}</>
+                  : <><Sparkles className="w-4 h-4" /> {t('documents.analyzeWithAI')}</>}
               </Button>
             </div>
           </div>
 
           {/* Sample fallback */}
           <div className="surface p-5">
-            <div className="text-xs font-semibold text-muted-foreground uppercase mb-2">Or try a sample</div>
+            <div className="text-xs font-semibold text-muted-foreground uppercase mb-2">{t('documents.orTrySample')}</div>
             <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
               <label className="flex-1">
-                <span className="block text-xs font-semibold text-muted-foreground mb-1">Sample document</span>
+                <span className="block text-xs font-semibold text-muted-foreground mb-1">{t('documents.sampleDocument')}</span>
                 <select
                   value={selected}
                   onChange={e => setSelected(e.target.value)}
@@ -256,7 +256,7 @@ const Documents = () => {
                 </select>
               </label>
               <Button variant="outline" onClick={analyzeSample} disabled={analyzing} className="gap-2">
-                <FileText className="w-4 h-4" /> Load sample
+                <FileText className="w-4 h-4" /> {t('documents.loadSample')}
               </Button>
             </div>
           </div>
@@ -272,7 +272,7 @@ const Documents = () => {
               onClick={startNewScan} 
               className="gap-2 px-8 py-6 text-base h-auto"
             >
-              <Upload className="w-5 h-5" /> New Document
+              <Upload className="w-5 h-5" /> {t('documents.newDocument')}
             </Button>
           </div>
 
@@ -283,13 +283,13 @@ const Documents = () => {
           </div>
 
           <div className="surface p-5 bg-gradient-card">
-            <h3 className="font-display font-bold text-lg">Simple explanation</h3>
+            <h3 className="font-display font-bold text-lg">{t('documents.simpleExplanation')}</h3>
             <p className="text-sm mt-2">{analysis.simpleExplanation}</p>
           </div>
 
           {analysis.keyDetails?.length > 0 && (
             <div className="surface p-5">
-              <h3 className="font-display font-bold text-lg mb-3">Key details</h3>
+              <h3 className="font-display font-bold text-lg mb-3">{t('documents.keyDetails')}</h3>
               <div className="grid sm:grid-cols-2 gap-2">
                 {analysis.keyDetails.map((k, i) => (
                   <div key={`${k.label}-${i}`} className="flex items-start justify-between gap-2 px-3 py-2 rounded-xl border border-border">
@@ -304,7 +304,7 @@ const Documents = () => {
           {analysis.riskFlags?.length > 0 && (
             <div className="surface p-5 border-warning/40 bg-warning-soft">
               <h3 className="font-display font-bold text-lg flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-warning" /> Risk flags
+                <AlertTriangle className="w-4 h-4 text-warning" /> {t('documents.riskFlags')}
               </h3>
               <div className="mt-3 space-y-2">
                 {analysis.riskFlags.map((r, i) => (
