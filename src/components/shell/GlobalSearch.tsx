@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { events } from "@/data/events";
 import { hiddenGems } from "@/data/hiddenGems";
@@ -11,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 type Result = { id: string; label: string; type: string; href: string; chip: string };
 
 export function GlobalSearch() {
+  const { t } = useTranslation();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ export function GlobalSearch() {
           onChange={e => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          placeholder="Search events, gems, campus, routes…"
+          placeholder={t('search.placeholder')}
           className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
       </div>

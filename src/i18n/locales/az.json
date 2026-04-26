@@ -325,7 +325,37 @@
   },
   "documents": {
     "title": "Sənədlər",
-    "subtitle": "Sənədləri, müqavilələri və rəsmi məktubları yükləyin və dekod edin."
+    "subtitle": "Sənədləri, müqavilələri və rəsmi məktubları yükləyin və dekod edin.",
+    "notLegalAdvice": "Hüquqi məsləhət deyil.",
+    "disclaimer": "Bu alət sənədləri anlamağa, əsas məqamları görməyə və suallar hazırlamağa kömək edir.",
+    "dropHere": "Sənədinizi buraya atın və ya fayl seçin",
+    "accepted": "Qəbul edilən: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Maks 10 MB",
+    "chooseFile": "Fayl seç",
+    "orPasteText": "Və ya sənəd mətni yapışdırın",
+    "pastePlaceholder": "Müqavilə bəndi, məktub və ya hər hansı bir dildə sənəd mətni yapışdırın...",
+    "analyzeWithAI": "AI ilə analiz et",
+    "analyzing": "Analiz edilir...",
+    "orTrySample": "VƏ YA NÜMUNƏ SINAYIN",
+    "sampleDocument": "Nümunə sənəd",
+    "loadSample": "Nümunə yüklə",
+    "newDocument": "Yeni Sənəd",
+    "simpleExplanation": "Sadə izahat",
+    "keyDetails": "Əsas detallar",
+    "riskFlags": "Risk işarələri",
+    "questionsToAsk": "Verilməli suallar",
+    "translatedSummary": "Tərcümə edilmiş xülasə (Bolqarca)",
+    "generateMessage": "Mesaj yarat",
+    "english": "İngiliscə",
+    "bulgarian": "Bolqarca",
+    "copy": "Kopyala",
+    "fileTooLarge": "Fayl çox böyükdür. Maks 10 MB.",
+    "chooseFileOrPaste": "Əvvəlcə fayl seçin və ya sənəd mətni yapışdırın."
+  },
+  "search": {
+    "placeholder": "Tədbir, gizli incilər, kampus, marşrut axtar..."
+  },
+  "search": {
+    "placeholder": "Tədbir, gizli incilər, kampus, marşrut axtar..."
   },
   "common": {
     "save": "Saxla",
