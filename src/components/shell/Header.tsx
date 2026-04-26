@@ -41,7 +41,7 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl pt-4">
+        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl pt-3">
             <div className="flex items-center gap-3 px-4 lg:px-6 h-14">
                 {/* Mobile menu */}
                 <Sheet>
