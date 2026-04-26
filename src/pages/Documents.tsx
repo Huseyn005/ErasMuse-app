@@ -145,7 +145,7 @@ const Documents = () => {
   };
 
   return (
-    <div className="px-4 lg:px-8 py-6 max-w-5xl mx-auto space-y-8">
+    <div className="px-4 lg:px-8 py-6 max-w-5xl mx-auto space-y-4">
       <PageHeader
         title="Document Analyzer"
         subtitle="Upload any document in Bulgarian or another language — I'll explain it simply."
