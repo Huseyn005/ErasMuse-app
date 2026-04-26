@@ -71,7 +71,7 @@ export function OnboardingModal() {
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-between mt-auto">
+                            <div className="flex items-center justify-between mt-auto pt-3">
                                 <p className="text-sm text-muted-foreground">We'll personalize what you see.</p>
                                 <Button onClick={() => setStep(2)} disabled={!draftType}>
                                     Next
