@@ -67,6 +67,7 @@ const Campus = () => {
   const { add } = usePlan();
   const [done, setDone] = useLocalStorage<string[]>("erasmuse:checklist", []);
   const [open, setOpen] = useState<string | null>(null);
+  const [added, setAdded] = useState<string[]>([]);
 
   const checklistItems = [
     t("campus.checklistItems.accommodation"),
@@ -189,15 +190,13 @@ const Campus = () => {
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => add({
-                      refId: a.id,
-                      type: "reminder",
-                      title: a.title,
-                      meta: `${a.when} - ${a.where}`,
-                      href: "/campus"
-                    })}
+                    variant={added.includes(a.id) ? "outline" : "default"}
+                    onClick={() => {
+                        add({ refId: a.id, type: "reminder", title: a.title, meta: `${a.when} - ${a.where}`, href: "/campus" });
+                        setAdded(prev => [...prev, a.id]);
+                    }}
                   >
-                    {t("campus.addToPlan")}
+                      {added.includes(a.id) ? "Added ✔" : t("campus.addToPlan")}
                   </Button>
                 </div>
               </div>
