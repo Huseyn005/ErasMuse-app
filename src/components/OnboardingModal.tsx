@@ -45,7 +45,7 @@ export function OnboardingModal() {
     };
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) finish(); }}>
             <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 shadow-glow">
                 <DialogTitle className="sr-only">Welcome to ERASMuse</DialogTitle>
                 <div className="bg-gradient-hero p-5">
