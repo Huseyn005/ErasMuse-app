@@ -134,10 +134,6 @@ export function Header() {
                             ))}
                         </div>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate('/profile')}>
-                            <Settings className="w-4 h-4 mr-2" />
-                            {t('header.settings')}
-                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 
