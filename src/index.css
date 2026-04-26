@@ -189,3 +189,25 @@
 }
 .animate-fade-up { animation: fade-up 0.4s ease-out both; }
 .animate-pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+.erasmuse-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0B3D5C;
+  padding: 16px;
+}
+
+.erasmuse-header img {
+  height: 48px;
+  width: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.erasmuse-header span {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.5px;
+}
