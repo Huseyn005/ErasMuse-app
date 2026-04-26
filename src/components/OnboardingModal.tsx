@@ -46,25 +46,22 @@ export function OnboardingModal() {
 
     return (
         <Dialog open={open}>
-            <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-0 shadow-glow">
+            <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 shadow-glow">
                 <DialogTitle className="sr-only">Welcome to ERASMuse</DialogTitle>
-                <div className="bg-gradient-hero p-6">
+                <div className="bg-gradient-hero p-5">
                     <div className="flex items-center gap-2">
-                        <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-12 w-12 rounded-lg object-cover" />
-                        <span className="font-display font-extrabold tracking-tight text-3xl leading-none">
+                        <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-10 w-10 rounded-lg object-cover" />
+                        <span className="font-display font-extrabold tracking-tight text-2xl leading-none">
                             <span className="text-white">ERAS</span>
                             <span className="bg-gradient-to-br from-amber-400 to-orange-300 bg-clip-text text-transparent">M</span>
                             <span className="text-white">use</span>
                         </span>
                     </div>
                 </div>
-                <div className="p-6 space-y-5">
+                <div className="p-5 space-y-4">
                     {step === 1 && (
                         <>
-                            <div>
-                                <h3 className="text-xl font-display font-bold">Welcome! Who are you?</h3>
-                                <p className="text-sm text-muted-foreground mt-1">We'll personalize what you see.</p>
-                            </div>
+                            <h3 className="text-lg font-display font-bold">Welcome! Who are you?</h3>
                             <div className="grid grid-cols-2 gap-2">
                                 {types.map(({ v, icon: Icon, sub }) => (
                                     <button key={v} onClick={() => setDraftType(v)} className={`text-left p-3 rounded-xl border transition-all ${draftType === v ? 'border-primary bg-secondary shadow-soft' : 'border-border hover:border-primary/40'}`}>
@@ -74,8 +71,8 @@ export function OnboardingModal() {
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex justify-between">
-                                <div />
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm text-muted-foreground">We'll personalize what you see.</p>
                                 <Button onClick={() => setStep(2)} disabled={!draftType}>
                                     Next
                                 </Button>
@@ -86,7 +83,7 @@ export function OnboardingModal() {
                     {step === 2 && (
                         <>
                             <div>
-                                <h3 className="text-xl font-display font-bold">What language do you prefer?</h3>
+                                <h3 className="text-lg font-display font-bold">What language do you prefer?</h3>
                                 <p className="text-sm text-muted-foreground mt-1">You can change it any time in the header.</p>
                             </div>
                             <div className="grid grid-cols-3 gap-2">
