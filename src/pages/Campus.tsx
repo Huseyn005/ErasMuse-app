@@ -182,11 +182,11 @@ const Campus = () => {
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setOpen(open === a.id ? null : a.id)}
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setOpen(open === a.id ? null : a.id)}
                   >
-                    {open === a.id ? t("campus.hideSummary") : t("campus.summarize")}
+                      {open === a.id ? t("campus.hideSummary") : t("campus.summarize")}
                   </Button>
                   <Button
                     size="sm"
