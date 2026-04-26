@@ -308,11 +308,20 @@
   "profile": {
     "title": "Profil",
     "subtitle": "Tercihleriniz ve ayarlarınız.",
-    "language": "Dil",
+    "language": "Tercih edilen dil",
     "theme": "Tema",
     "light": "Açık",
     "dark": "Koyu",
-    "system": "Sistem"
+    "system": "Sistem",
+    "userType": "Kullanıcı tipi",
+    "interests": "İlgi alanları",
+    "budget": "Bütçe",
+    "socialPreference": "Sosyal tercih",
+    "buddyPreference": "Arkadaş tercihi",
+    "mapStartingPoint": "Harita başlangıç noktası",
+    "transportConfidence": "Ulaşım güveni",
+    "savePreferences": "Tercihleri kaydet",
+    "saved": "Tercihler kaydedildi"
   },
   "documents": {
     "title": "Belgeler",

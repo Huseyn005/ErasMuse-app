@@ -314,11 +314,20 @@
   "profile": {
     "title": "Profile",
     "subtitle": "Your preferences and settings.",
-    "language": "Language",
+    "language": "Preferred language",
     "theme": "Theme",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "userType": "User type",
+    "interests": "Interests",
+    "budget": "Budget",
+    "socialPreference": "Social preference",
+    "buddyPreference": "Buddy preference",
+    "mapStartingPoint": "Map starting point",
+    "transportConfidence": "Transport confidence",
+    "savePreferences": "Save preferences",
+    "saved": "Preferences saved"
   },
   "documents": {
     "title": "Documents",
