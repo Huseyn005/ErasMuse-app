@@ -31,7 +31,6 @@ const Move = () => {
   const [tFrom, setTFrom] = useState("Ruse");
   const [tTo, setTTo] = useState("Sofia");
   const [tDate, setTDate] = useState("");
-  const [tDiscount, setTDiscount] = useState(true);
   const [ticket, setTicket] = useState<Route | null>(null);
 
   const findRoute = () => {
@@ -104,12 +103,6 @@ const Move = () => {
             <Field label="From"><input value={tFrom} onChange={e => setTFrom(e.target.value)} className="input" /></Field>
             <Field label="To"><input value={tTo} onChange={e => setTTo(e.target.value)} className="input" /></Field>
             <Field label="Date"><input type="date" value={tDate} onChange={e => setTDate(e.target.value)} className="input" /></Field>
-            <Field label="Student discount?">
-              <div className="flex gap-2">
-                <Button type="button" size="sm" variant={tDiscount ? "default" : "outline"} onClick={() => setTDiscount(true)}>Yes</Button>
-                <Button type="button" size="sm" variant={!tDiscount ? "default" : "outline"} onClick={() => setTDiscount(false)}>No</Button>
-              </div>
-            </Field>
           </div>
           <Button onClick={explainTicket} className="w-full">Explain how to buy ticket</Button>
 
