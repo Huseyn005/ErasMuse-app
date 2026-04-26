@@ -58,7 +58,7 @@ export function OnboardingModal() {
                         </span>
                     </div>
                 </div>
-                <div className="p-5 space-y-4">
+                <div className="p-4 space-y-3 min-h-[320px] flex flex-col">
                     {step === 1 && (
                         <>
                             <h3 className="text-lg font-display font-bold">Welcome! Who are you?</h3>
@@ -71,7 +71,7 @@ export function OnboardingModal() {
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between mt-auto">
                                 <p className="text-sm text-muted-foreground">We'll personalize what you see.</p>
                                 <Button onClick={() => setStep(2)} disabled={!draftType}>
                                     Next
@@ -98,7 +98,7 @@ export function OnboardingModal() {
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-between mt-auto">
                                 <Button variant="ghost" onClick={() => setStep(1)}>
                                     Back
                                 </Button>
