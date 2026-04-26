@@ -67,13 +67,13 @@ export function SidebarEmergencyButton({ isCollapsed }: { isCollapsed: boolean }
                     // Collapsed: vertical SOS text, rotated
                     <button
                         className={cn(
-                            'w-11 h-11 mx-auto flex items-center justify-center rounded-2xl',
+                            'w-11 h-11 flex items-center justify-center rounded-2xl',
                             'bg-red-600 hover:bg-red-700 text-white',
                             'transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
                         )}
                         aria-label={t('emergency.button')}
                     >
-                        <span className="font-bold text-[11px] tracking-widest leading-none transition-transform duration-500 ease-in-out" style={{ writingMode: 'vertical-rl', letterSpacing: '0.15em' }}>
+                        <span className="font-bold text-[11px] tracking-widest leading-none transition-transform duration-500 ease-in-out" style={{ letterSpacing: '0.15em' }}>
                             SOS
                         </span>
                     </button>
