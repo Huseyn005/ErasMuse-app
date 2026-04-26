@@ -75,22 +75,6 @@ export function Header() {
                 {/* Spacer to push icons to right */}
                 <div className="flex-1" />
 
-                {/* AI Mode Toggle */}
-                <Button variant={isLive ? 'default' : 'outline'} size="sm" className={`hidden sm:inline-flex gap-1.5 text-xs ${isLive ? 'bg-primary hover:bg-primary/90' : ''}`} onClick={() => setAIMode(isLive ? 'demo' : 'live')}>
-                    {isLive ? (
-                        <>
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>{t('header.liveAI')}</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                        </>
-                    ) : (
-                        <>
-                            <FlaskConical className="w-5 h-5" />
-                            <span>{t('header.demo')}</span>
-                        </>
-                    )}
-                </Button>
-
                 {/* Language Selector */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -157,10 +141,29 @@ export function Header() {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
+
                 {/* Mobile search */}
                 <Button size="icon" variant="ghost" className="md:hidden" onClick={() => navigate('/explore')}>
                     <Search className="w-4 h-4" />
                 </Button>
+
+                {/* AI Mode Toggle */}
+                <Button variant={isLive ? 'default' : 'outline'} size="sm" className={`hidden sm:inline-flex gap-1.5 text-xs ${isLive ? 'bg-primary hover:bg-primary/90' : ''}`} onClick={() => setAIMode(isLive ? 'demo' : 'live')}>
+                    {isLive ? (
+                        <>
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>{t('header.liveAI')}</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        </>
+                    ) : (
+                        <>
+                            <FlaskConical className="w-5 h-5" />
+                            <span>{t('header.demo')}</span>
+                        </>
+                    )}
+                </Button>
+
+
             </div>
         </header>
     );
