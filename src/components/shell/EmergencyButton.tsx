@@ -67,7 +67,7 @@ export function SidebarEmergencyButton({ isCollapsed }: { isCollapsed: boolean }
                     // Collapsed: vertical SOS text, rotated
                     <button
                         className={cn(
-                            'w-14 h-14 mx-auto flex items-center justify-center rounded-2xl',
+                            'w-12 h-12 mx-auto flex items-center justify-center rounded-2xl',
                             'bg-red-600 hover:bg-red-700 text-white',
                             'transition-all duration-500 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
                         )}
