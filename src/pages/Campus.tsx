@@ -89,7 +89,7 @@ const Campus = () => {
 
       {/* Facility Image Cards Grid */}
       <section>
-        <h2 className="font-display text-3xl font-bold mb-4 text-center">{t("campus.facilities")}</h2>
+        <h2 className="font-display text-3xl font-bold mb-6 text-center">{t("campus.facilities")}</h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FACILITY_CARDS.map((card) => {
