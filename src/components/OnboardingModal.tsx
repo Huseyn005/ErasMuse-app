@@ -48,8 +48,15 @@ export function OnboardingModal() {
     <Dialog open={open}>
       <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-0 shadow-glow">
         <DialogTitle className="sr-only">Welcome to ERASMuse</DialogTitle>
-        <div className="bg-gradient-hero p-6 text-primary-foreground">
-          <Logo size="lg" />
+        <div className="bg-gradient-hero p-6">
+          <div className="flex items-center gap-2">
+            <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-12 w-12 rounded-lg object-cover" />
+            <span className="font-display font-extrabold tracking-tight text-3xl leading-none">
+              <span className="text-white">ERAS</span>
+              <span className="bg-gradient-to-br from-amber-400 to-orange-300 bg-clip-text text-transparent">M</span>
+              <span className="text-white">use</span>
+            </span>
+          </div>
         </div>
         <div className="p-6 space-y-5">
           {step === 0 && (
