@@ -156,12 +156,6 @@ const Documents = () => {
         </span>
       </PageHeader>
 
-      <div className="rounded-2xl border border-primary/20 py-2 px-4 text-sm text-foreground/80 bg-primary/5 flex items-start gap-3">
-        <span className="text-primary text-lg leading-none">&#9432;</span>
-        <span>
-          <strong className="text-foreground">Not legal advice.</strong> This tool helps you understand documents, spot key points, and prepare questions to ask.
-        </span>
-      </div>
 
       {/* Hidden file input - always present for reference */}
       <input
@@ -237,6 +231,12 @@ const Documents = () => {
                   : <><Sparkles className="w-4 h-4" /> Analyze with AI</>}
               </Button>
             </div>
+          </div>
+          <div className="rounded-2xl border border-primary/20 py-2 px-4 text-sm text-foreground/80 bg-primary/5 flex items-start gap-3">
+            <span className="text-primary text-lg leading-none">&#9432;</span>
+            <span>
+              <strong className="text-foreground">Not legal advice.</strong> This tool helps you understand documents, spot key points, and prepare questions to ask.
+            </span>
           </div>
 
           {/* Sample fallback */}
