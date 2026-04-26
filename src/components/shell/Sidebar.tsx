@@ -31,14 +31,14 @@ export function Sidebar() {
                                     {({ isActive }) => (
                                         <span
                                             className={cn(
-                                                'flex items-center rounded-xl transition-all duration-500 ease-in-out w-full',
+                                                'flex items-center rounded-xl transition-all duration-300 ease-in-out w-full',
                                                 isCollapsed
                                                     ? cn('justify-center w-12 h-12 mx-auto', isActive ? 'bg-primary/10 text-primary border-l-2 border-primary' : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground')
                                                     : cn('gap-3 px-4 py-3.5', isActive ? 'bg-primary/10 text-primary font-bold' : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground font-medium'),
                                             )}
                                         >
                                             <Icon className={cn('shrink-0', isCollapsed ? 'w-6 h-6' : 'w-5 h-5')} strokeWidth={isActive ? 2.5 : 2} />
-                                            {!isCollapsed && <span className="text-[15px] font-semibold truncate">{label}</span>}
+                                            {!isCollapsed && <span className="text-[15px] font-semibold truncate transition-opacity duration-300">{label}</span>}
                                         </span>
                                     )}
                                 </NavLink>
