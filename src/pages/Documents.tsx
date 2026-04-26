@@ -137,6 +137,13 @@ const Documents = () => {
     toast.success("Copied to clipboard ✓");
   };
 
+  const startNewScan = () => {
+    setFile(null);
+    setPasted("");
+    reset();
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
   return (
     <div className="px-4 lg:px-8 py-6 max-w-5xl mx-auto space-y-8">
       <PageHeader
@@ -153,103 +160,115 @@ const Documents = () => {
         ⚖️ This tool does not replace legal advice. It helps you understand the document, identify important points, and prepare questions.
       </div>
 
-      {/* Upload zone */}
-      <div
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault(); setDragOver(false);
-          const f = e.dataTransfer.files?.[0];
-          if (f) onPickFile(f);
-        }}
-        className={`surface p-6 bg-gradient-card border-dashed border-2 text-center transition-colors ${
-          dragOver ? "border-primary bg-primary/5" : ""
-        }`}
-      >
-        <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
-        <p className="mt-2 font-semibold">Drop your document here or choose a file</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Accepted: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB
-        </p>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPTED}
-          className="hidden"
-          onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
-        />
-        <div className="mt-3 flex flex-wrap gap-2 justify-center">
-          <Button variant="outline" onClick={() => inputRef.current?.click()}>
-            Choose file
-          </Button>
-          {file && (
-            <span className="inline-flex items-center gap-2 px-3 h-9 rounded-xl border border-border bg-card text-sm">
-              <FileText className="w-3.5 h-3.5" />
-              <span className="truncate max-w-[200px]">{file.name}</span>
-              <button
-                onClick={() => { setFile(null); reset(); if (inputRef.current) inputRef.current.value = ""; }}
-                className="text-muted-foreground hover:text-foreground"
-                aria-label="Remove file"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </span>
-          )}
-        </div>
+      {/* Hidden file input - always present for reference */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED}
+        className="hidden"
+        onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+      />
 
-        {/* Paste fallback */}
-        <div className="mt-5 text-left">
-          <label className="block text-xs font-semibold text-muted-foreground mb-1">
-            Or paste document text
-          </label>
-          <textarea
-            value={pasted}
-            onChange={(e) => { setPasted(e.target.value); if (e.target.value) setFile(null); }}
-            placeholder="Paste a contract clause, a letter, or any document text in any language…"
-            rows={4}
-            className="w-full rounded-xl border border-border bg-card text-sm p-3 outline-none focus:ring-2 focus:ring-primary/40"
-          />
-        </div>
-
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={analyzeReal}
-            disabled={analyzing || (!file && !pasted.trim())}
-            size="lg"
-            className="gap-2"
+      {/* Upload zone - hidden when analysis is ready */}
+      {!analysis && (
+        <>
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault(); setDragOver(false);
+              const f = e.dataTransfer.files?.[0];
+              if (f) onPickFile(f);
+            }}
+            className={`surface p-6 bg-gradient-card border-dashed border-2 text-center transition-colors ${
+              dragOver ? "border-primary bg-primary/5" : ""
+            }`}
           >
-            {analyzing
-              ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing…</>
-              : <><Sparkles className="w-4 h-4" /> Analyze with AI</>}
-          </Button>
-        </div>
-      </div>
+            <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
+            <p className="mt-2 font-semibold">Drop your document here or choose a file</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Accepted: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2 justify-center">
+              <Button variant="outline" onClick={() => inputRef.current?.click()}>
+                Choose file
+              </Button>
+              {file && (
+                <span className="inline-flex items-center gap-2 px-3 h-9 rounded-xl border border-border bg-card text-sm">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="truncate max-w-[200px]">{file.name}</span>
+                  <button
+                    onClick={() => { setFile(null); reset(); if (inputRef.current) inputRef.current.value = ""; }}
+                    className="text-muted-foreground hover:text-foreground"
+                    aria-label="Remove file"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+            </div>
 
-      {/* Sample fallback */}
-      <div className="surface p-5">
-        <div className="text-xs font-semibold text-muted-foreground uppercase mb-2">Or try a sample</div>
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
-          <label className="flex-1">
-            <span className="block text-xs font-semibold text-muted-foreground mb-1">Sample document</span>
-            <select
-              value={selected}
-              onChange={e => setSelected(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-border bg-card text-sm"
-            >
-              {sampleDocuments.map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
-            </select>
-          </label>
-          <Button variant="outline" onClick={analyzeSample} disabled={analyzing} className="gap-2">
-            <FileText className="w-4 h-4" /> Load sample
-          </Button>
-        </div>
-      </div>
+            {/* Paste fallback */}
+            <div className="mt-5 text-left">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                Or paste document text
+              </label>
+              <textarea
+                value={pasted}
+                onChange={(e) => { setPasted(e.target.value); if (e.target.value) setFile(null); }}
+                placeholder="Paste a contract clause, a letter, or any document text in any language…"
+                rows={4}
+                className="w-full rounded-xl border border-border bg-card text-sm p-3 outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <Button
+                onClick={analyzeReal}
+                disabled={analyzing || (!file && !pasted.trim())}
+                size="lg"
+                className="gap-2"
+              >
+                {analyzing
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing…</>
+                  : <><Sparkles className="w-4 h-4" /> Analyze with AI</>}
+              </Button>
+            </div>
+          </div>
+
+          {/* Sample fallback */}
+          <div className="surface p-5">
+            <div className="text-xs font-semibold text-muted-foreground uppercase mb-2">Or try a sample</div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
+              <label className="flex-1">
+                <span className="block text-xs font-semibold text-muted-foreground mb-1">Sample document</span>
+                <select
+                  value={selected}
+                  onChange={e => setSelected(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl border border-border bg-card text-sm"
+                >
+                  {sampleDocuments.map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
+                </select>
+              </label>
+              <Button variant="outline" onClick={analyzeSample} disabled={analyzing} className="gap-2">
+                <FileText className="w-4 h-4" /> Load sample
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
 
       {analysis && (
         <div className="space-y-4 animate-fade-up">
-          <div className="flex items-center gap-2 flex-wrap">
-            {docType && <Badge variant="secondary">{docType}</Badge>}
-            {docTitle && <span className="text-sm font-medium text-muted-foreground">{docTitle}</span>}
+          {/* Header with document info and new scan button */}
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              {docType && <Badge variant="secondary">{docType}</Badge>}
+              {docTitle && <span className="text-sm font-medium text-muted-foreground">{docTitle}</span>}
+            </div>
+            <Button variant="outline" onClick={startNewScan} className="gap-2">
+              <Upload className="w-4 h-4" /> New Document
+            </Button>
           </div>
 
           <div className="surface p-5 bg-gradient-card">
