@@ -26,7 +26,7 @@ export function OnboardingModal() {
     const { i18n } = useTranslation();
     const [profile, setProfile] = useProfile();
     const open = !profile.onboarded;
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(1);
     const [draftType, setDraftType] = useState<UserType | null>(profile.userType);
     const [draftLang, setDraftLang] = useState<Language>(profile.language);
 
@@ -59,23 +59,10 @@ export function OnboardingModal() {
                     </div>
                 </div>
                 <div className="p-6 space-y-5">
-                    {step === 0 && (
-                        <>
-                            <div>
-                                <h3 className="text-xl font-display font-bold">Welcome to ERASMuse</h3>
-                            </div>
-                            <div className="flex justify-end">
-                                <Button onClick={() => setStep(1)} className="bg-primary text-primary-foreground">
-                                    Get started
-                                </Button>
-                            </div>
-                        </>
-                    )}
-
                     {step === 1 && (
                         <>
                             <div>
-                                <h3 className="text-xl font-display font-bold">Who are you?</h3>
+                                <h3 className="text-xl font-display font-bold">Welcome! Who are you?</h3>
                                 <p className="text-sm text-muted-foreground mt-1">We'll personalize what you see.</p>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
@@ -88,9 +75,7 @@ export function OnboardingModal() {
                                 ))}
                             </div>
                             <div className="flex justify-between">
-                                <Button variant="ghost" onClick={() => setStep(0)}>
-                                    Back
-                                </Button>
+                                <div />
                                 <Button onClick={() => setStep(2)} disabled={!draftType}>
                                     Next
                                 </Button>
