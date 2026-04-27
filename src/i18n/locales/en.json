@@ -334,7 +334,7 @@
     "subtitle": "Upload and decode documents, contracts, and official letters.",
     "notLegalAdvice": "Not legal advice.",
     "disclaimer": "This tool helps you understand documents, spot key points, and prepare questions to ask.",
-    "dropDocument": "Drop your document here or choose a file",
+    "dropHere": "Drop your document here or choose a file",
     "accepted": "Accepted: PDF, JPG, PNG, WEBP, TXT, MD, DOCX · Max 10 MB",
     "chooseFile": "Choose file",
     "orPasteText": "Or paste document text",
