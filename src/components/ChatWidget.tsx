@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, X, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnswerCard } from "@/components/AnswerCard";
-import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
+import { sendMessage, aiConfigured, getAgents } from "@/lib/geminiAI";
 import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
 import { useAIMode } from "@/contexts/AIModeContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -42,11 +42,11 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isLive = globalLive && apiReady && sirmaConfigured;
+  const isLive = globalLive && apiReady && aiConfigured;
 
   // Initialize agent on mount
   useEffect(() => {
-    if (!sirmaConfigured) { 
+    if (!aiConfigured) { 
       setApiReady(false); 
       return; 
     }

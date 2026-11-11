@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 # ERASMuse: Your AI Life Copilot in Ruse
 
 <!-- Badges (Optional, can be removed if not desired for 0 values) -->
@@ -112,13 +114,7 @@ Follow these steps to get the ERASMuse application up and running on your local 
     ```
 
 3.  **Environment Variables**
-    Create a `.env` file in the root of the project. This file will store sensitive information like API keys and other configurations.
-    ```
-    # Example .env content
-    VITE_SOME_API_KEY=your_api_key_here
-    VITE_AI_SERVICE_URL=https://api.example.com/ai_endpoint
-    ```
-    *Note: Replace placeholder values with your actual API keys and configurations. A `.env.example` file is not provided, so create this file from scratch.*
+    Copy `.env.example` to `.env` and configure the browser-visible variables listed in [Configuration Options](#-configuration-options). Set server-only values as Supabase secrets; do not put them in the browser environment.
 
 4.  **Run in Development Mode**
     Start the development server:
@@ -126,7 +122,7 @@ Follow these steps to get the ERASMuse application up and running on your local 
     npm run dev
     ```
     
-    The application will typically be accessible at `http://localhost:5173` in your web browser.
+    The application will be accessible at `http://localhost:3001` in your web browser.
 
 5.  **Build for Production**
     To create an optimized production build:
@@ -150,17 +146,27 @@ Once the application is running locally or accessed via the [live deployment](ht
 
 ## 🔧 Configuration Options
 
-ERASMuse offers several configuration points to tailor the application to specific needs or development environments:
+Browser-visible variables (public by design, prefixed with `VITE_`):
 
-*   **`.env` file**: Customize API endpoints, keys, and other environment-specific variables.
-*   **`postcss.config.js`**: Configure PostCSS plugins like Tailwind CSS and Autoprefixer.
-*   **`eslint.config.js`**: Define and enforce code quality rules for JavaScript and TypeScript files.
-*   **`components.json`**: Configuration for Shadcn UI components, including base styles and paths.
-*   **`package.json`**: Manage project dependencies, scripts, and basic project metadata.
+* `VITE_SUPABASE_PROJECT_ID`
+* `VITE_SUPABASE_URL`
+* `VITE_SUPABASE_PUBLISHABLE_KEY`
+* `VITE_GOOGLE_MAPS_API_KEY`
+
+Server-only Supabase secrets (never prefix these with `VITE_`):
+
+* `GEMINI_API_KEY`
+* `ALLOWED_ORIGINS`
+
+The browser sends only the message and language to the Supabase `gemini-proxy` Edge Function.
+The proxy reads its Gemini API key from server-side Supabase secrets and calls the Gemini API.
+The shared function guard restricts allowed origins and limits request size and best-effort per-IP traffic.
+If the proxy is unavailable, the UI falls back to demo answers.
 
 ---
 
-## 📄 License Information
+## 📄 License
 
-This project is currently **unlicensed**.
+This project is licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 Huseyn.
 --

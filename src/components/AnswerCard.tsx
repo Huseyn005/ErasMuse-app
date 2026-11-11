@@ -1,15 +1,83 @@
+import { Fragment, type ReactNode } from "react";
 import type { AssistantAnswer } from "@/lib/mockAssistant";
 import { PhraseCard } from "./PhraseCard";
 import { AlertTriangle, ThumbsUp, ThumbsDown, Info } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
+function renderInlineMarkdown(text: string): ReactNode[] {
+  const tokens = text.split(/(\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_|`[^`]+`)/g);
+
+  return tokens.map((token, index) => {
+    if ((token.startsWith("**") && token.endsWith("**")) || (token.startsWith("__") && token.endsWith("__"))) {
+      return <strong key={index}>{token.slice(2, -2)}</strong>;
+    }
+    if ((token.startsWith("*") && token.endsWith("*")) || (token.startsWith("_") && token.endsWith("_"))) {
+      return <em key={index}>{token.slice(1, -1)}</em>;
+    }
+    if (token.startsWith("`") && token.endsWith("`")) {
+      return <code key={index}>{token.slice(1, -1)}</code>;
+    }
+    return token;
+  });
+}
+
+function MarkdownText({ text, className }: { text: string; className?: string }) {
+  const lines = text.split(/\r?\n/);
+  const blocks: ReactNode[] = [];
+
+  for (let index = 0; index < lines.length;) {
+    if (!lines[index].trim()) {
+      index += 1;
+      continue;
+    }
+
+    const listMatch = lines[index].match(/^\s*(?:([-*+])|(\d+)[.)])\s+(.+)$/);
+    if (listMatch) {
+      const isOrdered = Boolean(listMatch[2]);
+      const items: string[] = [];
+      while (index < lines.length) {
+        const itemMatch = lines[index].match(/^\s*(?:([-*+])|(\d+)[.)])\s+(.+)$/);
+        if (!itemMatch || Boolean(itemMatch[2]) !== isOrdered) break;
+        items.push(itemMatch[3]);
+        index += 1;
+      }
+
+      const List = isOrdered ? "ol" : "ul";
+      blocks.push(
+        <List key={`list-${index}`} className={isOrdered ? "list-decimal pl-5 space-y-1" : "list-disc pl-5 space-y-1"}>
+          {items.map((item, itemIndex) => <li key={itemIndex}>{renderInlineMarkdown(item)}</li>)}
+        </List>,
+      );
+      continue;
+    }
+
+    const paragraph: string[] = [];
+    while (index < lines.length && lines[index].trim() && !/^\s*(?:[-*+]|\d+[.)])\s+/.test(lines[index])) {
+      paragraph.push(lines[index].trim());
+      index += 1;
+    }
+    blocks.push(
+      <p key={`paragraph-${index}`} className="leading-relaxed">
+        {paragraph.map((line, lineIndex) => (
+          <Fragment key={lineIndex}>
+            {lineIndex > 0 && <br />}
+            {renderInlineMarkdown(line)}
+          </Fragment>
+        ))}
+      </p>,
+    );
+  }
+
+  return <div className={className}>{blocks}</div>;
+}
+
 export function AnswerCard({ answer, onAction }: { answer: AssistantAnswer; onAction?: (a: string) => void }) {
   return (
     <div className="space-y-3 animate-fade-up">
       <div className="surface p-5 bg-gradient-card">
         <h3 className="text-lg font-display font-bold">{answer.title}</h3>
-        <p className="text-sm text-muted-foreground mt-1.5">{answer.summary}</p>
+        <MarkdownText text={answer.summary} className="text-sm text-muted-foreground mt-1.5 space-y-2" />
       </div>
 
       {answer.steps.length > 0 && (
@@ -21,7 +89,7 @@ export function AnswerCard({ answer, onAction }: { answer: AssistantAnswer; onAc
                 <span className="shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
                   {i + 1}
                 </span>
-                <span>{s}</span>
+                <MarkdownText text={s} className="min-w-0 flex-1 space-y-2" />
               </li>
             ))}
           </ol>

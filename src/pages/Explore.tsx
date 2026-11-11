@@ -9,7 +9,8 @@ import { events } from "@/data/events";
 import { hiddenGems } from "@/data/hiddenGems";
 import { buddies } from "@/data/buddies";
 import { usePlan } from "@/hooks/usePlan";
-import { evening15LevaPlan } from "@/lib/mockAssistant";
+import { sendMessage } from "@/lib/geminiAI";
+import type { AssistantAnswer } from "@/lib/mockAssistant";
 import { AnswerCard } from "@/components/AnswerCard";
 import { Sparkles, MapPin, Users, Bookmark, Calendar, Search, Send } from "lucide-react";
 import { formatLv } from "@/lib/currency";
@@ -22,7 +23,7 @@ const Explore = () => {
   const [cat, setCat] = useState("All");
   const [selected, setSelected] = useState<string | null>(null);
   const [aiQuery, setAiQuery] = useState("");
-  const [plan, setPlan] = useState<typeof evening15LevaPlan | null>(null);
+  const [plan, setPlan] = useState<AssistantAnswer | null>(null);
   const [loading, setLoading] = useState(false);
 
   const categories = [
@@ -47,12 +48,21 @@ const Explore = () => {
   ];
 
   const generatePlan = async (query?: string) => {
+    const prompt = (query ?? aiQuery).trim();
+    if (!prompt) return;
+
     setLoading(true);
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setPlan(evening15LevaPlan);
-    setLoading(false);
-    toast.success("Your Ruse plan is ready");
+    setPlan(null);
+    try {
+      const answer = await sendMessage("default", prompt);
+      setPlan(answer);
+      toast.success("Your Ruse plan is ready");
+    } catch (error) {
+      console.error("Explore AI request failed:", error);
+      toast.error("Could not create your plan. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const quickFilters = [

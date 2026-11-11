@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { RuseMap, type MapMarker } from '@/components/RuseMap';
 import { Badge } from '@/components/ui/badge';
 import { WeatherWidget } from '@/components/WeatherWidget';
-import { sirmaConfigured } from '@/lib/sirmaAI';
+import { aiConfigured } from '@/lib/geminiAI';
 import { useAIMode } from '@/contexts/AIModeContext';
 import { ChatWidget } from '@/components/ChatWidget';
 
@@ -93,7 +93,7 @@ const Index = () => {
                             {/* Chat Header */}
                             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <span className={`w-2 h-2 rounded-full ${isLive && sirmaConfigured ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground'}`} />
+                                    <span className={`w-2 h-2 rounded-full ${isLive && aiConfigured ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground'}`} />
                                     <span className="text-sm font-medium text-foreground">Live AI</span>
                                     <span className="text-xs text-muted-foreground">- Demo</span>
                                 </div>
