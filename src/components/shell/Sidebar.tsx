@@ -71,26 +71,18 @@ export function Sidebar() {
                 </nav>
 
                 {/* Footer — Emergency + Collapse */}
-                <div className={cn('p-3 space-y-4')}>
+                <div className={cn('p-3 space-y-4 flex flex-col items-center')}>
                     <SidebarEmergencyButton isCollapsed={isCollapsed} />
 
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <button
                                 onClick={toggleSidebar}
-                                className={cn('w-full flex items-center gap-3 h-12 rounded-xl transition-all duration-500 ease-in-out text-muted-foreground hover:text-primary hover:bg-sidebar-accent', isCollapsed ? 'justify-center' : 'px-3')}
+                                className="relative w-full h-12 flex items-center justify-center rounded-xl transition-all duration-500 ease-in-out text-muted-foreground hover:text-primary hover:bg-sidebar-accent"
                                 aria-label={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
                             >
                                 {isCollapsed ? <PanelLeft className="w-6 h-6" /> : <PanelLeftClose className="w-6 h-6" />}
-                                <span
-                                    aria-hidden={isCollapsed}
-                                    className={cn(
-                                        'overflow-hidden whitespace-nowrap text-sm font-semibold transition-[max-width,opacity] duration-150 ease-in-out',
-                                        isCollapsed ? 'max-w-0 opacity-0 duration-0' : 'max-w-40 opacity-100',
-                                    )}
-                                >
-                                    {t('sidebar.collapse')}
-                                </span>
+                                <span className="sr-only">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</span>
                             </button>
                         </TooltipTrigger>
                         <TooltipContent side="right">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</TooltipContent>
