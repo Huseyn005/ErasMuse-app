@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export type MapMarker = {
@@ -16,6 +16,8 @@ const TYPE_COLOR: Record<MapMarker['type'], string> = {
     buddy: '#FF6B6B',
 };
 
+const RUSE_CENTER = { lat: 43.8356, lng: 25.9657 };
+
 export function RuseMap({ markers, selectedId, onSelect, height = 'h-[420px]' }: { markers: MapMarker[]; selectedId?: string | null; onSelect?: (m: MapMarker) => void; height?: string }) {
     // Outer div — owned by React
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -26,32 +28,11 @@ export function RuseMap({ markers, selectedId, onSelect, height = 'h-[420px]' }:
     const markersRef = useRef<{ [key: string]: google.maps.Marker }>({});
     const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
     const onSelectRef = useRef(onSelect);
+    const markersDataRef = useRef(markers);
     onSelectRef.current = onSelect;
+    markersDataRef.current = markers;
 
-    const RUSE_CENTER = { lat: 43.8356, lng: 25.9657 };
-
-    const initializeMap = () => {
-        if (googleMapRef.current || !mapDomRef.current) return;
-
-        try {
-            googleMapRef.current = new google.maps.Map(mapDomRef.current, {
-                center: RUSE_CENTER,
-                zoom: 14,
-                mapTypeId: 'roadmap',
-                fullscreenControl: true,
-                zoomControl: true,
-                mapTypeControl: true,
-                streetViewControl: false,
-            });
-
-            console.log('✓ Map initialized at Ruse, Bulgaria');
-            updateMarkers(markers);
-        } catch (error) {
-            console.error('Error initializing map:', error);
-        }
-    };
-
-    const updateMarkers = (markerList: MapMarker[]) => {
+    const updateMarkers = useCallback((markerList: MapMarker[]) => {
         if (!googleMapRef.current) return;
 
         // Remove stale markers
@@ -104,17 +85,39 @@ export function RuseMap({ markers, selectedId, onSelect, height = 'h-[420px]' }:
                 markersRef.current[markerData.id] = marker;
             }
         });
-    };
+    }, []);
+
+    const initializeMap = useCallback(() => {
+        if (googleMapRef.current || !mapDomRef.current) return;
+
+        try {
+            googleMapRef.current = new google.maps.Map(mapDomRef.current, {
+                center: RUSE_CENTER,
+                zoom: 14,
+                mapTypeId: 'roadmap',
+                fullscreenControl: true,
+                zoomControl: true,
+                mapTypeControl: true,
+                streetViewControl: false,
+            });
+
+            console.log('✓ Map initialized at Ruse, Bulgaria');
+            updateMarkers(markersDataRef.current);
+        } catch (error) {
+            console.error('Error initializing map:', error);
+        }
+    }, [updateMarkers]);
 
     // Mount: create a plain div, append it to wrapper, hand it to Google Maps
     useEffect(() => {
-        if (!wrapperRef.current) return;
+        const wrapper = wrapperRef.current;
+        if (!wrapper) return;
 
         // Create the Google Maps-owned div imperatively — React never sees it
         const mapDiv = document.createElement('div');
         mapDiv.style.width = '100%';
         mapDiv.style.height = '100%';
-        wrapperRef.current.appendChild(mapDiv);
+        wrapper.appendChild(mapDiv);
         mapDomRef.current = mapDiv;
 
         const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -154,19 +157,19 @@ export function RuseMap({ markers, selectedId, onSelect, height = 'h-[420px]' }:
             googleMapRef.current = null;
 
             // Safe to remove the imperatively-created div since React never owned it
-            if (mapDomRef.current && wrapperRef.current?.contains(mapDomRef.current)) {
-                wrapperRef.current.removeChild(mapDomRef.current);
+            if (mapDomRef.current && wrapper.contains(mapDomRef.current)) {
+                wrapper.removeChild(mapDomRef.current);
             }
             mapDomRef.current = null;
         };
-    }, []); // runs once
+    }, [initializeMap]);
 
     // Sync markers prop changes
     useEffect(() => {
         if (googleMapRef.current) {
             updateMarkers(markers);
         }
-    }, [markers]);
+    }, [markers, updateMarkers]);
 
     // Pan to selected marker
     useEffect(() => {

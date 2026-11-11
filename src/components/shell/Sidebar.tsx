@@ -22,7 +22,7 @@ export function Sidebar() {
 
     return (
         <TooltipProvider delayDuration={0}>
-            <aside className={cn('hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 transition-all duration-500 ease-in-out', isCollapsed ? 'w-16' : 'w-64')}>
+            <aside className={cn('hidden lg:flex flex-col shrink-0 border-r border-border bg-sidebar h-screen sticky top-0 overflow-hidden transition-all duration-500 ease-in-out', isCollapsed ? 'w-16' : 'w-64')}>
 
                 {/* Logo at top */}
                 <div className={cn('flex items-center h-14 transition-all duration-500 shrink-0 mt-2', isCollapsed ? 'justify-center px-2' : 'px-4')}>
@@ -48,7 +48,15 @@ export function Sidebar() {
                                             )}
                                         >
                                             <Icon className={cn('shrink-0', isCollapsed ? 'w-6 h-6' : 'w-5 h-5')} strokeWidth={isActive ? 2.5 : 2} />
-                                            {!isCollapsed && <span className="text-[15px] font-semibold truncate transition-opacity duration-500">{label}</span>}
+                                            <span
+                                                aria-hidden={isCollapsed}
+                                                className={cn(
+                                                    'min-w-0 overflow-hidden whitespace-nowrap text-[15px] font-semibold transition-[max-width,opacity] duration-150 ease-in-out',
+                                                    isCollapsed ? 'max-w-0 opacity-0 duration-0' : 'max-w-40 opacity-100',
+                                                )}
+                                            >
+                                                {label}
+                                            </span>
                                         </span>
                                     )}
                                 </NavLink>
@@ -74,7 +82,15 @@ export function Sidebar() {
                                 aria-label={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
                             >
                                 {isCollapsed ? <PanelLeft className="w-6 h-6" /> : <PanelLeftClose className="w-6 h-6" />}
-                                {!isCollapsed && <span className="text-sm font-semibold transition-opacity duration-500">{t('sidebar.collapse')}</span>}
+                                <span
+                                    aria-hidden={isCollapsed}
+                                    className={cn(
+                                        'overflow-hidden whitespace-nowrap text-sm font-semibold transition-[max-width,opacity] duration-150 ease-in-out',
+                                        isCollapsed ? 'max-w-0 opacity-0 duration-0' : 'max-w-40 opacity-100',
+                                    )}
+                                >
+                                    {t('sidebar.collapse')}
+                                </span>
                             </button>
                         </TooltipTrigger>
                         <TooltipContent side="right">{isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}</TooltipContent>

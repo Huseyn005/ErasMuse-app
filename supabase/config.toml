@@ -1,4 +1,7 @@
 project_id = "vmhvvibefdcrjgpweief"
 
 [functions.analyze-document]
-verify_jwt = false
+verify_jwt = true
+
+[functions.gemini-proxy]
+verify_jwt = true

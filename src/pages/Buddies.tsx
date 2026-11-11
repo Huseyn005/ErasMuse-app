@@ -52,7 +52,7 @@ const Buddies = () => {
     if (urlTab !== tab) {
       setTab(urlTab);
     }
-  }, [searchParams]);
+  }, [searchParams, tab]);
 
   const handleTabChange = (newTab: string) => {
     setTab(newTab);

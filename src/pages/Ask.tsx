@@ -4,7 +4,7 @@ import { Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { AnswerCard } from "@/components/AnswerCard";
-import { sendMessage, sirmaConfigured, getAgents } from "@/lib/sirmaAI";
+import { sendMessage, aiConfigured, getAgents } from "@/lib/geminiAI";
 import { getMockAnswer, type AssistantAnswer } from "@/lib/mockAssistant";
 import { useProfile } from "@/hooks/useProfile";
 import { useAIMode } from "@/contexts/AIModeContext";
@@ -34,10 +34,10 @@ const Ask = () => {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   // Determine if we're actually live (global toggle + API configured)
-  const isLive = globalLive && apiReady && sirmaConfigured;
+  const isLive = globalLive && apiReady && aiConfigured;
 
   useEffect(() => {
-    if (!sirmaConfigured) { setApiReady(false); return; }
+    if (!aiConfigured) { setApiReady(false); return; }
     getAgents().then(list => {
       const first = (list as { id?: string }[])[0];
       if (first?.id) { setAgentId(first.id); setApiReady(true); }

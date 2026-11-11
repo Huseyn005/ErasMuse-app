@@ -144,7 +144,33 @@ const fallback: AssistantAnswer = {
   nextActions: ["Open Explore", "Open Documents", "Open Move"],
 };
 
+export function getCurrentDateAnswer(message: string): AssistantAnswer | null {
+  const normalized = message.toLowerCase().replace(/['’]/g, "");
+  const asksForDate =
+    /\b(today(?:s)? date|what date is it(?: today)?|what is the date(?: today)?|current date|date today)\b/.test(normalized);
+
+  if (!asksForDate) return null;
+
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return {
+    title: "Today's date",
+    summary: `Today's date is ${currentDate}.`,
+    steps: [],
+    phrases: [],
+    warnings: [],
+    nextActions: [],
+  };
+}
+
 export function getMockAnswer(message: string, _language = "en"): AssistantAnswer {
+  const currentDateAnswer = getCurrentDateAnswer(message);
+  if (currentDateAnswer) return currentDateAnswer;
+
   const m = message.toLowerCase();
   const best = responses.find(r => r.keys.every(k => m.includes(k))) ||
                responses.find(r => r.keys.some(k => m.includes(k)));
@@ -181,6 +207,12 @@ export type DocumentAnalysis = {
 };
 
 export function getMockDocumentAnalysis(fileName?: string): DocumentAnalysis {
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return {
     type: "Rental Contract",
     title: fileName || "Demo Rental Agreement",
@@ -191,7 +223,7 @@ export function getMockDocumentAnalysis(fileName?: string): DocumentAnalysis {
       { label: "Duration", value: "12 months, renewable" },
       { label: "Notice Period", value: "30 days written notice required" },
       { label: "Utilities", value: "Paid separately by tenant" },
-      { label: "Start Date", value: "September 1, 2024" },
+      { label: "Start Date", value: currentDate },
     ],
     riskFlags: [
       { title: "Late Payment Penalty", detail: "5% per week after 5 days late - this is quite high. Consider negotiating to 2-3%." },

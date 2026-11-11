@@ -1,14 +1,10 @@
-// Analyze a user-uploaded document using Lovable AI Gateway.
+import { corsFor, json, clientIp, rateLimited, tooLarge } from '../_shared/guard.ts';
+
+// Analyze a user-uploaded document using native Google Gemini API (gemini-3.5-flash-lite).
 // Accepts either plain text OR a base64 file (PDF/image/DOCX/etc.).
 // Returns a structured analysis matching the Documents page UI.
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
-
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 
 const SYSTEM_PROMPT = `You are ERASMuse, a multilingual life copilot for students and visitors in Ruse, Bulgaria.
 A user has uploaded a real document (rental contract, university letter, medical instruction, government form, ticket, bill, etc.).
@@ -37,99 +33,90 @@ Rules:
 - Output JSON ONLY. No prose before or after.`;
 
 async function callAI(parts: unknown[]) {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: parts },
-      ],
-      response_format: { type: "json_object" },
-    }),
-  });
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': GEMINI_API_KEY!,
+        },
+        body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: [{ role: 'user', parts }],
+            generationConfig: { responseMimeType: 'application/json' },
+        }),
+        signal: AbortSignal.timeout(45_000),
+    });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`AI gateway ${res.status}: ${text.slice(0, 300)}`);
-  }
-  const data = await res.json();
-  const content: string = data?.choices?.[0]?.message?.content ?? "";
-  return content;
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Google API error ${res.status}: ${text.slice(0, 300)}`);
+    }
+    const data = await res.json();
+    const content: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    return content;
 }
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+Deno.serve(async req => {
+    const corsHeaders = corsFor(req);
+    if (!corsHeaders) return json({ error: 'Origin not allowed' }, 403);
+    if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
+    if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405, corsHeaders);
+    if (tooLarge(req, 15_000_000)) return json({ error: 'Request too large' }, 413, corsHeaders);
+    if (rateLimited(clientIp(req), 10)) return json({ error: 'Too many requests, try again later' }, 429, corsHeaders);
 
-  try {
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    const body = await req.json();
-    const { text, fileBase64, mimeType, fileName } = body ?? {};
-
-    if (!text && !fileBase64) {
-      return new Response(
-        JSON.stringify({ error: "Provide either 'text' or 'fileBase64' + 'mimeType'." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const parts: unknown[] = [];
-    if (fileBase64 && mimeType) {
-      // Gemini multimodal supports images and PDFs via image_url with data URLs.
-      parts.push({
-        type: "image_url",
-        image_url: { url: `data:${mimeType};base64,${fileBase64}` },
-      });
-      parts.push({
-        type: "text",
-        text: `File name: ${fileName ?? "document"}. Analyze the attached document and return JSON as specified.`,
-      });
-    } else {
-      parts.push({
-        type: "text",
-        text: `Analyze the following document text and return JSON as specified.\n\n---\n${String(text).slice(0, 60000)}\n---`,
-      });
-    }
-
-    const content = await callAI(parts);
-
-    let parsed: Record<string, unknown> | null = null;
     try {
-      parsed = JSON.parse(content);
-    } catch {
-      // Try to extract JSON object from the string
-      const match = content.match(/\{[\s\S]*\}/);
-      if (match) {
-        try { parsed = JSON.parse(match[0]); } catch { /* noop */ }
-      }
-    }
+        if (!GEMINI_API_KEY) {
+            return json({ error: 'Service not configured' }, 503, corsHeaders);
+        }
 
-    if (!parsed) {
-      return new Response(
-        JSON.stringify({ error: "AI did not return valid JSON.", raw: content.slice(0, 500) }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+        const body = await req.json();
+        const { text, fileBase64, mimeType, fileName } = body ?? {};
 
-    return new Response(JSON.stringify({ analysis: parsed }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    const status = message.includes("429") ? 429 : message.includes("402") ? 402 : 500;
-    return new Response(
-      JSON.stringify({ error: message }),
-      { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  }
+        if (!text && !fileBase64) {
+            return json({ error: "Provide either 'text' or 'fileBase64' + 'mimeType'." }, 400, corsHeaders);
+        }
+
+        const parts: unknown[] = [];
+        if (fileBase64 && mimeType) {
+            parts.push({
+                inlineData: {
+                    mimeType: mimeType,
+                    data: fileBase64,
+                },
+            });
+            parts.push({
+                text: `File name: ${fileName ?? 'document'}. Analyze the attached document and return JSON as specified.`,
+            });
+        } else {
+            parts.push({
+                text: `Analyze the following document text and return JSON as specified.\n\n---\n${String(text).slice(0, 60000)}\n---`,
+            });
+        }
+
+        const content = await callAI(parts);
+
+        let parsed: Record<string, unknown> | null = null;
+        try {
+            parsed = JSON.parse(content);
+        } catch {
+            const match = content.match(/\{[\s\S]*\}/);
+            if (match) {
+                try {
+                    parsed = JSON.parse(match[0]);
+                } catch {
+                    /* noop */
+                }
+            }
+        }
+
+        if (!parsed) {
+            return json({ error: 'AI did not return valid JSON.', raw: content.slice(0, 500) }, 502, corsHeaders);
+        }
+
+        return json({ analysis: parsed }, 200, corsHeaders);
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const status = message.includes('429') ? 429 : message.includes('402') ? 402 : 500;
+        return json({ error: message }, status, corsHeaders);
+    }
 });
