@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Home, Compass, GraduationCap, Bus, Users } from "lucide-react";
+import { Home, Compass, GraduationCap, Bus, Users, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -12,11 +12,12 @@ export function BottomNav() {
     { to: "/campus", label: t("nav.campus"), icon: GraduationCap },
     { to: "/move", label: t("nav.move"), icon: Bus },
     { to: "/buddies", label: t("nav.buddies"), icon: Users },
+    { to: "/documents", label: t("nav.documents"), icon: FileText },
   ];
 
   return (
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-border pb-safe">
-      <ul className="grid grid-cols-5 h-16">
+      <ul className="grid grid-cols-6 h-16">
         {items.map(({ to, label, icon: Icon }) => (
           <li key={to}>
             <NavLink

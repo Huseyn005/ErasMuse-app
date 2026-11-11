@@ -46,9 +46,9 @@ export function OnboardingModal() {
 
     return (
         <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) finish(); }}>
-            <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 shadow-glow">
+            <DialogContent className="sm:max-w-xl p-0 overflow-hidden border-0 shadow-glow">
                 <DialogTitle className="sr-only">Welcome to ERASMuse</DialogTitle>
-                <div className="bg-gradient-hero p-5">
+                <div className="bg-gradient-hero px-5 py-3">
                     <div className="flex items-center gap-2">
                         <img src="/images/erasmuse-icon.jpg" alt="ERASMuse" className="h-10 w-10 rounded-lg object-cover" />
                         <span className="font-display font-extrabold tracking-tight text-2xl leading-none">
@@ -62,9 +62,9 @@ export function OnboardingModal() {
                     {step === 1 && (
                         <>
                             <h3 className="text-lg font-display font-bold">Welcome! Who are you?</h3>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-2 items-stretch gap-3">
                                 {types.map(({ v, icon: Icon, sub }) => (
-                                    <button key={v} onClick={() => setDraftType(v)} className={`text-left p-3 rounded-xl border transition-all ${draftType === v ? 'border-primary bg-secondary shadow-soft' : 'border-border hover:border-primary/40'}`}>
+                                    <button key={v} onClick={() => setDraftType(v)} className={`h-full min-h-32 text-left p-4 rounded-xl border transition-all ${draftType === v ? 'border-primary bg-secondary shadow-soft' : 'border-border hover:border-primary/40'}`}>
                                         <Icon className="w-5 h-5 text-primary mb-1.5" />
                                         <div className="text-sm font-semibold leading-tight">{v}</div>
                                         <div className="text-[11px] text-muted-foreground mt-0.5">{sub}</div>
